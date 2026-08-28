@@ -54,7 +54,7 @@ Enuncie também a hipótese de valor: *acreditamos que [usuários] vão [comport
 
 ## Backlog inicial
 
-Mínimo de 10 itens no GitHub Projects, ao menos 3 estimados, todos priorizados. Formato de história de usuário: **como [papel], quero [ação] para [benefício]**.
+Mínimo de 5 itens no GitHub Projects, ao menos 3 estimados, todos priorizados. Formato de história de usuário: **como [papel], quero [ação] para [benefício]**.
 
 | Prio | História | Critérios de aceitação | Entrega prevista |
 |---|---|---|---|
@@ -91,7 +91,7 @@ Todos os integrantes devem falar.
 6. Equipe: nome, matrícula e papel de cada integrante
 7. Coorte de apresentação e, se houver, integração com outra disciplina
 
-Máximo 3 páginas. A justificativa das escolhas técnicas deve partir das características do produto.
+Máximo 5 páginas. A justificativa das escolhas técnicas deve partir das características do produto.
 
 As opções de plataforma-alvo, interface e backend, com seus limites, estão em [STACK.md](STACK.md).
 
