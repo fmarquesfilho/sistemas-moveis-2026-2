@@ -100,9 +100,9 @@ Prof. Fernando · UFRN/DIMAp · 2026.2
 | Parte | O quê |
 |---|---|
 | Onde o app se encaixa | O app, a API e o domínio compartilhado |
+| A estrutura do projeto | Os módulos `shared` e `app`, e a regra de dependência |
 | UI declarativa | O que é `@Composable` e recomposição |
-| Estado | `remember`, `mutableStateOf`, elevação de estado |
-| Layout e preview | `Column`/`Row`/`Box`, modificadores, Hot Reload |
+| Estado e layout | `remember`, elevação de estado, `Column`/`Row`/`Box`, preview |
 
 **Quarta, 02/09 — Componentes, tema e CI**
 
@@ -111,7 +111,7 @@ Prof. Fernando · UFRN/DIMAp · 2026.2
 | Componentes próprios | Reutilizáveis, com *slots* |
 | Material 3 | Esquema de cor e tipografia |
 | Kotlin idiomático | Funções de extensão e de escopo |
-| Projeto e CI | Estrutura KMP, catálogo, `ktlint` e `detekt` |
+| Projeto e CI | Catálogo de versões, `kdoctor`, `ktlint` e `detekt` |
 
 > No fim da semana: a primeira tela pronta, e o CI verde com ktlint e detekt.
 
@@ -146,6 +146,24 @@ O app não vive sozinho: ele é o cliente de um sistema com outras partes.
 - O mesmo domínio vive no app e na API — no MUSI, o `shared/` é importado pelos dois
 
 > O domínio evolui, e o app herda de graça: a ADR-0003 acrescentou a identidade do MusicBrainz (`mbid`) à `Obra`, e o app já a recebe por usar o mesmo `shared/`.
+
+---
+
+# A estrutura do projeto
+
+Antes das telas, os dois módulos — e a regra que os separa:
+
+```
+  shared/     o domínio, Kotlin puro    → commonMain, sem Compose
+     │  build.gradle.kts: kotlin { jvm(); /* androidTarget() */ }
+     ▼
+  app/        a interface, em Compose    → depende de :shared
+        build.gradle.kts: implementation(project(":shared"))
+```
+
+No MUSI, `shared/commonMain` não pode importar Compose, e o compilador garante isso. O alvo `androidTarget()` fica comentado até a sprint móvel.
+
+> A regra de dependência vira fronteira de módulo: a UI conhece o domínio; o domínio não conhece a UI. Entender essa separação primeiro é o que faz a tela, depois, ter onde se apoiar.
 
 ---
 
@@ -493,6 +511,8 @@ fun ListaVaziaPreview() {
 
 # Hot Reload: o ciclo rápido
 
+<!-- _footer: 'No Codespaces (sem janela nativa), use `./gradlew :app:jvmRun --continuous` para recompilar ao salvar — ou siga o docs/COMO-RODAR.md.' -->
+
 No alvo desktop, o hot reload aplica a mudança do código na hora, mantendo o estado da tela:
 
 ```
@@ -659,24 +679,6 @@ val texto = filtro?.let { descrever(it) } ?: "sem filtro"
 ```
 
 > Esse `let` é do `TelaAcervo` do MUSI: só chama `descrever` quando `filtro` não é nulo, e cai no `?:` quando é. Sem `if` e sem variável temporária.
-
----
-
-# Estrutura de um projeto KMP
-
-Dois módulos, papéis distintos:
-
-```
-  shared/     o domínio, Kotlin puro    → commonMain, sem Compose
-     │  build.gradle.kts: kotlin { jvm(); /* androidTarget() */ }
-     ▼
-  app/        a interface, em Compose    → depende de :shared
-        build.gradle.kts: implementation(project(":shared"))
-```
-
-No MUSI, `shared/commonMain` não pode importar Compose, e o compilador garante isso. O alvo `androidTarget()` fica comentado até a sprint móvel.
-
-> A regra de dependência da arquitetura vira fronteira de módulo: a UI conhece o domínio; o domínio não conhece a UI.
 
 ---
 

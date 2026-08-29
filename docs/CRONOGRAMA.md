@@ -79,8 +79,8 @@ Na Sprint 2 a ordem se inverte por causa do feriado de 12/10 e da prova de 21/10
 | 19/08 | Qua | 🟢 | Apresentação do curso e dos critérios de avaliação. Panorama do desenvolvimento móvel: plataformas nativas e multiplataforma |
 | 24/08 | Seg | 🟢 | Kotlin Multiplatform e Compose Multiplatform: o que são e o que muda em relação ao nativo. Kotlin: tipos, `val` e `var`, null safety, coleções, funções, data classes, classes seladas e `when` como expressão. Ambientes de desenvolvimento sem instalação. Formação de grupos, escolha de coorte, plataforma-alvo e estratégia de backend |
 | 26/08 | Qua | 🔵 | Encontro online — dúvidas sobre a proposta e o ambiente |
-| 31/08 | Seg | 🟢 | Compose: funções `@Composable`, recomposição, estado com `remember` e `mutableStateOf`, elevação de estado. Modificadores. Layouts com `Column`, `Row` e `Box`. Compose Hot Reload e previews |
-| 02/09 | Qua | 🟢 | Componentes próprios e reutilizáveis. Tema Material 3: esquema de cor e tipografia. Funções de extensão e funções de escopo. Estrutura de um projeto KMP, Gradle e catálogo de versões. `kdoctor`. Primeiro workflow de CI com `ktlint` e `detekt` |
+| 31/08 | Seg | 🟢 | Estrutura de um projeto KMP: os módulos `shared` e `app` e a regra de dependência. Compose: funções `@Composable`, recomposição, estado com `remember` e `mutableStateOf`, elevação de estado. Modificadores. Layouts com `Column`, `Row` e `Box`. Hot Reload e previews |
+| 02/09 | Qua | 🟢 | Componentes próprios e reutilizáveis. Tema Material 3: esquema de cor e tipografia. Funções de extensão e funções de escopo. Gradle e catálogo de versões. `kdoctor`. Primeiro workflow de CI com `ktlint` e `detekt` |
 | 07/09 | Seg | 🔴 | Independência do Brasil |
 | 09/09 | Qua | 🔵 | Encontro online — dúvidas sobre o ambiente e a proposta |
 
