@@ -850,7 +850,7 @@ O enunciado de cada entrega está em `docs/SPRINT-0-TAREFAS.md`.
 
 - Material 3 · `m3.material.io` · Compose Multiplatform · `kotlinlang.org/compose-multiplatform`
 - Funções de escopo · `kotlinlang.org/docs/scope-functions.html`
-- Catálogo de versões · `docs.gradle.org` · ktlint · `ktlint.github.io` · detekt · `detekt.dev`
+- Catálogo de versões · `docs.gradle.org`
 
 **Disciplina e projeto de exemplo**
 
