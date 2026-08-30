@@ -594,7 +594,7 @@ No alvo desktop, o hot reload aplica a mudança do código na hora, mantendo o e
 | Emulador Android | dezenas de segundos por mudança |
 | Desktop + Hot Reload | cerca de 1 segundo |
 
-> No Codespaces (sem janela nativa), use `./gradlew :app:jvmRun --continuous` para recompilar ao salvar — ou siga o docs/COMO-RODAR.md.
+> No Codespaces: abra a porta 6080 (noVNC) e rode `DISPLAY=:1 ./gradlew :app:hotRunJvm -Pheadless` para recarregar ao salvar — ou `:app:run -Pheadless` só para ver a tela. Passo a passo em docs/COMO-RODAR.md.
 
 ---
 
