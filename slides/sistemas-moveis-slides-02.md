@@ -229,6 +229,79 @@ fun Tela() {
 
 ---
 
+# Imperativa x Declarativa
+
+A diferença que separa o Compose das Views imperativas clássicas está no que a função **faz** ao ser chamada.
+
+```kotlin
+// View clássica: fabrica e devolve um objeto
+fun criarSaudacao(nome: String): TextView {
+    val tv = TextView(contexto)
+    tv.text = "Olá, $nome"
+    return tv                      // ← você recebe o widget e o guarda
+}
+
+// Compose: não devolve nada; emite ao ser chamada
+@Composable
+fun Saudacao(nome: String) {
+    Text("Olá, $nome")             // ← encaixa um nó Text na posição atual
+}
+```
+
+- A função `@Composable` retorna `Unit`: não há objeto de view para guardar
+- **Emitir** é registrar um nó na árvore de UI que o Compose está montando
+
+> Chamar `Saudacao("Ana")` não te dá um `Text` — coloca um `Text` ali. A tela é efeito da chamada, não o valor de retorno.
+
+---
+
+# Aninhar é montar a árvore
+
+Como cada chamada emite na posição atual, o aninhamento das chamadas vira a estrutura da tela:
+
+```kotlin
+@Composable
+fun Tela() {
+    Column {
+        Saudacao("Ana")
+        Saudacao("Bruno")
+    }
+}
+```
+
+```
+  Column
+  ├── Text  "Olá, Ana"
+  └── Text  "Olá, Bruno"
+```
+
+Quem sabe "onde estou montando" é um parâmetro invisível — o `Composer` — que o compilador injeta em toda função `@Composable`.
+
+> Por isso **uma `@Composable` só pode ser chamada de dentro de outra**: ela precisa do `Composer` em escopo para saber onde encaixar o elemento.
+
+---
+
+# A consequência: não há widget para mutar
+
+Como você nunca recebe o nó, não dá para atualizar a tela "por fora":
+
+```kotlin
+val t = Text("Olá")     // não há retorno: Text devolve Unit
+t.setText("Oi")         // não há objeto nem setter para chamar
+```
+
+Para mudar o que aparece, muda-se o **estado** que a função lê — e o Compose chama a função de novo (recompõe).
+
+| Views clássicas | Compose |
+|---|---|
+| Guarda a referência do widget | Não há referência para guardar |
+| `widget.setX(novo)` atualiza | Muda o estado; a função reemite |
+| Tela e dados podem divergir | Tela é sempre função do estado |
+
+> No Compose você não conserta a tela, você a **descreve de novo**.
+
+---
+
 # Recomposição
 
 Quando o estado que uma função lê muda, o Compose chama a função de novo — só ela, não a tela inteira. Isso é a recomposição.
