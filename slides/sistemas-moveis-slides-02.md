@@ -374,6 +374,27 @@ fun Contador() {
 
 ---
 
+# Anatomia de `var n by remember { … }`
+
+O jeito de entender a linha é **tirar cada peça** e ver o que quebra:
+
+```kotlin
+var n by remember { mutableStateOf(0) }
+```
+
+| Sem esta peça | O que acontece na tela |
+|---|---|
+| `mutableStateOf` | muda o valor, mas **não redesenha** — nada avisa o Compose |
+| `remember` | a tela **esquece**: o valor volta a 0 a cada recomposição |
+| `by` | funciona igual — só que com `.value` em todo lugar |
+
+- `mutableStateOf` faz a tela **reagir**, `remember` faz ela **lembrar**, `by` some com o `.value`
+- É `var`, não `val`: `n` é lido **e** escrito (`n++`)
+
+> O `by` exige dois imports de `androidx.compose.runtime` — `getValue` e `setValue`. Sem eles, o erro é *"getValue is not found"* na linha do delegate. Vale avisar antes.
+
+---
+
 # `remember` com chave
 
 `remember(chave)` recalcula quando a chave muda. É como derivar um valor sem recomputar à toa:
@@ -396,8 +417,6 @@ Enquanto `obras` e `filtro` não mudarem, a lista filtrada é reaproveitada. Qua
 # Parte 3
 
 ## Elevação de estado
-
-O padrão que a rubrica cobra.
 
 ---
 
@@ -643,23 +662,11 @@ LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
 
 ---
 
-# Fecho de segunda
-
-Vocês têm a primeira tela: um componente próprio, com estado elevado, rodando no desktop.
-
-Quarta ela vira reutilizável de verdade (com slots e tema), o código fica idiomático, e o CI passa a exigir estilo com ktlint e detekt.
-
-> Entre hoje e quarta: deixem `CartaoObra` e `TelaAcervo` compilando no desktop, com ao menos dois `@Preview`. Quem ainda não instalou o ambiente: rodem o `kdoctor`.
-
----
-
 <!-- _class: lead -->
 
 # Quarta · 02/09
 
 ## Componentes, tema e CI
-
-Do "funciona" ao "reutilizável e verificado".
 
 ---
 
@@ -777,21 +784,6 @@ dependencies { implementation(libs.koin.core) }
 
 ---
 
-# `kdoctor`: antes de pedir socorro
-
-O ambiente KMP tem muitas peças (JDK, Android SDK, Xcode no Mac). O `kdoctor` diagnostica o que falta:
-
-```bash
-kdoctor
-  [✓] Operating System
-  [✓] Java
-  [✗] Android Studio — plugin do KMP ausente
-```
-
-> Rodem o `kdoctor` antes de abrir uma dúvida de ambiente. Ele resolve a maior parte, e economiza a aula.
-
----
-
 # CI: agora com `ktlint` e `detekt`
 
 O workflow deixa de só compilar e passa a exigir estilo e qualidade:
@@ -805,44 +797,24 @@ O workflow deixa de só compilar e passa a exigir estilo e qualidade:
 | ktlint | Formatação fora do padrão Kotlin |
 | detekt | Complexidade, *code smells*, funções longas |
 
-No MUSI, o job `kotlin` do `.github/workflows/ci.yml` já roda os testes; ktlint e detekt entram a partir da Sprint 1. Para vocês, valem já na Sprint 0.
-
-> Estilo deixa de ser opinião em revisão: a ferramenta decide, e o CI recusa o que estiver fora.
+No MUSI, o job `kotlin` do `.github/workflows/ci.yml` já roda os testes; ktlint e detekt entram a partir da Sprint 1. 
 
 ---
 
-# A entrega de vocês — o alvo da semana
-
-```
-  [ ] App compila e roda em Android e desktop
-  [ ] Uma tela com componente próprio e estado elevado
-  [ ] ktlintCheck e detekt limpos no GitHub Actions
-```
-
-Vale quase metade da nota da Sprint 0 (projeto funcional e CI, mais a primeira tela). O resto é a proposta e as justificativas de plataforma e backend.
-
-> Não precisa de app publicado em loja, nem de rede. Precisa compilar, ter a tela, e o CI verde.
-
----
-
-# Oficina — reutilizar e verificar <span class="pill-blue">alvo desktop</span>
+# Exercício
 
 Partindo da tela da segunda:
 
 ```
   1. Extraia uma Secao(titulo) { … } com slot, e use no TelaAcervo
   2. Troque cores/tamanhos crus por MaterialTheme.typography/colorScheme
-  3. Reescreva um trecho com let/apply, no lugar de if + temporária
-  4. Ligue ktlintCheck e detekt no workflow; rode e conserte o que apontarem
 ```
-
-> Deixem o `detekt` apontar de propósito uma função longa, e depois quebrem-na. Ver a ferramenta pegar é metade do aprendizado.
 
 ---
 
 # As tarefas da Sprint 0
 
-O enunciado de cada entrega está em `docs/SPRINT-0-TAREFAS.md` — uma tarefa por cartão, com *pronto quando* e o peso na rubrica.
+O enunciado de cada entrega está em `docs/SPRINT-0-TAREFAS.md`.
 
 | Ajuste recente | Detalhe |
 |---|---|
@@ -857,9 +829,9 @@ O enunciado de cada entrega está em `docs/SPRINT-0-TAREFAS.md` — uma tarefa p
 
 **Até a entrega (11/09)**
 
-- App compilando em Android e desktop, com a primeira tela
+- App compilando em desktop, com a primeira tela
 - Componente próprio e reutilizável, estado elevado, ao menos dois `@Preview`
-- `ktlintCheck` e `detekt` verdes no GitHub Actions
+- `ktlintCheck` e `detekt` passando no GitHub Actions
 - Proposta com plataforma-alvo e backend justificados, e o backlog (≥ 5 histórias)
 
 > 09/09 é encontro online, no horário da aula, para dúvidas sobre o ambiente e a proposta.
