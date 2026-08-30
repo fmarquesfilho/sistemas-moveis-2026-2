@@ -87,9 +87,11 @@ style: |
 
 # Compose, componentes e a CI
 
-## DIM0524 — Sistemas para Dispositivos Móveis · Aulas 03–04 (Sprint 0) · 31/08 e 02/09
+## DIM0524 — Sistemas para Dispositivos Móveis
 
-Prof. Fernando · UFRN/DIMAp · 2026.2
+### Aulas 03–04 (Sprint 0) · 31/08 e 02/09
+
+<!-- _footer: 'Prof. Fernando · UFRN/DIMAp · 2026.2' -->
 
 ---
 
@@ -112,8 +114,6 @@ Prof. Fernando · UFRN/DIMAp · 2026.2
 | Material 3 | Esquema de cor e tipografia |
 | Kotlin idiomático | Funções de extensão e de escopo |
 | Projeto e CI | Catálogo de versões, `kdoctor`, `ktlint` e `detekt` |
-
-> No fim da semana: a primeira tela pronta, e o CI verde com ktlint e detekt.
 
 ---
 
@@ -143,15 +143,13 @@ O app não vive sozinho: ele é o cliente de um sistema com outras partes.
 ```
 
 - Na Sprint 0 vocês escolhem a estratégia de backend (ver `STACK.md`); as telas vêm primeiro
-- O mesmo domínio vive no app e na API — no MUSI, o `shared/` é importado pelos dois
-
-> O domínio evolui, e o app herda de graça: a ADR-0003 acrescentou a identidade do MusicBrainz (`mbid`) à `Obra`, e o app já a recebe por usar o mesmo `shared/`.
+- O mesmo domínio vive no app e na API, o `shared/` é importado pelos dois
 
 ---
 
 # A estrutura do projeto
 
-Antes das telas, os dois módulos — e a regra que os separa:
+Os dois módulos — e a regra que os separa:
 
 ```
   shared/     o domínio, Kotlin puro    → commonMain, sem Compose
@@ -161,9 +159,9 @@ Antes das telas, os dois módulos — e a regra que os separa:
         build.gradle.kts: implementation(project(":shared"))
 ```
 
-No MUSI, `shared/commonMain` não pode importar Compose, e o compilador garante isso. O alvo `androidTarget()` fica comentado até a sprint móvel.
+No MUSI, `shared/commonMain` não pode importar Compose, e o compilador garante isso. O alvo `androidTarget()` fica comentado até a sprint onde vamos fazer o deploy para Android ou iOS.
 
-> A regra de dependência vira fronteira de módulo: a UI conhece o domínio; o domínio não conhece a UI. Entender essa separação primeiro é o que faz a tela, depois, ter onde se apoiar.
+> Observem que a UI conhece o domínio; o domínio não conhece a UI. Esse padrão de projeto permite que as regras de negócio sejam testadas, evoluídas e reaproveitadas sem depender da interface: o mesmo shared/ roda no app (Compose) e no serviço api-ktor, e a tela pode mudar sem mexer no domínio.
 
 ---
 
@@ -511,8 +509,6 @@ fun ListaVaziaPreview() {
 
 # Hot Reload: o ciclo rápido
 
-<!-- _footer: 'No Codespaces (sem janela nativa), use `./gradlew :app:jvmRun --continuous` para recompilar ao salvar — ou siga o docs/COMO-RODAR.md.' -->
-
 No alvo desktop, o hot reload aplica a mudança do código na hora, mantendo o estado da tela:
 
 ```
@@ -525,7 +521,7 @@ No alvo desktop, o hot reload aplica a mudança do código na hora, mantendo o e
 | Emulador Android | dezenas de segundos por mudança |
 | Desktop + Hot Reload | cerca de 1 segundo |
 
-> Desenvolvam no desktop e validem no Android de vez em quando. O ciclo curto deixa experimentar layout barato — e layout se aprende experimentando.
+> No Codespaces (sem janela nativa), use `./gradlew :app:jvmRun --continuous` para recompilar ao salvar — ou siga o docs/COMO-RODAR.md.
 
 ---
 
