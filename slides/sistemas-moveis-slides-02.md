@@ -225,7 +225,7 @@ fun Tela() {
 }
 ```
 
-> Componível é o nome do jogo: telas são feitas compondo funções pequenas, como `CartaoObra` dentro de uma lista.
+> Telas são feitas compondo funções pequenas, como `CartaoObra` dentro de uma lista.
 
 ---
 
@@ -281,7 +281,7 @@ Quem sabe "onde estou montando" é um parâmetro invisível — o `Composer` —
 
 ---
 
-# A consequência: não há widget para mutar
+# Imperativa x Declarativa
 
 Como você nunca recebe o nó, não dá para atualizar a tela "por fora":
 
@@ -307,13 +307,13 @@ Para mudar o que aparece, muda-se o **estado** que a função lê — e o Compos
 Quando o estado que uma função lê muda, o Compose chama a função de novo — só ela, não a tela inteira. Isso é a recomposição.
 
 ```
-  estado: filtro = "baião"     →  a lista recompõe, mostra 2 obras
-  usuário toca "ijexá"         →  filtro = "ijexá"  →  recompõe, mostra 1
+  estado: filtro = "baião"          →  a lista recompõe, mostra 2 obras
+  usuário seleciona "ijexá"         →  filtro = "ijexá"  →  recompõe, mostra 1
 ```
 
 | Consequência | O que significa para você |
 |---|---|
-| A função pode rodar muitas vezes | Não coloque efeito colateral solto no corpo |
+| A função pode rodar muitas vezes | Não adicione efeitos colaterais |
 | A ordem de execução não é garantida | Não dependa de "rodou antes/depois" |
 | Deve ser rápida e sem I/O | Ler arquivo ou rede aqui trava a tela |
 
@@ -368,7 +368,7 @@ fun Contador() {
 |---|---|
 | `mutableStateOf(0)` | Um estado observável: mudou, recompõe quem o lê |
 | `remember { ... }` | Preserva o valor entre recomposições |
-| `by` | Açúcar para ler/escrever `n` direto, sem `.value` |
+| `by` | Para ler/escrever `n` direto, sem `.value` |
 
 > `remember` sem `mutableStateOf` guarda mas não avisa; `mutableStateOf` sem `remember` avisa mas esquece. Os dois juntos são o padrão.
 
