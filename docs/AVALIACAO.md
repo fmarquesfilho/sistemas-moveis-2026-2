@@ -151,7 +151,7 @@ O conteúdo do bloco final não é objeto de nenhuma das provas; é avaliado na 
 
 ## 9. Prazos e revisão
 
-- Entregas vencem às sextas-feiras, 23:59, nas datas do [cronograma](CRONOGRAMA.md#visão-geral).
+- Entregas vencem às 23:59, nas datas do [cronograma](CRONOGRAMA.md#visão-geral).
 - Atraso: 10% de desconto por dia corrido, até 3 dias. Após 72 horas a entrega não é aceita.
 - Vale o estado do repositório no momento do prazo, pelo hash do último commit na branch principal.
 

@@ -36,7 +36,9 @@ Templates, exemplos e estrutura do vídeo e da proposta: [SPRINT-0.md](SPRINT-0.
 | ⚙️ **Projeto funcional e CI** | 30% | App compila e roda nos alvos Android e desktop; `ktlintCheck` e `detekt` limpos no GitHub Actions | Compila e roda; CI parcial ou com avisos | Não compila ou sem CI |
 | **Proposta do produto** | 25% | Problema delimitado, público identificado, MVP viável em 4 sprints, fora-de-escopo declarado | Proposta plausível mas genérica | Vaga ou ausente |
 | **Justificativa de plataforma e backend** | 30% | Escolhas justificadas a partir das características do produto e do público, com alternativas consideradas e descartadas com razão | Escolhas declaradas com justificativa superficial | Sem justificativa ou justificada por conveniência |
-| ⚙️ **Primeira tela** | 15% | Tela em Compose com ao menos um componente próprio e reutilizável, estado elevado corretamente, seguindo as convenções de código Kotlin | Tela presente, tudo num único `@Composable` | Sem tela, ou apenas o gerado pelo assistente |
+| ⚙️ **Primeira tela** *(opcional)* | 15% | Tela em Compose com ao menos um componente próprio e reutilizável, estado elevado corretamente, seguindo as convenções de código Kotlin | Tela presente, tudo num único `@Composable` | Apenas o gerado pelo assistente |
+
+> **Primeira tela — opcional nesta Sprint 0.** Como os conceitos de Compose ainda estão sendo consolidados, a tela deixou de ser obrigatória. Se entregue, entra na média ponderada do Componente A com o peso de 15%. Se não entregue, o peso é neutralizado: o Componente A passa a ser a média ponderada apenas dos critérios entregues (Projeto funcional e CI, Proposta do produto, e Justificativa de plataforma e backend). Não entregar a tela não reduz a nota.
 
 ---
 
@@ -126,7 +128,7 @@ Pode ser copiado para o `README.md` do repositório.
 - [ ] Repositório público, app compila e roda nos alvos Android e desktop
 - [ ] CI verde: ktlintCheck + detekt
 - [ ] docs/proposta.md com justificativa de plataforma-alvo e backend
-- [ ] 1 tela em Compose com componente próprio
+- [ ] *(opcional)* 1 tela em Compose com componente próprio
 - [ ] Coorte (A/B), integração e intenção de multiplataforma declaradas
 - [ ] Vídeo 5 min
 

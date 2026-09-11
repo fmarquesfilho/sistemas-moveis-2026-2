@@ -5,6 +5,8 @@
 
 As aulas de 10/08, 12/08 e 17/08 não foram realizadas. O curso inicia em 19/08.
 
+**Ajuste de 11/09.** Por remanejamento de aulas no início de setembro, a Sprint 0 foi estendida e sua entrega passou para **16/09** (quarta), 23:59. A Sprint 1 foi condensada em duas aulas de conteúdo (**14 e 21/09**), com encontros de acompanhamento de projeto em **16 e 23/09**. As seções abaixo já refletem o ajuste.
+
 ---
 
 ## Legenda
@@ -14,7 +16,7 @@ As aulas de 10/08, 12/08 e 17/08 não foram realizadas. O curso inicia em 19/08.
 | 🟢 | Aula presencial |
 | 🎤 | Apresentação dos grupos (presencial ou online, conforme a coorte) |
 | 🔵 | Encontro online no Google Meet — aula ou apoio ao projeto |
-| 🚀 | Entrega da sprint, sexta-feira às 23:59 |
+| 🚀 | Entrega da sprint, às 23:59 |
 | 📚 | Prova escrita, presencial, em laboratório |
 | 🔴 | Feriado ou atividades suspensas |
 | — | Sem encontro |
@@ -25,7 +27,7 @@ As aulas de 10/08, 12/08 e 17/08 não foram realizadas. O curso inicia em 19/08.
 
 Uma Sprint 0 de quatro semanas, três sprints de projeto e um bloco final. Cada sprint tem duas ou três aulas presenciais com o conteúdo, um ou dois encontros online no horário da aula, e dois dias de apresentação na última semana — uma sessão online e uma em sala.
 
-Todos os grupos apresentam em todas as sprints, exceto na Sprint 0. A entrega vence na sexta-feira que encerra a sprint. As regras de nota estão em [AVALIACAO.md](AVALIACAO.md).
+Todos os grupos apresentam em todas as sprints, exceto na Sprint 0. As regras de nota estão em [AVALIACAO.md](AVALIACAO.md).
 
 ---
 
@@ -33,7 +35,7 @@ Todos os grupos apresentam em todas as sprints, exceto na Sprint 0. A entrega ve
 
 | Bloco | Período | Tema | Apresentações | Entrega |
 |-------|---------|------|---------------|---------|
-| Sprint 0 | 17/08 a 11/09 | Kotlin, Compose e a primeira tela | — | 11/09 |
+| Sprint 0 | 17/08 a 14/09 | Kotlin, Compose e a primeira tela | — | 16/09 |
 | Sprint 1 | 14/09 a 02/10 | Interface e navegação | 28 e 30/09 | 02/10 |
 | Sprint 2 | 05/10 a 23/10 | Estado e arquitetura | 14 e 19/10 | 23/10 |
 | Sprint 3 | 26/10 a 20/11 | Dados, rede e offline-first | 16 e 18/11 | 20/11 |
@@ -71,7 +73,7 @@ Na Sprint 2 a ordem se inverte por causa do feriado de 12/10 e da prova de 21/10
 
 ## Sprint 0 — Kotlin, Compose e a primeira tela
 
-**17/08 a 11/09. Entrega: 11/09 (sexta), 23:59.**
+**17/08 a 14/09. Entrega: 16/09 (quarta), 23:59.**
 
 | Data | Dia | Tipo | Atividade |
 |------|-----|------|-----------|
@@ -79,10 +81,10 @@ Na Sprint 2 a ordem se inverte por causa do feriado de 12/10 e da prova de 21/10
 | 19/08 | Qua | 🟢 | Apresentação do curso e dos critérios de avaliação. Panorama do desenvolvimento móvel: plataformas nativas e multiplataforma |
 | 24/08 | Seg | 🟢 | Kotlin Multiplatform e Compose Multiplatform: o que são e o que muda em relação ao nativo. Kotlin: tipos, `val` e `var`, null safety, coleções, funções, data classes, classes seladas e `when` como expressão. Ambientes de desenvolvimento sem instalação. Formação de grupos, escolha de coorte, plataforma-alvo e estratégia de backend |
 | 26/08 | Qua | 🔵 | Encontro online — dúvidas sobre a proposta e o ambiente |
-| 31/08 | Seg | 🟢 | Estrutura de um projeto KMP: os módulos `shared` e `app` e a regra de dependência. Compose: funções `@Composable`, recomposição, estado com `remember` e `mutableStateOf`, elevação de estado. Modificadores. Layouts com `Column`, `Row` e `Box`. Hot Reload e previews |
-| 02/09 | Qua | 🟢 | Componentes próprios e reutilizáveis. Tema Material 3: esquema de cor e tipografia. Funções de extensão e funções de escopo. Gradle e catálogo de versões. `kdoctor`. Primeiro workflow de CI com `ktlint` e `detekt` |
+| 31/08 | Seg | 🔵 | Encontro online de acompanhamento de projetos (aula remanejada) |
+| 02/09 | Qua | 🔴 | Aula cancelada — conteúdo remanejado para 09 e 14/09 |
 | 07/09 | Seg | 🔴 | Independência do Brasil |
-| 09/09 | Qua | 🔵 | Encontro online — dúvidas sobre o ambiente e a proposta |
+| 09/09 | Qua | 🟢 | Estrutura de um projeto KMP: os módulos `shared` e `app` e a regra de dependência. Compose: funções `@Composable`, recomposição, estado com `remember` e `mutableStateOf`, elevação de estado, modificadores, layouts com `Column`, `Row` e `Box`, Hot Reload e previews. |
 
 O que entregar e como é avaliado: [RUBRICAS.md](RUBRICAS.md#sprint-0). Guia com templates e exemplos: [SPRINT-0.md](SPRINT-0.md).
 
@@ -94,10 +96,10 @@ O que entregar e como é avaliado: [RUBRICAS.md](RUBRICAS.md#sprint-0). Guia com
 
 | Data | Dia | Tipo | Atividade |
 |------|-----|------|-----------|
-| 14/09 | Seg | 🟢 | Listas com `LazyColumn` e `LazyRow`, chaves e desempenho de rolagem. Formulários e validação. Material 3 em profundidade: modo claro e escuro, e esquema de cor derivado |
-| 16/09 | Qua | 🟢 | Responsividade e adaptatividade com classes de tamanho de janela. Acessibilidade. Navegação com Navigation Compose: rotas tipadas, argumentos, pilha de retorno e deep links |
-| 21/09 | Seg | 🔵 | Encontro online — dúvidas sobre o projeto |
-| 23/09 | Qua | 🟢 | Testes em Compose Multiplatform: teste de unidade com `kotlin.test` e teste de interface — encontrar, interagir e verificar. Oficina de escrita de testes sobre o projeto |
+| 14/09 | Seg | 🟢 | Conclui as pendências da Sprint 0 (componentes, Material 3, Gradle e CI). Início da Sprint 1 — listas com `LazyColumn` e `LazyRow`, chaves e desempenho de rolagem. Formulários e validação. Material 3 em profundidade: modo claro e escuro, e esquema de cor derivado |
+| 16/09 | Qua | 🔵 | Encontro online de acompanhamento de projetos. **Entrega da Sprint 0, 23:59** |
+| 21/09 | Seg | 🟢 | Responsividade e adaptatividade com classes de tamanho de janela. Acessibilidade. Navegação com Navigation Compose: rotas tipadas, argumentos, pilha de retorno e deep links. Testes em Compose Multiplatform: `kotlin.test` e teste de interface. Oficina de escrita de testes sobre o projeto |
+| 23/09 | Qua | 🔵 | Encontro online de acompanhamento de projetos |
 | 28/09 | Seg | 🎤 | Apresentações da Coorte B, online |
 | 30/09 | Qua | 🎤 | Apresentações da Coorte A, em sala de aula |
 

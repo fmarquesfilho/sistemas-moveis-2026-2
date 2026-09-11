@@ -15,7 +15,7 @@ backend estão em [STACK.md](STACK.md). Prazo em [CRONOGRAMA.md](CRONOGRAMA.md#v
 | T3 | Definir o MVP | Proposta do produto (25%) |
 | T4 | Escolher e justificar plataforma-alvo e backend | Justificativa de plataforma e backend (30%) |
 | T5 | Montar o backlog no GitHub Projects | Proposta do produto (25%) |
-| T6 | Construir a primeira tela em Compose | Primeira tela (15%) |
+| T6 | Construir a primeira tela em Compose **(opcional)** | Primeira tela (15%, opcional) |
 | T7 | Deixar o CI verde (passando) com `ktlint` e `detekt` | Projeto funcional e CI (30%) |
 | T8 | Consolidar `docs/proposta.md` | Todos |
 | T9 | Gravar o vídeo de 5 minutos | Todos |
@@ -102,7 +102,9 @@ backend estão em [STACK.md](STACK.md). Prazo em [CRONOGRAMA.md](CRONOGRAMA.md#v
 
 ---
 
-## T6 — Construir a primeira tela em Compose
+## T6 — Construir a primeira tela em Compose (opcional)
+
+> **Opcional nesta Sprint 0.** Como os conceitos de Compose ainda estão sendo consolidados, esta tarefa deixou de ser obrigatória. Fazê-la é recomendado e conta na nota (critério *Primeira tela*, 15%); não fazê-la não penaliza — ver [RUBRICAS.md](RUBRICAS.md#sprint-0).
 
 **Objetivo.** Entregar uma tela real, com um componente próprio e estado elevado.
 
