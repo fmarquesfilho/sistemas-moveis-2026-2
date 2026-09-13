@@ -30,6 +30,7 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.ui)
+            implementation(compose.components.uiToolingPreview) // @Preview em commonMain
         }
         androidMain.dependencies {
             implementation(compose.uiTooling)              // @Preview no Android Studio

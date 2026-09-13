@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 // Modelo de UI. Esta MESMA UI roda no Android quando colocada em commonMain.
 data class Tarefa(val id: Int, val titulo: String, val feita: Boolean = false)
@@ -114,4 +115,10 @@ fun FormularioTarefa(
         Spacer(Modifier.width(8.dp))
         Button(onClick = onAdicionar, enabled = valido) { Text("Adicionar") }
     }
+}
+
+@Preview
+@Composable
+fun AppPreview() {
+    App()
 }
