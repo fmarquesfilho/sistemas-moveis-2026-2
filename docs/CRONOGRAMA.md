@@ -96,7 +96,7 @@ O que entregar e como é avaliado: [RUBRICAS.md](RUBRICAS.md#sprint-0). Guia com
 
 | Data | Dia | Tipo | Atividade |
 |------|-----|------|-----------|
-| 14/09 | Seg | 🟢 | Conclui as pendências da Sprint 0 (componentes, Material 3, Gradle e CI). Início da Sprint 1 — listas com `LazyColumn` e `LazyRow`, chaves e desempenho de rolagem. Formulários e validação. Material 3 em profundidade: modo claro e escuro, e esquema de cor derivado |
+| 14/09 | Seg | 🟢 | Conclui as pendências da Sprint 0 (componentes, Material 3 e Gradle). Início da Sprint 1 — listas com `LazyColumn` e `LazyRow`, chaves e desempenho de rolagem. Formulários e validação. Material 3 em profundidade: modo claro e escuro, e esquema de cor derivado |
 | 16/09 | Qua | 🔵 | Encontro online de acompanhamento de projetos. **Entrega da Sprint 0, 23:59** |
 | 21/09 | Seg | 🟢 | Responsividade e adaptatividade com classes de tamanho de janela. Acessibilidade. Navegação com Navigation Compose: rotas tipadas, argumentos, pilha de retorno e deep links. Testes em Compose Multiplatform: `kotlin.test` e teste de interface. Oficina de escrita de testes sobre o projeto |
 | 23/09 | Qua | 🔵 | Encontro online de acompanhamento de projetos |
