@@ -1,0 +1,13 @@
+package br.ufrn.exemplo.tarefas
+
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
+
+// Ponto de entrada do alvo DESKTOP. No projeto KMP do Android Studio, o Android tem
+// seu próprio ponto de entrada (MainActivity) e o desktop usa este mesmo padrão.
+// A tela — App() — é a mesma nos dois.
+fun main() = application {
+    Window(onCloseRequest = ::exitApplication, title = "Tarefas") {
+        App()
+    }
+}
