@@ -6,21 +6,23 @@ formulários e Material 3). É menor que o `app/` do MUSI de propósito: cabe nu
 
 | Pasta | O que é | Rodar |
 |-------|---------|-------|
-| [`tarefas-compose/`](tarefas-compose/PASSOS.md) | O alvo **Desktop** da mesma UI que roda no Android | `./gradlew run` |
+| [`tarefas-compose/`](tarefas-compose/PASSOS.md) | Projeto **KMP** completo (Android + Desktop), UI compartilhada em `commonMain` | Android Studio (emulador) ou `./gradlew :composeApp:run` (desktop) |
 
 ## Em aula: Android Studio, não Codespaces
 
 O laboratório tem **Android Studio** instalado. Usamos ele porque **Hot Reload** e
 **`@Preview`** funcionam bem localmente — o que não acontece no Codespaces.
 
-Fluxo da aula:
+1. Abra a pasta `tarefas-compose/` no Android Studio (deixe o Gradle sincronizar).
+2. **Emulador:** run configuration **composeApp** → escolha o emulador → **Run ▶**.
+3. **Desktop:** `./gradlew :composeApp:run` (ou a config de desktop no IDE).
+4. A UI fica em `composeApp/src/commonMain/kotlin`; construa os 5 passos do [PASSOS.md](tarefas-compose/PASSOS.md).
 
-1. **New Project → Kotlin Multiplatform** (alvos Android + Desktop, *Share UI*)
-2. A UI compartilhada fica em `composeApp/src/commonMain/kotlin`
-3. Rodar no **androidApp** (emulador) ou no **desktopApp [hot] 🔥**
-4. Construir os 5 passos do [PASSOS.md](tarefas-compose/PASSOS.md)
+## Versões (validadas neste projeto)
 
-> Esta pasta isola o alvo Desktop só para servir de **referência que compila**. O
-> `App.kt` daqui é idêntico ao que vai em `commonMain` no projeto do Android Studio.
+Kotlin 2.4.10 · Compose Multiplatform 1.12.0 · **AGP 9.1.0** · **compileSdk 37** · minSdk 24.
+Compila para **desktop** e **Android** (APK `debug` gerado com sucesso).
 
-Versões acompanham o MUSI (Kotlin 2.4.10, Compose Multiplatform 1.12.0).
+> O `local.properties` (caminho do Android SDK) é gerado pelo Android Studio e fica fora
+> do git. Com AGP 9, o módulo de aplicação KMP usa `android.builtInKotlin=false` e
+> `android.newDsl=false` (já no `gradle.properties`).

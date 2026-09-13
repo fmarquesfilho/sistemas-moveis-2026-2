@@ -1,23 +1,22 @@
 # Passos — tela de Tarefas em Compose
 
 Uma tela construída **do zero, incrementalmente**, em Compose Multiplatform. Cada passo
-roda. Esta pasta é o alvo **Desktop** (para o ciclo rápido); a UI (`App.kt`) é a
-**mesma** que roda no Android quando fica em `commonMain`.
+roda. **Esta pasta já é um projeto KMP completo** (alvos **Android** e **Desktop**); a UI
+fica em `composeApp/src/commonMain/kotlin/.../App.kt` e é a **mesma** nos dois alvos.
 
-## Ponto de partida limpo (em aula, no Android Studio)
+## Como abrir e rodar
 
-Usamos o **Android Studio** (instalado no laboratório) — não o Codespaces, porque
-Hot Reload e `@Preview` funcionam bem localmente.
+Abra a pasta `tarefas-compose/` no **Android Studio** (o laboratório tem instalado —
+Hot Reload e `@Preview` funcionam bem localmente, ao contrário do Codespaces). Deixe o
+Gradle sincronizar na primeira vez.
 
-1. **New Project → Kotlin Multiplatform** (ou gere em `kmp.jetbrains.com`)
-2. Alvos: **Android** e **Desktop**; opção **Share UI** marcada
-3. Rodar:
-   - **androidApp** no emulador, **ou**
-   - **desktopApp [hot] 🔥** — inclui **Compose Hot Reload**
-4. A UI compartilhada fica em **`composeApp/src/commonMain/kotlin`** (nome do módulo
-   pode ser `shared/`, conforme o assistente). É lá que entram os passos abaixo.
+- **No emulador Android:** selecione a run configuration **composeApp**, escolha o
+  emulador e clique **Run ▶**. (Device Manager → Create Device, se ainda não houver um.)
+- **No Desktop (janela JVM):** `./gradlew :composeApp:run` — ou a configuração de
+  desktop no Android Studio, com Compose Hot Reload.
 
-> Para reconstruir só o Desktop fora do Android Studio: `./gradlew run` nesta pasta.
+A UI compartilhada fica em `composeApp/src/commonMain/kotlin` — é lá que entram os passos
+abaixo. `App()` é montada pelo `MainActivity` (Android) e pelo `main()` (desktop).
 
 ---
 

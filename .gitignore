@@ -35,6 +35,9 @@ node_modules/
 .gradle/
 target/
 
+# Android — específico da máquina (caminho do SDK)
+local.properties
+
 # Slides gerados — o PDF é distribuído pelo SIGAA, não pelo repositório
 *.pdf
 slides/*.html

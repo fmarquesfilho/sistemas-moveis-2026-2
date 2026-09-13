@@ -1,0 +1,23 @@
+# Catálogo de versões — uma fonte da verdade.
+#
+# ATENÇÃO: o alvo Android NÃO foi compilado ao gerar este projeto (faltava o
+# Android SDK no ambiente). Se o Android Studio acusar incompatibilidade entre
+# o AGP e o Gradle do wrapper, aceite a sugestão dele — ou ajuste só a linha
+# `agp` abaixo. O restante (Kotlin/Compose) acompanha o MUSI.
+[versions]
+agp = "9.1.0"
+kotlin = "2.4.10"
+compose = "1.12.0"
+androidx-activityCompose = "1.9.3"
+android-compileSdk = "37"
+android-minSdk = "24"
+android-targetSdk = "37"
+
+[libraries]
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
+
+[plugins]
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose" }
+composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
