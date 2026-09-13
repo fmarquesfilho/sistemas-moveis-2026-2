@@ -117,8 +117,19 @@ fun FormularioTarefa(
     }
 }
 
+// Preview da tela inteira, sem emulador.
 @Preview(showBackground = true)
 @Composable
 fun AppPreview() {
     App()
+}
+
+// Preview de um componente isolado, com dados fixos e um evento vazio.
+@Preview(showBackground = true)
+@Composable
+fun CartaoTarefaPreview() {
+    CartaoTarefa(
+        tarefa = Tarefa(1, "Estudar Compose", feita = true),
+        onAlternar = {},
+    )
 }
