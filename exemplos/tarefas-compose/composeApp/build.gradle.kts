@@ -30,10 +30,10 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.ui)
-            implementation(compose.components.uiToolingPreview) // @Preview em commonMain
+            implementation("org.jetbrains.compose.ui:ui-tooling-preview:${libs.versions.compose.get()}") // @Preview em commonMain
         }
         androidMain.dependencies {
-            implementation(compose.uiTooling)              // @Preview no Android Studio
+            implementation("org.jetbrains.compose.ui:ui-tooling:${libs.versions.compose.get()}") // render do @Preview no Android Studio
             implementation(libs.androidx.activity.compose) // setContent { App() }
         }
         desktopMain.dependencies {
