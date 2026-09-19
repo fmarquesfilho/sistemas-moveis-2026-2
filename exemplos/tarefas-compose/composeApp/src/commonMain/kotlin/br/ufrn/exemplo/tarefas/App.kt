@@ -1,135 +1,116 @@
 package br.ufrn.exemplo.tarefas
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
+import androidx.compose.material3.Surface
+import androidx.compose.material3.VerticalDivider
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navDeepLink
+import androidx.navigation.toRoute
+import androidx.window.core.layout.WindowSizeClass
+import kotlinx.serialization.Serializable
 
-// Modelo de UI. Esta MESMA UI roda no Android quando colocada em commonMain.
-data class Tarefa(val id: Int, val titulo: String, val feita: Boolean = false)
+// Rotas tipadas: cada destino é um tipo, e os argumentos são propriedades.
+@Serializable
+object Lista
+
+@Serializable
+data class Detalhe(val id: Int)
 
 @Composable
 fun App() {
+    // Largura da janela: compacta (celular em pé) ou média/expandida (tablet, desktop).
+    val largura = currentWindowAdaptiveInfo().windowSizeClass
+    val largo = largura.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
+
     MaterialTheme {
-        // Estado ELEVADO: a tela guarda a lista e o texto do formulário.
-        var tarefas by remember {
-            mutableStateOf(
-                listOf(
-                    Tarefa(1, "Estudar Compose"),
-                    Tarefa(2, "Entender estado elevado"),
-                ),
+        // Surface pinta o fundo do tema (claro/escuro); safeDrawingPadding evita a barra
+        // de status e o recorte da câmera no Android.
+        Surface(Modifier.fillMaxSize()) {
+            Conteudo(largo = largo, modifier = Modifier.safeDrawingPadding())
+        }
+    }
+}
+
+// Estado elevado acima da navegação: as duas telas enxergam a mesma lista.
+// `largo` vem de fora para que os testes escolham o layout.
+@Composable
+fun Conteudo(
+    largo: Boolean,
+    modifier: Modifier = Modifier,
+    navController: NavHostController = rememberNavController(),
+) {
+    var tarefas by remember { mutableStateOf(tarefasIniciais) }
+    var texto by rememberSaveable { mutableStateOf("") }
+    var proximoId by remember { mutableStateOf(3) }
+    var selecionada by rememberSaveable { mutableStateOf<Int?>(null) }
+
+    val adicionar = {
+        tarefas = tarefas.comNova(proximoId, texto)
+        proximoId++
+        texto = ""
+    }
+    val alternar = { id: Int -> tarefas = tarefas.alternando(id) }
+
+    if (largo) {
+        // Janela larga: lista e detalhe lado a lado, sem navegar.
+        Row(modifier.fillMaxSize()) {
+            TelaLista(
+                tarefas, texto, { texto = it }, adicionar, alternar,
+                onAbrir = { selecionada = it },
+                modifier = Modifier.width(360.dp),
+            )
+            VerticalDivider()
+            TelaDetalhe(
+                tarefa = tarefas.find { it.id == selecionada },
+                onAlternar = { selecionada?.let(alternar) },
+                onVoltar = null,
+                modifier = Modifier.fillMaxHeight(),
             )
         }
-        var texto by remember { mutableStateOf("") }
-        var proximoId by remember { mutableStateOf(3) }
-
-        val tituloValido = texto.isNotBlank()
-
-        Column(Modifier.fillMaxSize().padding(16.dp)) {
-            Text("Minhas tarefas", style = MaterialTheme.typography.headlineSmall)
-            Spacer(Modifier.height(12.dp))
-
-            FormularioTarefa(
-                texto = texto,
-                onTextoChange = { texto = it },
-                valido = tituloValido,
-                onAdicionar = {
-                    tarefas = tarefas + Tarefa(proximoId, texto.trim())
-                    proximoId++
-                    texto = ""
-                },
-            )
-            Spacer(Modifier.height(12.dp))
-
-            // LazyColumn: só cria os itens visíveis. `key` estabiliza a rolagem.
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(tarefas, key = { it.id }) { tarefa ->
-                    CartaoTarefa(
-                        tarefa = tarefa,
-                        onAlternar = {
-                            tarefas = tarefas.map {
-                                if (it.id == tarefa.id) it.copy(feita = !it.feita) else it
-                            }
-                        },
-                    )
-                }
+    } else {
+        // Janela compacta: uma tela por vez, com pilha de retorno.
+        NavHost(navController, startDestination = Lista, modifier = modifier) {
+            composable<Lista> {
+                TelaLista(
+                    tarefas, texto, { texto = it }, adicionar, alternar,
+                    onAbrir = { id -> navController.navigate(Detalhe(id)) },
+                )
+            }
+            composable<Detalhe>(
+                // tarefas://tarefa/2 abre direto o detalhe da tarefa 2 (Android).
+                deepLinks = listOf(navDeepLink<Detalhe>(basePath = "tarefas://tarefa")),
+            ) { entrada ->
+                val rota = entrada.toRoute<Detalhe>()
+                TelaDetalhe(
+                    tarefa = tarefas.find { it.id == rota.id },
+                    onAlternar = { alternar(rota.id) },
+                    onVoltar = { navController.popBackStack() },
+                )
             }
         }
     }
 }
 
-// Componente próprio e reutilizável, com estado elevado:
-// recebe o que mostra (tarefa) e devolve o evento (onAlternar), sem estado interno.
-@Composable
-fun CartaoTarefa(tarefa: Tarefa, onAlternar: () -> Unit) {
-    Card(Modifier.fillMaxWidth()) {
-        Row(
-            Modifier.fillMaxWidth().padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Checkbox(checked = tarefa.feita, onCheckedChange = { onAlternar() })
-            Spacer(Modifier.width(8.dp))
-            Text(tarefa.titulo)
-        }
-    }
-}
-
-// Formulário com validação simples: o botão só habilita com título válido.
-@Composable
-fun FormularioTarefa(
-    texto: String,
-    onTextoChange: (String) -> Unit,
-    valido: Boolean,
-    onAdicionar: () -> Unit,
-) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        OutlinedTextField(
-            value = texto,
-            onValueChange = onTextoChange,
-            label = { Text("Nova tarefa") },
-            isError = texto.isNotEmpty() && !valido,
-            modifier = Modifier.weight(1f),
-        )
-        Spacer(Modifier.width(8.dp))
-        Button(onClick = onAdicionar, enabled = valido) { Text("Adicionar") }
-    }
-}
-
-// Preview da tela inteira, sem emulador.
 @Preview(showBackground = true)
 @Composable
 fun AppPreview() {
     App()
-}
-
-// Preview de um componente isolado, com dados fixos e um evento vazio.
-@Preview(showBackground = true)
-@Composable
-fun CartaoTarefaPreview() {
-    CartaoTarefa(
-        tarefa = Tarefa(1, "Estudar Compose", feita = true),
-        onAlternar = {},
-    )
 }

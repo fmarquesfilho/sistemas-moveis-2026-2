@@ -1,7 +1,8 @@
 # Passos — tela de Tarefas em Compose
 
 Uma tela construída **do zero, incrementalmente**, em Compose Multiplatform. Cada passo
-roda. **Esta pasta já é um projeto KMP completo** (alvos **Android** e **Desktop**); a UI
+roda. Passos 1 a 5: aula de 14/09. Passos 6 a 9: aula de 21/09 (a partir do Passo 6 o
+código fica dividido em `Tarefa.kt`, `Telas.kt` e `App.kt`). **Esta pasta já é um projeto KMP completo** (alvos **Android** e **Desktop**); a UI
 fica em `composeApp/src/commonMain/kotlin/.../App.kt` e é a **mesma** nos dois alvos.
 
 ## Como abrir e rodar
@@ -15,7 +16,7 @@ Codespaces e instale o APK no emulador (abaixo).
 trabalho no navegador (aba **Portas** → **6080**, senha `vscode`).
 
 - **`@Preview` no Android Studio:** no terminal, `bash .devcontainer/android-studio.sh`;
-  na área de trabalho, abra `App.kt` e clique **Split**.
+  na área de trabalho, abra `Telas.kt` e clique **Split**.
 - **App com Hot Reload, em janela de celular:**
 
   ```bash
@@ -147,6 +148,94 @@ fun AppPreview() { App() }
 > O `@Preview` é desenhado pela IDE: aparece no Android Studio (local ou no Codespaces,
 > pelo `android-studio.sh`), não no VS Code. O equivalente com Hot Reload é
 > `@DevelopmentEntryPoint`, em `desktopMain/.../PreviewCelular.kt`.
+
+---
+
+## Passo 6 — Acessibilidade: a linha inteira é a caixa de seleção
+
+```kotlin
+Row(
+    Modifier
+        .toggleable(value = tarefa.feita, role = Role.Checkbox, onValueChange = { onAlternar() })
+        .padding(12.dp),
+) {
+    Checkbox(checked = tarefa.feita, onCheckedChange = null) // o clique é da linha
+    Text(tarefa.titulo)
+}
+// e no título da tela:
+Text("Minhas tarefas", modifier = Modifier.semantics { heading() })
+```
+
+> Antes, caixa e texto eram **dois** elementos para o leitor de tela, e a área de toque
+> era só a caixa. Agora a linha é **um** elemento, com papel de caixa de seleção, o texto e
+> o estado, tocável de ponta a ponta. `heading()` deixa pular de título em título.
+
+📖 [Compose — Accessibility](https://developer.android.com/develop/ui/compose/accessibility)
+
+---
+
+## Passo 7 — Navegação com rotas tipadas
+
+```kotlin
+@Serializable object Lista
+@Serializable data class Detalhe(val id: Int)
+
+NavHost(navController, startDestination = Lista) {
+    composable<Lista> { TelaLista(/* ... */ onAbrir = { id -> navController.navigate(Detalhe(id)) }) }
+    composable<Detalhe>(deepLinks = listOf(navDeepLink<Detalhe>(basePath = "tarefas://tarefa"))) {
+        val rota = it.toRoute<Detalhe>()
+        TelaDetalhe(tarefas.find { t -> t.id == rota.id }, /* ... */ onVoltar = { navController.popBackStack() })
+    }
+}
+```
+
+> A lista fica **acima** do `NavHost` (estado elevado): as duas telas veem os mesmos dados.
+> Deep link no Android: `adb shell am start -a android.intent.action.VIEW -d "tarefas://tarefa/2"`
+> (o `AndroidManifest.xml` declara o esquema `tarefas`).
+
+📖 [Navigation in Compose Multiplatform](https://kotlinlang.org/docs/multiplatform/compose-navigation.html)
+
+---
+
+## Passo 8 — Janela compacta × larga
+
+```kotlin
+val largo = currentWindowAdaptiveInfo().windowSizeClass
+    .isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
+
+if (largo) Row { TelaLista(/* ... */); VerticalDivider(); TelaDetalhe(/* ... */) }
+else NavHost(/* Passo 7 */)
+```
+
+> Celular em pé: uma tela por vez. Celular deitado, tablet ou janela desktop larga (600 dp
+> ou mais): lista e detalhe lado a lado. Teste girando o emulador ou redimensionando a
+> janela desktop.
+
+📖 [Compose — Window size classes](https://developer.android.com/develop/ui/compose/layouts/adaptive/use-window-size-classes)
+
+---
+
+## Passo 9 — Testes: `kotlin.test` e interface
+
+```kotlin
+// commonTest/RegrasTest.kt — funções puras, sem Compose
+@Test fun tituloEmBrancoNaoEValido() { assertFalse(tituloValido("   ")) }
+
+// commonTest/TelasTest.kt — monta a tela e age como o usuário
+@Test fun linhaInteiraEUmaCaixaDeSelecao() = runComposeUiTest {
+    setContent { Conteudo(largo = false) }
+    onNodeWithText("Estudar Compose").assertIsToggleable().assertIsOff()
+    onNodeWithText("Estudar Compose").performClick()
+    onNodeWithText("Estudar Compose").assertIsOn()
+}
+```
+
+Rodar: `./gradlew :composeApp:desktopTest`.
+
+> O teste de interface consulta a mesma árvore de semântica que o leitor de tela usa: se
+> o Passo 6 for desfeito, `assertIsToggleable()` falha.
+
+📖 [Testing Compose Multiplatform UI](https://kotlinlang.org/docs/multiplatform/compose-test.html)
 
 ---
 

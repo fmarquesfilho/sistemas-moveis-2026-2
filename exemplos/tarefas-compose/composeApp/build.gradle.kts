@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinSerialization) // rotas tipadas da navegação
 }
 
 kotlin {
@@ -31,10 +32,22 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.ui)
             implementation("org.jetbrains.compose.ui:ui-tooling-preview:${libs.versions.compose.get()}") // @Preview em commonMain
+            implementation(libs.navigation.compose) // Navigation Compose (21/09)
+            implementation(libs.material3.adaptive) // classes de tamanho de janela (21/09)
+            implementation(libs.kotlinx.serialization.json)
+        }
+        // Testes compartilhados: kotlin.test e testes de interface do Compose (21/09).
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(libs.compose.ui.test)
         }
         androidMain.dependencies {
             implementation("org.jetbrains.compose.ui:ui-tooling:${libs.versions.compose.get()}") // render do @Preview no Android Studio
             implementation(libs.androidx.activity.compose) // setContent { App() }
+        }
+        // Os testes de interface de commonTest rodam no alvo desktop: ./gradlew :composeApp:desktopTest
+        val desktopTest by getting {
+            dependencies { implementation(compose.desktop.currentOs) }
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
