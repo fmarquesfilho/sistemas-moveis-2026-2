@@ -165,6 +165,24 @@ Hoje: **duas telas**, e o código se divide.
 | `Telas.kt` | `TelaLista`, `TelaDetalhe`, componentes, previews |
 | `App.kt` | rotas, estado, uma tela ou duas (`Conteudo`) |
 
+
+---
+
+# Correção do slide de 14/09
+
+No slide "`@Preview` — ver sem rodar", da aula passada, o import está desatualizado:
+
+```kotlin
+import org.jetbrains.compose.ui.tooling.preview.Preview   // antiga: não compila no exemplo
+```
+
+O certo, usado no exemplo e no `PASSOS.md`:
+
+```kotlin
+import androidx.compose.ui.tooling.preview.Preview
+```
+
+> A diferença entre as duas anotações está na leitura de 14/09 (`moveis-s1-pte1.md`, seção 2.6).
 ---
 
 <!-- _class: lead -->

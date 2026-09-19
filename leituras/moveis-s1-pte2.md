@@ -88,6 +88,24 @@ fun Conteudo(
 É o mesmo estado elevado de 14/09, um nível acima. Na Sprint 2, esse estado vai para um
 `ViewModel`, que sobrevive à recriação da tela e sai da árvore de composição.
 
+### 1.4 Correção: o import do `@Preview` no slide de 14/09
+
+No slide 03 (aula de 14/09), o slide "`@Preview` — ver sem rodar" importa a anotação
+antiga:
+
+```kotlin
+import org.jetbrains.compose.ui.tooling.preview.Preview   // antiga, descontinuada
+```
+
+Com a dependência do exemplo (`org.jetbrains.compose.ui:ui-tooling-preview`), esse import
+não compila. O certo, usado no exemplo, no `PASSOS.md` e nas duas leituras, é:
+
+```kotlin
+import androidx.compose.ui.tooling.preview.Preview
+```
+
+A leitura de 14/09 (seção 2.6) explica a diferença entre as duas anotações.
+
 ---
 
 ## 2. Responsividade e adaptatividade
