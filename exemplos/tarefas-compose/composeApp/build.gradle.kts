@@ -38,6 +38,7 @@ kotlin {
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
+            implementation("org.jetbrains.compose.hot-reload:hot-reload-runtime-api:1.2.0") // @DevelopmentEntryPoint
         }
     }
 }
@@ -52,6 +53,18 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+    }
+
+    // Chave de debug versionada: o APK de debug sai com a mesma assinatura em qualquer
+    // máquina (Mac, laboratório, Codespace) e atualiza por cima sem desinstalar.
+    // Serve só para debug; nunca para publicar.
+    signingConfigs {
+        getByName("debug") {
+            storeFile = rootProject.file("keystore/debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
     }
 
     compileOptions {

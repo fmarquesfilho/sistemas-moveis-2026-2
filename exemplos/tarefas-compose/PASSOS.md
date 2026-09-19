@@ -6,14 +6,35 @@ fica em `composeApp/src/commonMain/kotlin/.../App.kt` e é a **mesma** nos dois 
 
 ## Como abrir e rodar
 
-Abra a pasta `tarefas-compose/` no **Android Studio** (o laboratório tem instalado —
-Hot Reload e `@Preview` funcionam bem localmente, ao contrário do Codespaces). Deixe o
-Gradle sincronizar na primeira vez.
+O projeto usa AGP 9.1: abre no **Android Studio Panda 2 (2025.3.2) ou mais novo**. O
+Android Studio do laboratório (Ladybug, 2024) **não sincroniza** este projeto; lá, use o
+Codespaces e instale o APK no emulador (abaixo).
 
-- **No emulador Android:** selecione a run configuration **composeApp**, escolha o
-  emulador e clique **Run ▶**. (Device Manager → Create Device, se ainda não houver um.)
-- **No Desktop (janela JVM):** `./gradlew :composeApp:run` — ou a configuração de
-  desktop no Android Studio, com Compose Hot Reload.
+**No Codespaces** (nada instalado na máquina): crie um Codespace deste repositório
+(Code → Codespaces). O `.devcontainer/` já traz Java, o SDK Android e uma área de
+trabalho no navegador (aba **Portas** → **6080**, senha `vscode`).
+
+- **`@Preview` no Android Studio:** no terminal, `bash .devcontainer/android-studio.sh`;
+  na área de trabalho, abra `App.kt` e clique **Split**.
+- **App com Hot Reload, em janela de celular:**
+
+  ```bash
+  cd exemplos/tarefas-compose
+  ./gradlew :composeApp:hotDevDesktop --auto --className=br.ufrn.exemplo.tarefas.PreviewCelularKt --funName=TelaCelular
+  ```
+
+  Ao salvar um arquivo, a janela atualiza em segundos.
+
+**No emulador ou no celular, via APK:** `./gradlew :composeApp:assembleDebug` gera
+`composeApp/build/outputs/apk/debug/composeApp-debug.apk`. Baixe (botão direito →
+Download) e arraste para a janela do emulador — funciona em qualquer versão do Android
+Studio — ou instale com `adb install -r composeApp-debug.apk`. A chave de debug fica em
+`keystore/`, então um APK de qualquer máquina atualiza o de outra. Se o Android acusar
+`signatures do not match`, desinstale uma vez: `adb uninstall br.ufrn.exemplo.tarefas`.
+
+**No Android Studio local (Panda 2 ou mais novo):** abra a pasta `tarefas-compose/`,
+deixe o Gradle sincronizar, escolha **composeApp** e o emulador e clique **Run ▶**.
+Desktop: `./gradlew :composeApp:hotRunDesktop --auto`.
 
 A UI compartilhada fica em `composeApp/src/commonMain/kotlin` — é lá que entram os passos
 abaixo. `App()` é montada pelo `MainActivity` (Android) e pelo `main()` (desktop).
@@ -116,15 +137,16 @@ MaterialTheme(colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else li
 Em `commonMain`, anote uma função sem parâmetros para ver a tela sem rodar o app:
 
 ```kotlin
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
 fun AppPreview() { App() }
 ```
 
-> No Codespaces o `@Preview` e o Hot Reload não funcionam bem — por isso a aula é no
-> Android Studio do laboratório.
+> O `@Preview` é desenhado pela IDE: aparece no Android Studio (local ou no Codespaces,
+> pelo `android-studio.sh`), não no VS Code. O equivalente com Hot Reload é
+> `@DevelopmentEntryPoint`, em `desktopMain/.../PreviewCelular.kt`.
 
 ---
 

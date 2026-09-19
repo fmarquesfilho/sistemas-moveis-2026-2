@@ -1,0 +1,39 @@
+{
+  // Codespace para o exemplo de Tarefas: IDE no navegador + área de trabalho (noVNC)
+  // para o app com Compose Hot Reload ou para o Android Studio com @Preview.
+  "name": "Móveis — Tarefas com Compose Hot Reload",
+
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+
+  // 4 núcleos e 16 GB: Gradle, app (ou Android Studio) e noVNC ao mesmo tempo.
+  "hostRequirements": { "cpus": 4, "memory": "16gb" },
+
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": { "version": "21", "jdkDistro": "tem" },
+    "ghcr.io/devcontainers/features/desktop-lite:1": {}
+  },
+
+  "containerEnv": {
+    "ANDROID_HOME": "/home/vscode/android-sdk",
+    // Área de trabalho larga o bastante para o Android Studio.
+    "VNC_RESOLUTION": "1600x1000x24"
+  },
+
+  // O alvo Android não roda aqui, mas o Gradle precisa do SDK para configurar o projeto.
+  "onCreateCommand": "bash .devcontainer/android-sdk.sh",
+  // Baixa dependências e o JetBrains Runtime antes da aula, não durante.
+  "postCreateCommand": "cd exemplos/tarefas-compose && ./gradlew :composeApp:desktopJar --console=plain",
+
+  "forwardPorts": [6080],
+  "portsAttributes": {
+    "6080": { "label": "Área de trabalho (noVNC)", "onAutoForward": "openBrowser" }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": ["fwcd.kotlin"]
+    }
+  },
+
+  "remoteUser": "vscode"
+}

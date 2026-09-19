@@ -1,9 +1,9 @@
 # Catálogo de versões — uma fonte da verdade.
 #
-# ATENÇÃO: o alvo Android NÃO foi compilado ao gerar este projeto (faltava o
-# Android SDK no ambiente). Se o Android Studio acusar incompatibilidade entre
-# o AGP e o Gradle do wrapper, aceite a sugestão dele — ou ajuste só a linha
-# `agp` abaixo. O restante (Kotlin/Compose) acompanha o MUSI.
+# Alvos Android e Desktop compilam (APK de debug conferido em 19/09/2026).
+# AGP 9.1 exige Android Studio Panda 2 (2025.3.2) ou mais novo; versões anteriores
+# (como o Ladybug, 2024) não sincronizam o projeto — use o Codespaces (ver PASSOS.md).
+# O restante (Kotlin/Compose) acompanha o MUSI.
 [versions]
 agp = "9.1.0"
 kotlin = "2.4.10"
