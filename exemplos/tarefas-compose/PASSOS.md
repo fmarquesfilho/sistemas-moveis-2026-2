@@ -239,6 +239,47 @@ Rodar: `./gradlew :composeApp:desktopTest`.
 
 ---
 
+## Passo 10 — o ambiente em tasks
+
+Os comandos destes passos viram nomes curtos no [`mise.toml`](../../mise.toml) da raiz do
+repositório, que também fixa a versão do JDK:
+
+```toml
+[tools]
+java = "temurin-21"
+
+[tasks.app]
+description = "Abre a tela no desktop, com Hot Reload (recarrega ao salvar)"
+dir = "exemplos/tarefas-compose"
+run = '''
+if [ -n "$CODESPACES" ]; then
+  DISPLAY=:1 ./gradlew :composeApp:hotRunDesktop --auto
+else
+  ./gradlew :composeApp:hotRunDesktop --auto
+fi
+'''
+```
+
+```bash
+mise install            # uma vez: o JDK
+mise tasks              # a lista
+
+mise run app            # == ./gradlew :composeApp:hotRunDesktop --auto
+mise run app:celular    # a mesma tela, em janela de celular
+mise run test           # == ./gradlew :composeApp:desktopTest
+mise run apk            # == ./gradlew :composeApp:assembleDebug
+mise run apk:instalar   # instala no emulador e abre o deep link
+mise run studio         # Android Studio na área de trabalho (só no Codespace)
+```
+
+> A task `app` olha a variável `CODESPACES` e, lá dentro, acrescenta `DISPLAY=:1`, que
+> manda a janela para a área de trabalho do navegador. É o mesmo comando dos passos
+> anteriores, com o detalhe do ambiente resolvido — quem grava a tela não precisa lembrar.
+
+📖 [mise — tasks](https://mise.jdx.dev/tasks/)
+
+---
+
 ## Onde isto encosta no MUSI
 
 `@Composable`, estado elevado, componente próprio e `LazyColumn` são as mesmas peças da

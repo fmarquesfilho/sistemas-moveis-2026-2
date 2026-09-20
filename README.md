@@ -34,6 +34,38 @@ O semestre é organizado em uma Sprint 0, três sprints de projeto e um bloco fi
 
 ---
 
+## Exemplo das aulas
+
+[`exemplos/tarefas-compose`](exemplos/tarefas-compose) é uma tela construída do zero,
+passo a passo, em Compose Multiplatform, com os alvos **Android** e **Desktop**. O
+[`PASSOS.md`](exemplos/tarefas-compose/PASSOS.md) reconstrói o exemplo do primeiro
+`@Composable` aos testes de interface.
+
+### Como rodar
+
+O [`mise.toml`](mise.toml) da raiz fixa a versão do JDK e dá um nome curto a cada comando:
+
+```bash
+mise install          # uma vez: baixa o JDK
+mise tasks            # a lista completa
+
+mise run app          # a tela no desktop, com Hot Reload
+mise run app:celular  # a mesma tela numa janela de celular
+mise run test         # regras e interface, no alvo desktop (sem emulador)
+mise run apk          # APK de debug (precisa do SDK do Android)
+```
+
+O `mise` é conveniência, não requisito: cada task mostra, no `mise.toml`, o comando
+completo (`./gradlew :composeApp:hotRunDesktop --auto`) que continua valendo. Instalação:
+[mise.jdx.dev](https://mise.jdx.dev/getting-started.html).
+
+**Sem instalar nada:** crie um Codespace (Code → Codespaces). O
+[`.devcontainer/`](.devcontainer) traz o JDK, o SDK do Android, o `mise` e uma área de
+trabalho no navegador (aba **Portas** → **6080**), onde a janela do app e o Android Studio
+aparecem. Lá, `mise run studio` abre o Android Studio para ver o `@Preview`.
+
+---
+
 ## Licença
 
 Material licenciado sob [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
