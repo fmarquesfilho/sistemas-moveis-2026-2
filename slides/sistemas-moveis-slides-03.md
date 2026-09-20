@@ -448,7 +448,7 @@ MaterialTheme(
 Em `commonMain`, anote uma função sem parâmetros:
 
 ```kotlin
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview   // a antiga, `org.jetbrains...`, não compila
 
 @Preview
 @Composable
