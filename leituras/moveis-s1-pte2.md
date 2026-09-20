@@ -498,6 +498,24 @@ partir do destino inicial.
 A rubrica pede pelo menos um deep link funcional demonstrado. O comando acima serve como
 demonstração; um link numa página web ou numa notificação também.
 
+Dá para exercitar o mesmo caminho **sem emulador**, num teste de interface no alvo desktop:
+`NavUri` é multiplataforma no Navigation 2.9.2, e `navController.navigate(NavUri(...))`
+resolve o endereço pelo mesmo `navDeepLink` do grafo.
+
+```kotlin
+lateinit var navegacao: NavHostController
+setContent {
+    navegacao = rememberNavController()
+    Conteudo(largo = false, navController = navegacao)
+}
+runOnIdle { navegacao.navigate(NavUri("tarefas://tarefa/2")) }
+waitForIdle()
+onNodeWithText("Situação: pendente").assertIsDisplayed()
+```
+
+Isso não substitui a demonstração no aparelho — o `intent-filter` do manifesto só é
+exercitado lá —, mas põe o deep link sob teste automático, e não só num vídeo.
+
 📖 Ref. Compose Multiplatform — Deep links: <https://kotlinlang.org/docs/multiplatform/compose-navigation-deep-links.html>
 
 📖 Ref. Android — Create a deep link for a destination: <https://developer.android.com/guide/navigation/navigation-deep-link>
@@ -677,6 +695,40 @@ fun largaMostraListaEDetalheLadoALado() = runComposeUiTest {
 > Erro comum: montar `App()` no teste e depender do tamanho da janela de teste. O
 > resultado muda com o ambiente. Separe a decisão (`App`) do conteúdo (`Conteudo(largo)`)
 > e teste os dois modos.
+
+### 5.5 No MUSI: as mesmas ideias, noutro domínio
+
+O projeto de referência (`github.com/fmarquesfilho/musi`, pasta `app/`) aplica tudo isto a
+um acervo musical, com o alvo Android ligado nesta sprint:
+
+| Para ver | Onde, no MUSI |
+|---|---|
+| Rotas tipadas com argumento de texto | `App.kt`: `Acervo` e `DetalheDaObra(val id: String)` |
+| Deep link | `musi://obra/{id}`, no grafo e no `AndroidManifest.xml` |
+| Duas larguras | estreita navega; larga mostra acervo e obra lado a lado, sem navegar |
+| Tema claro e escuro | `TemaMusi`, com `isSystemInDarkTheme()` |
+| Formulário validado | a tela chama as regras do módulo `shared` — as mesmas que a API usa antes de gravar |
+| Testes de interface | 8, em `commonTest`, rodando no alvo desktop, no CI |
+
+O id da rota é `String`, e não `Int` como no exemplo, porque no domínio do MUSI a obra é
+identificada por texto. Rota tipada não obriga a usar inteiro: o argumento é uma
+propriedade, com o tipo do domínio.
+
+Duas armadilhas que apareceram ao ligar o alvo Android, e que valem para o projeto de vocês:
+
+> Erro comum: `./gradlew build` quebra os testes de interface.
+> O `build` de um módulo com alvo Android roda também a variante de teste **unitário** do
+> Android (`testDebugUnitTest`), que executa os testes de `commonTest` numa JVM sem Android
+> de verdade: os testes de interface falham com
+> `NullPointerException ... android.os.Build.FINGERPRINT is null`. Eles pertencem ao alvo
+> desktop (ou a `androidInstrumentedTest`, com aparelho).
+
+> Erro comum: AGP 9 recusa o projeto.
+> `com.android.application` não combina mais com o plugin Kotlin Multiplatform
+> ("not compatible ... since AGP 9.0") sem `android.builtInKotlin=false` e
+> `android.newDsl=false` no `gradle.properties` — que é o que o exemplo desta disciplina já
+> traz. Para um módulo de **biblioteca** compartilhada, o caminho novo é o plugin
+> `com.android.kotlin.multiplatform.library`.
 
 ---
 

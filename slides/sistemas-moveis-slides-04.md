@@ -451,6 +451,25 @@ O workflow da Sprint 0 (build, `ktlint`, `detekt`) ganha os testes:
 
 ---
 
+# No MUSI
+
+O projeto de referência ligou o alvo Android nesta sprint (`app/`):
+
+| O que a rubrica pede | Onde ver |
+|---|---|
+| Rotas tipadas com argumento | `Acervo` e `DetalheDaObra(val id: String)` — id de texto, do domínio |
+| Deep link | `musi://obra/{id}`, no grafo e no manifesto |
+| Duas larguras | estreita navega; larga mostra acervo e obra lado a lado |
+| Tema | `TemaMusi`, com `isSystemInDarkTheme()` |
+| Formulário validado | a tela usa as regras do módulo `shared`, as mesmas da API |
+| Testes de interface | 8, no alvo desktop, rodando no CI |
+
+`github.com/fmarquesfilho/musi`
+
+> `./gradlew build` roda também `testDebugUnitTest`, que executa os testes de `commonTest` numa JVM sem Android: teste de interface quebra ali. O lugar deles é o alvo desktop.
+
+---
+
 # Entrega da Sprint 1 — 02/10, 23:59
 
 | Critério | Peso |
