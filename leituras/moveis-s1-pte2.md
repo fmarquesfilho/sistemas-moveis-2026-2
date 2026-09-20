@@ -766,6 +766,19 @@ workflow:
 - run: ./gradlew :composeApp:desktopTest
 ```
 
+Isso basta para os testes, que rodam no alvo desktop. Quem quiser **também** gerar o APK no
+CI precisa do SDK do Android no runner, e aí aparece outra armadilha: o identificador da
+plataforma tem a versão completa. No MUSI, `platforms;android-37` falhou com
+`Failed to find package`, e o certo é `platforms;android-37.0` — o mesmo que está no
+`package.xml` da plataforma instalada.
+
+```yaml
+- uses: android-actions/setup-android@v3
+  with:
+    packages: 'platforms;android-37.0 build-tools;36.0.0'
+- run: ./gradlew :composeApp:assembleDebug
+```
+
 ---
 
 ## 7. Exercícios e dúvidas frequentes
