@@ -1,7 +1,7 @@
 # Passos — tela de Tarefas em Compose
 
 Uma tela construída **do zero, incrementalmente**, em Compose Multiplatform. Cada passo
-roda. Passos 1 a 5: aula de 14/09. Passos 6 a 9: aula de 21/09 (a partir do Passo 6 o
+roda. Passos 1 a 5: aula de 14/09. Passos 6 a 10: segunda parte da Sprint 1, em vídeo (a partir do Passo 6 o
 código fica dividido em `Tarefa.kt`, `Telas.kt` e `App.kt`). **Esta pasta já é um projeto KMP completo** (alvos **Android** e **Desktop**); a UI
 fica em `composeApp/src/commonMain/kotlin/.../App.kt` e é a **mesma** nos dois alvos.
 
@@ -119,17 +119,28 @@ Row {
 
 ## Passo 5 — Material 3 e tema
 
-`MaterialTheme { ... }` já dá o esquema de cor, tipografia e componentes (Material 3).
-No modo claro/escuro:
+`MaterialTheme { ... }` já dá o esquema de cor, tipografia e componentes (Material 3) — mas,
+sem `colorScheme`, é **sempre claro**. Para seguir o sistema, e com uma `Surface` na raiz:
 
 ```kotlin
-MaterialTheme(colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()) {
-  App()
+@Composable
+fun App() {
+  val cores = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+  MaterialTheme(colorScheme = cores) {
+    Surface(Modifier.fillMaxSize()) {        // pinta o fundo e a cor do texto do tema
+      Column(Modifier.safeDrawingPadding().padding(16.dp)) { /* ... */ }
+    }
+  }
 }
 ```
 
 > **Fundamento.** Componentes (`Button`, `Card`, `OutlinedTextField`) já seguem o tema.
-> Cor e tipografia vêm do `MaterialTheme`, não são fixadas à mão.
+> Cor e tipografia vêm do `MaterialTheme`, não são fixadas à mão. Sem a `Surface`, o modo
+> escuro troca as cores dos componentes, mas o fundo e o texto solto continuam claros.
+> `safeDrawingPadding()` afasta o conteúdo da barra de status: o `MainActivity` chama
+> `enableEdgeToEdge()`, que desenha de ponta a ponta e ajusta a cor dos ícones da barra.
+
+Teste no emulador: `adb shell cmd uimode night yes` (e `no` para voltar).
 
 ---
 

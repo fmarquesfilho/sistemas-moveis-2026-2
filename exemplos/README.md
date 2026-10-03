@@ -1,22 +1,25 @@
 # Exemplos da aula — Compose do zero
 
-Uma tela de **tarefas** construída incrementalmente em Compose Multiplatform. Serve à
-aula de **14/09** (conclui os fundamentos da Sprint 0 e abre a Sprint 1: listas,
-formulários e Material 3). É menor que o `app/` do MUSI de propósito: cabe numa aula.
+Uma tela de **tarefas** construída incrementalmente em Compose Multiplatform, em 10 passos:
+listas, formulários e Material 3 (aula de 14/09); acessibilidade, navegação com deep link,
+layout adaptativo, testes de interface e tasks do `mise` (segunda parte da Sprint 1, em
+vídeo). É menor que o `app/` do MUSI de propósito: cabe numa aula.
 
 | Pasta | O que é | Rodar |
 |-------|---------|-------|
 | [`tarefas-compose/`](tarefas-compose/PASSOS.md) | Projeto **KMP** completo (Android + Desktop), UI compartilhada em `commonMain` | Android Studio (emulador) ou `./gradlew :composeApp:run` (desktop) |
 
-## Em aula: Android Studio, não Codespaces
+## Onde rodar
 
-O laboratório tem **Android Studio** instalado. Usamos ele porque **Hot Reload** e
-**`@Preview`** funcionam bem localmente — o que não acontece no Codespaces.
+O exemplo usa AGP 9.1, que exige o **Android Studio Panda 2 (2025.3.2) ou mais novo**. Enquanto
+o Android Studio do laboratório não for atualizado, use o **Codespaces** deste repositório:
+o Android Studio (com `@Preview`) e o app com Hot Reload abrem numa área de trabalho no
+navegador. O passo a passo está na seção *Como abrir e rodar* do
+[PASSOS.md](tarefas-compose/PASSOS.md).
 
-1. Abra a pasta `tarefas-compose/` no Android Studio (deixe o Gradle sincronizar).
-2. **Emulador:** run configuration **composeApp** → escolha o emulador → **Run ▶**.
-3. **Desktop:** `./gradlew :composeApp:run` (ou a config de desktop no IDE).
-4. A UI fica em `composeApp/src/commonMain/kotlin`; construa os 5 passos do [PASSOS.md](tarefas-compose/PASSOS.md).
+Na primeira vez, o Android Studio do Codespace pergunta sobre o envio de estatísticas e se
+você confia no projeto (**Trust Project**); depois sincroniza o Gradle sozinho. O primeiro
+`@Preview` pede um build (**Build & Refresh**), que leva alguns minutos.
 
 ## Versões (validadas neste projeto)
 

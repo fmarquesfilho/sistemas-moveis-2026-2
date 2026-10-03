@@ -1,5 +1,6 @@
 package br.ufrn.exemplo.tarefas
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,6 +9,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.VerticalDivider
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,7 +43,10 @@ fun App() {
     val largura = currentWindowAdaptiveInfo().windowSizeClass
     val largo = largura.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
 
-    MaterialTheme {
+    // O tema segue o sistema. `MaterialTheme { }` sem `colorScheme` é sempre claro.
+    val cores = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+
+    MaterialTheme(colorScheme = cores) {
         // Surface pinta o fundo do tema (claro/escuro); safeDrawingPadding evita a barra
         // de status e o recorte da câmera no Android.
         Surface(Modifier.fillMaxSize()) {
