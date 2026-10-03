@@ -56,42 +56,16 @@ Templates, exemplos e estrutura do vídeo e da proposta: [SPRINT-0.md](SPRINT-0.
 
 ## Sprint 2
 
-| Critério | Peso | Excelente (10) | Suficiente (6) | Insuficiente (0–4) |
-|----------|------|----------------|----------------|--------------------|
-| **Gerenciamento de estado** | 25% | ViewModel multiplataforma expondo `StateFlow`, com escopo adequado, sem estado global desnecessário e sem lógica de negócio dentro de `@Composable` | Solução aplicada com inconsistências | Estado espalhado em `remember` ou global sem controle |
-| ⚙️ **Arquitetura em camadas** | 30% | `data` / `domain` / `presentation` separados em `commonMain`; **domínio não importa Compose nem bibliotecas de infraestrutura**; repositórios definidos por interface no domínio | Camadas presentes com vazamentos pontuais | Camadas indistintas |
-| **Modelagem de estado da UI** | 20% | Carregando, erro, vazio e sucesso modelados explicitamente por interface selada e refletidos na interface | Estados tratados de forma parcial | Só caminho feliz |
-| ⚙️ **Testes de lógica** | 15% | ≥ 8 testes de ViewModel com Turbine e dublês injetados por Koin, verdes no CI | ≥ 4 testes, cobertura rasa | < 4 testes ou falhando |
-| **Documentação de arquitetura** | 10% | `docs/arquitetura.md` com diagrama de camadas e **justificativa da escolha** de gerenciamento de estado, com alternativa descartada | Documento descritivo, sem justificativa | Ausente |
-
----
-
-## Sprint 3
+Última sprint do semestre (ajuste de 03/10): substitui a Sprint 2, a Sprint 3 e a Entrega Final previstas no início do período. O que for entregue aqui é o produto final.
 
 | Critério | Peso | Excelente (10) | Suficiente (6) | Insuficiente (0–4) |
 |----------|------|----------------|----------------|--------------------|
-| **Consumo de API real** | 20% | Dados reais do backend escolhido, consumidos com Ktor Client; serialização com kotlinx.serialization; DTO separado da entidade de domínio | Dados reais, serialização manual e acoplada | Dados fictícios |
-| **Tratamento de erro de rede** | 20% | Timeout, falha de conexão e resposta inválida tratados **separadamente**, cada um com estado de UI próprio; retentativa com *backoff* onde faz sentido | Erro genérico tratado | Falha silenciosa ou crash |
-| **Persistência local** | 20% | Esquema versionado com migração; consultas tipadas; dados do usuário sobrevivem ao fechamento do app | Persistência funciona, sem versionamento | Ausente |
-| **Offline-first** | 25% | App abre e é utilizável sem rede: mostra cache, enfileira operações e **sincroniza ao reconectar**, com política de conflito declarada em `docs/offline.md` | Cache de leitura funciona, sem fila de escrita | App inutilizável offline |
-| ⚙️ **Autenticação e segurança do token** | 15% | Login funcionando; token em armazenamento seguro do sistema; refresh transparente; nada sensível em DataStore em texto claro | Login funciona, token mal armazenado | Ausente ou credenciais no código |
-
----
-
-## Entrega Final
-
-Esta entrega absorve o conteúdo do bloco final: recursos do dispositivo, segurança, desempenho e distribuição.
-
-| Critério | Peso | Excelente (10) | Suficiente (6) | Insuficiente (0–4) |
-|----------|------|----------------|----------------|--------------------|
-| **App completo e estável** | 20% | Todos os fluxos do MVP funcionam sem crash na plataforma-alvo; tratamento de erro consistente em todo o app | Fluxos principais funcionam com falhas menores | Instável ou incompleto |
-| **Recursos do dispositivo** | 15% | ≥ 2 recursos integrados por `expect`/`actual` com propósito real no produto; fluxo de permissão completo, incluindo negação permanente com caminho de recuperação | 2 recursos integrados, permissão tratada de forma básica | < 2 recursos ou app quebra ao negar permissão |
-| ⚙️ **Segurança** | 15% | Dados sensíveis em armazenamento seguro; nenhuma chave de API versionada; `docs/seguranca.md` cobre o OWASP Mobile Top 10 com a mitigação e onde ela está no código | Armazenamento seguro usado; documento parcial | Chave no código ou dados sensíveis em texto claro |
-| **Desempenho** | 10% | `docs/desempenho.md` com medição antes e depois de ≥ 1 otimização de recomposição, com número e explicação da causa | Medição feita sem otimização ou sem número | Ausente |
-| ⚙️ **Entrega contínua** | 15% | Pipeline gera artefato assinado a partir de `main` e publica em canal de distribuição, automaticamente | Build automatizado, publicação manual | Build manual |
-| ⚙️ **Suíte de testes completa** | 15% | Análise estática, testes de unidade, de ViewModel, de interface e ≥ 3 testes de integração verdes no CI; cobertura reportada | Maioria verde, integração fora do CI | Suíte quebrada |
-| **Documentação pública** | 5% | Página do projeto com visão geral, arquitetura, guia de execução, capturas de tela e limitações; README permite rodar em < 15 min; licença definida | Documentação presente com lacunas | Não é possível rodar |
-| ⚙️ **Ambientes de build** | 5% | ≥ 2 ambientes configurados por build type ou product flavor, com configuração externalizada e sem segredo no código | Ambientes configurados de forma parcial | Ausente |
+| ⚙️ **Estado e arquitetura** | 30% | ViewModel multiplataforma expondo `StateFlow`; `data` / `domain` / `presentation` separados em `commonMain`; **domínio não importa Compose nem bibliotecas de infraestrutura**; repositórios definidos por interface; sem lógica de negócio dentro de `@Composable` | Solução aplicada com vazamentos pontuais entre camadas | Estado espalhado em `remember`, camadas indistintas |
+| **Estados da interface** | 15% | Carregando, erro, vazio e sucesso modelados por interface selada e refletidos na tela | Estados tratados de forma parcial | Só caminho feliz |
+| **Dados reais e erro de rede** | 25% | Dados do backend escolhido, consumidos com Ktor Client e kotlinx.serialization, com DTO separado da entidade de domínio; falha de conexão e resposta inválida tratadas, cada uma com estado de tela próprio | Dados reais, erro genérico | Dados fictícios, falha silenciosa ou crash |
+| **Persistência local** | 10% | Dados do usuário sobrevivem ao fechamento do app (Room, SQLDelight ou DataStore), e o app abre sem rede mostrando o último conteúdo | Persistência só de preferências | Ausente |
+| ⚙️ **Testes de lógica** | 10% | ≥ 5 testes de ViewModel com Turbine e dublês, verdes no CI junto com os testes de interface da Sprint 1 | ≥ 3 testes, cobertura rasa | < 3 testes ou falhando |
+| **App e documentação** | 10% | Fluxos do MVP sem crash na plataforma-alvo; `docs/arquitetura.md` com diagrama de camadas e a justificativa do gerenciamento de estado; README permite rodar em menos de 15 min; APK de debug anexado a uma release | App roda com falhas menores, documentação com lacunas | Instável, ou não é possível rodar |
 
 ---
 
@@ -101,7 +75,7 @@ Valores e condições em [AVALIACAO.md](AVALIACAO.md#5-bônus). O que se exige c
 
 | Bônus | Evidência |
 |-------|-----------|
-| Integração entre disciplinas | O aplicativo consome a API do grupo em DIM0547, com a URL registrada na configuração e a chamada demonstrada em vídeo ou apresentação; ou o repositório é objeto de estudo em DIM0510, com referência mútua nos READMEs |
+| Integração entre disciplinas | O aplicativo consome a API do grupo em DIM0547, com a URL registrada na configuração e a chamada demonstrada no vídeo ou na *daily meeting*; ou o repositório é objeto de estudo em DIM0510, com referência mútua nos READMEs |
 | Entrega multiplataforma | O pipeline gera e publica artefato funcional para duas ou mais plataformas, com adaptação de interface e de interação para a segunda |
 
 ---
@@ -115,7 +89,7 @@ Valores e condições em [AVALIACAO.md](AVALIACAO.md#5-bônus). O que se exige c
 | **Justificativa técnica** | 25% | Explica **por que** cada decisão foi tomada — estado, arquitetura, plataforma, offline —, com alternativa descartada | Descreve o que foi feito, sem justificar | Sem justificativa |
 | **Participação da equipe** | 15% | Todos falam sobre o que fizeram | Maioria participa | Um só fala pelo grupo |
 
-Nas apresentações, o docente pode solicitar a execução de um fluxo específico, a ativação do modo avião ou a explicação de um trecho de código. A incapacidade de explicar a própria contribuição afeta o Fator de Participação individual.
+A rubrica vale para o vídeo e para a *daily meeting*, que não exige slides nem preparação: conta o que o grupo mostra e explica. Nas *daily meetings*, o docente pode solicitar a execução de um fluxo específico, a ativação do modo avião ou a explicação de um trecho de código. A incapacidade de explicar a própria contribuição afeta o Fator de Participação individual.
 
 ---
 
@@ -142,35 +116,14 @@ Pode ser copiado para o `README.md` do repositório.
 - [ ] ≥5 testes de interface verdes no CI
 - [ ] Vídeo 5 min
 
-### Sprint 2
+### Sprint 2 (final)
 - [ ] Estado com ViewModel multiplataforma e StateFlow
 - [ ] Camadas data/domain/presentation; domínio sem import de Compose
-- [ ] Repositórios por interface no domínio
 - [ ] Estados carregando/erro/vazio/sucesso modelados por interface selada
-- [ ] Injeção de dependências com Koin em commonMain
-- [ ] ≥8 testes de ViewModel com Turbine
-- [ ] docs/arquitetura.md com diagrama e justificativa
+- [ ] Dados reais do backend escolhido, via Ktor Client, com DTO separado
+- [ ] Falha de conexão e resposta inválida com estado de tela próprio
+- [ ] Dados do usuário sobrevivem ao fechamento do app
+- [ ] ≥5 testes de ViewModel com Turbine, verdes no CI
+- [ ] docs/arquitetura.md, README e APK de debug numa release
 - [ ] Vídeo 5 min
-
-### Sprint 3
-- [ ] Dados reais do backend escolhido, via Ktor Client
-- [ ] Serialização com kotlinx.serialization; DTO separado da entidade
-- [ ] Timeout, falha de rede e resposta inválida tratados separadamente
-- [ ] Persistência local com Room ou SQLDelight, esquema versionado
-- [ ] App utilizável offline + fila de escrita + sincronização
-- [ ] docs/offline.md com política de conflito
-- [ ] Auth com token em armazenamento seguro
-- [ ] Vídeo 5 min
-
-### Entrega Final
-- [ ] App estável na plataforma-alvo
-- [ ] ≥2 recursos do dispositivo via expect/actual, com permissões tratadas
-- [ ] Dados sensíveis em armazenamento seguro; docs/seguranca.md
-- [ ] docs/desempenho.md com medição antes/depois
-- [ ] Pipeline publica artefato automaticamente de main
-- [ ] Suíte completa verde
-- [ ] ≥2 ambientes de build configurados
-- [ ] Documentação pública + README (<15 min) + licença
-- [ ] Vídeo 10 min
-- [ ] Apresentação ao vivo
 ```

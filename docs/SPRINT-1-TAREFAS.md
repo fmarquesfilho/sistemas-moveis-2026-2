@@ -7,7 +7,7 @@ O **como** está em [SPRINT-1.md](SPRINT-1.md) e nas leituras da sprint
 ([`leituras/moveis-s1-pte1.md`](../leituras/moveis-s1-pte1.md) e
 [`leituras/moveis-s1-pte2.md`](../leituras/moveis-s1-pte2.md)) — as tarefas apontam para a
 seção certa em vez de repeti-la. Os pesos vêm de [RUBRICAS.md](RUBRICAS.md#sprint-1). Prazo
-em [CRONOGRAMA.md](CRONOGRAMA.md#visão-geral): **02/10, 23:59**.
+em [CRONOGRAMA.md](CRONOGRAMA.md#visão-geral): **16/10, 23:59** (adiada; era 02/10).
 
 | # | Tarefa | Critério da rubrica |
 |---|---|---|
@@ -20,7 +20,7 @@ em [CRONOGRAMA.md](CRONOGRAMA.md#visão-geral): **02/10, 23:59**.
 | T7 | Adaptar o layout a duas larguras de janela | Tema, responsividade e adaptatividade (20%) |
 | T8 | Revisar a acessibilidade e testar com o leitor de tela | Acessibilidade (15%) |
 | T9 | Escrever os testes de interface e colocá-los no CI | Testes de interface (15%) |
-| T10 | Gravar o vídeo de 5 minutos e preparar a apresentação | Comunicação |
+| T10 | Gravar o vídeo de 5 minutos | Comunicação |
 
 > Exemplo de referência: `exemplos/tarefas-compose/` deste repositório, passos 6 a 9 do
 > `PASSOS.md`. Projeto de referência: `github.com/fmarquesfilho/musi`, pasta `app/`.
@@ -170,7 +170,7 @@ em [CRONOGRAMA.md](CRONOGRAMA.md#visão-geral): **02/10, 23:59**.
 
 ---
 
-## T10 — Gravar o vídeo de 5 minutos e preparar a apresentação
+## T10 — Gravar o vídeo de 5 minutos
 
 **Objetivo.** Mostrar o incremento funcionando e explicar as escolhas.
 
@@ -178,7 +178,7 @@ em [CRONOGRAMA.md](CRONOGRAMA.md#visão-geral): **02/10, 23:59**.
 - [ ] Seguir o roteiro do guia (telas · navegação · deep link e larguras · acessibilidade · testes e CI)
 - [ ] Garantir que **todos os integrantes falam**
 - [ ] Publicar o vídeo e linkar no `README.md`
-- [ ] Ensaiar a apresentação da coorte (28/09 online ou 30/09 em sala)
+- [ ] Mostrar o andamento na reunião online do grupo (28 ou 30/09)
 
 **Pronto quando.** O vídeo tem ~5 min, cobre o roteiro, todos falam, e está acessível pelo link.
 

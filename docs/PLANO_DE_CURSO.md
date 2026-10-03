@@ -48,7 +48,7 @@ Este é um curso novo, oferecido pela primeira vez neste formato. As tecnologias
 
 ### Estrutura das sprints
 
-Uma Sprint 0 de quatro semanas, três sprints de projeto e um bloco final, com apresentações ao fim de cada sprint. Datas, conteúdo de cada aula e prazos: [CRONOGRAMA.md](CRONOGRAMA.md).
+Uma Sprint 0 de quatro semanas e duas sprints de projeto (a Sprint 2 é a entrega final), com uma *daily meeting* de cada grupo com o professor ao fim de cada sprint. Datas, conteúdo de cada aula e prazos: [CRONOGRAMA.md](CRONOGRAMA.md).
 
 
 ### Projeto integrador
@@ -73,17 +73,9 @@ Panorama do desenvolvimento móvel: plataformas nativas e multiplataforma. Kotli
 
 Listas e rolagem com `LazyColumn` e `LazyRow`, chaves e desempenho. Formulários e validação. Material 3 em profundidade: modo claro e escuro, e esquema de cor derivado. Responsividade e adaptatividade com classes de tamanho de janela. Acessibilidade: semântica, contraste e alvos de toque. Navegação com Navigation Compose: rotas tipadas, argumentos, pilha de retorno e deep links. Testes em Compose Multiplatform: unidade e interface.
 
-### Sprint 2 — Estado e arquitetura
+### Sprint 2 — Estado, dados e rede
 
-Programação assíncrona: `suspend`, coroutines e concorrência estruturada. `Flow` e `StateFlow`. ViewModel multiplataforma e coleta consciente do ciclo de vida. Modelagem do estado de tela com classes seladas. Arquitetura em camadas de dados, domínio e apresentação. Injeção de dependências e inversão de controle com Koin. Testes de ViewModel com Turbine.
-
-### Sprint 3 — Dados, rede e offline-first
-
-Consumo de APIs com Ktor Client: requisições, interceptação, timeouts e retentativa com backoff. Serialização com kotlinx.serialization e mapeamento entre DTOs e entidades de domínio. Tratamento de erro e os estados de carregamento, vazio, erro e sucesso. Persistência local com Room ou SQLDelight, e chave-valor com DataStore. Estratégia offline-first: cache, fila de operações pendentes, sincronização e resolução de conflitos. Autenticação no cliente e armazenamento de token.
-
-### Bloco final — Recursos do dispositivo, segurança e distribuição
-
-Recursos do dispositivo por `expect`/`actual`: câmera, galeria, geolocalização, sensores, compartilhamento e notificações. Modelo de permissões de Android e iOS, solicitação em contexto e negação permanente. Armazenamento seguro com Keychain e Keystore. OWASP Mobile Top 10, ofuscação, certificate pinning e proteção de chaves de API. Interoperabilidade entre Kotlin e Swift. Configuração por ambiente. Build e assinatura: APK, AAB e provisionamento iOS. Distribuição por teste interno da Play Console e TestFlight. Pipeline de CI/CD com GitHub Actions. Observabilidade em produção: crash reporting, analytics e feature flags. Desempenho: recomposições desnecessárias, estabilidade de parâmetros e perda de quadros. Testes de integração.
+Programação assíncrona: `suspend`, coroutines e concorrência estruturada. `Flow` e `StateFlow`. ViewModel multiplataforma. Modelagem do estado de tela com classes seladas. Arquitetura em camadas de dados, domínio e apresentação. Injeção de dependências com Koin. Testes de ViewModel com Turbine. Consumo de APIs com Ktor Client, serialização com kotlinx.serialization e mapeamento entre DTOs e entidades de domínio. Tratamento de erro e os estados de carregamento, vazio, erro e sucesso. Persistência local com Room, SQLDelight ou DataStore.
 
 ---
 

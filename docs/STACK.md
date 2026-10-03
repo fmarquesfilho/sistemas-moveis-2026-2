@@ -30,7 +30,7 @@ Quem tiver como alvo apenas o Android continua escrevendo exatamente o mesmo có
 
 O alvo prioritário é **Android ou iOS**, escolhido e justificado na Sprint 0 a partir dos aparelhos da equipe e do público do produto. Quem não tiver aparelho usa o emulador do Android, gratuito.
 
-Web e desktop não servem como alvo prioritário: o bloco final exige recursos do dispositivo, armazenamento seguro e publicação em canal de distribuição, que não existem em navegador. Ambos valem como **alvo secundário**, contando para o bônus de entrega multiplataforma, cujas regras estão em [AVALIACAO.md](AVALIACAO.md#5-bônus).
+Web e desktop não servem como alvo prioritário: o produto é um aplicativo móvel, avaliado no emulador ou no aparelho. Ambos valem como **alvo secundário**, contando para o bônus de entrega multiplataforma, cujas regras estão em [AVALIACAO.md](AVALIACAO.md#5-bônus).
 
 ---
 
@@ -129,7 +129,7 @@ Da Sprint 1 em diante, acrescenta-se a suíte de testes:
 - ./gradlew allTests
 ```
 
-No bloco final, entram os testes de integração e a geração e publicação do artefato de distribuição.
+Na Sprint 2, entram os testes de ViewModel e o APK de debug, anexado a uma release.
 
 ---
 
@@ -143,7 +143,7 @@ No bloco final, entram os testes de integração e a geração e publicação do
 | iOS | TestFlight | Requer Apple Developer Program, US$ 99 por ano | Mac |
 | Desktop | Artefato publicado como release do GitHub | Gratuito | Não |
 
-A entrega final exige que o pipeline publique automaticamente em ao menos um canal. Publicar o APK assinado como release do GitHub atende ao requisito sem custo.
+A Sprint 2 pede o APK de debug anexado a uma release do GitHub, o que não tem custo. A publicação automática pelo pipeline é opcional.
 
 ---
 
@@ -158,11 +158,11 @@ Nenhuma etapa do curso exige máquina própria capaz de rodar emulador. Estas s�
 | **Alvo desktop, na própria máquina** | não | O projeto inteiro, com Compose Hot Reload | Não exercita comportamento de dispositivo |
 | **GitHub Codespaces** | sim | IDE no navegador, build e testes por Gradle | 180 h por mês com o GitHub Student Pack |
 
-**Recomendação por sprint.** Sprint 0 e exercícios de linguagem: Kotlin Playground. Sprints 1 e 2: alvo desktop com Compose Hot Reload, que é o ciclo mais rápido e funciona em qualquer sistema operacional. Sprint 3 em diante: emulador Android ou aparelho, porque rede, persistência e recursos do dispositivo precisam ser exercitados no ambiente real.
+**Recomendação por sprint.** Sprint 0 e exercícios de linguagem: Kotlin Playground. Sprints 1 e 2: alvo desktop com Compose Hot Reload, que é o ciclo mais rápido e funciona em qualquer sistema operacional. Na Sprint 2, a rede e a persistência devem ser exercitadas também no emulador Android ou num aparelho.
 
 Grupos que optarem por Codespaces devem versionar um `.devcontainer/devcontainer.json` com o JDK e o Android SDK — isso torna o ambiente reproduzível e conta como evidência de qualidade na rúbrica.
 
-Recursos do dispositivo — câmera, GPS, sensores, notificações — **não funcionam em navegador**. No bloco final é indispensável um aparelho Android ou um emulador. Quem não tiver, combine com o docente até o fim da Sprint 3.
+Quem não tiver como rodar o emulador Android nem um aparelho deve avisar ao docente até 26/10.
 
 ---
 

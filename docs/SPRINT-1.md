@@ -1,6 +1,6 @@
 # Guia da Sprint 1 — DIM0524
 
-Prazo em [CRONOGRAMA.md](CRONOGRAMA.md#visão-geral): entrega em **02/10 (sexta), 23:59**, com apresentações em 28/09 (Coorte B, online) e 30/09 (Coorte A, em sala). O que entregar e como é avaliado: [RUBRICAS.md](RUBRICAS.md#sprint-1). Os enunciados, prontos para virar cartões no quadro, estão em [SPRINT-1-TAREFAS.md](SPRINT-1-TAREFAS.md).
+Prazo em [CRONOGRAMA.md](CRONOGRAMA.md#visão-geral): entrega em **16/10 (sexta), 23:59** (adiada; era 02/10). As *daily meetings* da sprint foram as reuniões online de 28 e 30/09. O que entregar e como é avaliado: [RUBRICAS.md](RUBRICAS.md#sprint-1). Os enunciados, prontos para virar cartões no quadro, estão em [SPRINT-1-TAREFAS.md](SPRINT-1-TAREFAS.md).
 
 A Sprint 1 é a sprint da **interface e da navegação**: as telas do MVP ficam de pé, ligadas por um grafo de navegação, adaptadas a mais de uma largura de janela, acessíveis e cobertas por testes de interface.
 
@@ -37,7 +37,7 @@ Partam do backlog da Sprint 0: as histórias P1 dizem quais telas existem. Uma t
 - tem `@Preview` com dados fixos, inclusive o caso vazio;
 - trata o formulário com validação: botão desabilitado ou mensagem enquanto a entrada for inválida.
 
-Nesta sprint, os dados podem ficar em memória, num estado elevado acima da navegação. Persistência e rede são da Sprint 3; o `ViewModel` chega na Sprint 2.
+Nesta sprint, os dados podem ficar em memória, num estado elevado acima da navegação. Persistência, rede e o `ViewModel` são da Sprint 2.
 
 ---
 
@@ -109,6 +109,6 @@ Todos os integrantes devem falar. Link no `README.md`.
 
 - **Entrega técnica (50%)**: a rubrica da Sprint 1, sobre o estado da branch principal no prazo (hash do último commit).
 - **Atividade no repositório (30%)**: CI verde, commits distribuídos pelas semanas, ao menos um PR integrado por integrante, PRs revisados por outro integrante e cartões do quadro ligados a PRs. O Fator de Participação individual segue [AVALIACAO.md](AVALIACAO.md#32-fator-de-participação).
-- **Comunicação (20%)**: média entre o vídeo e a apresentação da coorte.
+- **Comunicação (20%)**: média entre o vídeo e a *daily meeting* (a reunião online de 28 ou 30/09).
 
 O registro de uso de IA continua em `docs/uso-de-ia.md`.
