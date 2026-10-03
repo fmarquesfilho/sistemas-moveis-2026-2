@@ -13,7 +13,7 @@
     "ghcr.io/devcontainers/features/desktop-lite:1": {},
     // Executor das tasks do mise.toml (`mise tasks`). O JDK continua vindo da feature
     // acima; o `mise install` do postCreate alinha as versões.
-    "ghcr.io/devcontainers-contrib/features/mise:1": {}
+    "ghcr.io/devcontainers-extra/features/mise:1": {}
   },
 
   "containerEnv": {
