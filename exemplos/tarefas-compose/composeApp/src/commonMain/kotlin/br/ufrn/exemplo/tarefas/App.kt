@@ -15,6 +15,20 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navDeepLink
+import androidx.navigation.toRoute
+import kotlinx.serialization.Serializable
+
+// Rotas tipadas: cada destino é um tipo, e os argumentos são propriedades.
+@Serializable
+object Lista
+
+@Serializable
+data class Detalhe(val id: Int)
 
 @Composable
 fun App() {
@@ -30,23 +44,42 @@ fun App() {
     }
 }
 
-// O estado da tela, elevado: TelaLista só recebe dados e devolve eventos.
+// Estado elevado acima da navegação: as duas telas enxergam a mesma lista.
 @Composable
-fun Conteudo(modifier: Modifier = Modifier) {
+fun Conteudo(
+    modifier: Modifier = Modifier,
+    navController: NavHostController = rememberNavController(),
+) {
     var tarefas by remember { mutableStateOf(tarefasIniciais) }
     var texto by rememberSaveable { mutableStateOf("") }
     var proximoId by remember { mutableStateOf(3) }
 
-    TelaLista(
-        tarefas, texto, { texto = it },
-        onAdicionar = {
-            tarefas = tarefas.comNova(proximoId, texto)
-            proximoId++
-            texto = ""
-        },
-        onAlternar = { id -> tarefas = tarefas.alternando(id) },
-        modifier = modifier,
-    )
+    val adicionar = {
+        tarefas = tarefas.comNova(proximoId, texto)
+        proximoId++
+        texto = ""
+    }
+    val alternar = { id: Int -> tarefas = tarefas.alternando(id) }
+
+    NavHost(navController, startDestination = Lista, modifier = modifier) {
+        composable<Lista> {
+            TelaLista(
+                tarefas, texto, { texto = it }, adicionar, alternar,
+                onAbrir = { id -> navController.navigate(Detalhe(id)) },
+            )
+        }
+        composable<Detalhe>(
+            // tarefas://tarefa/2 abre direto o detalhe da tarefa 2 (Android).
+            deepLinks = listOf(navDeepLink<Detalhe>(basePath = "tarefas://tarefa")),
+        ) { entrada ->
+            val rota = entrada.toRoute<Detalhe>()
+            TelaDetalhe(
+                tarefa = tarefas.find { it.id == rota.id },
+                onAlternar = { alternar(rota.id) },
+                onVoltar = { navController.popBackStack() },
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true)
