@@ -243,7 +243,7 @@ No emulador: `adb shell cmd uimode night yes`. O `MainActivity` chama `enableEdg
 
 # Passo 6 — o código se divide
 
-Com duas telas chegando, `App.kt` sozinho não dá mais conta:
+Com duas telas, o código passa a ser dividido em três arquivos:
 
 | Arquivo | O que tem |
 |---|---|
@@ -509,7 +509,7 @@ O workflow da Sprint 0 (build, `ktlint`, `detekt`) ganha os testes:
 4. **Navegação**: abre, age, volta, confere
 5. **Acessibilidade**: `assertIsToggleable`, `onNodeWithContentDescription`
 
-> Tela testável = tela que recebe estado e devolve eventos. É o estado elevado de 14/09, agora com prova.
+> Tela testável = tela que recebe estado e devolve eventos.
 
 ---
 
@@ -605,8 +605,6 @@ Guia e tarefas: `docs/SPRINT-1.md` e `docs/SPRINT-1-TAREFAS.md`. Exemplo: `exemp
 | 16 e 18/11 | 🔵 online: acompanhamento | 🟢 em sala: oficina de projeto |
 | 23 e 25/11 | 🔵 online: *daily meetings* | 🔵 online: *daily meetings* |
 | 30/11 e 02/12 | a definir · 🚀 **entrega final** | 🟢 em sala: **prova de reposição** |
-
-> O conteúdo da Sprint 2 cabe em duas aulas porque vai ser liberado **antes, em vídeo** (aula invertida): assistam antes de 19/10.
 
 ---
 
