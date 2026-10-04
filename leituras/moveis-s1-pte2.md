@@ -1,13 +1,15 @@
-# Leitura — Responsividade, acessibilidade, navegação e testes (21/09)
+# Leitura — Responsividade, acessibilidade, navegação e testes (Sprint 1, parte 2)
 
-Guia de apoio para a segunda aula da Sprint 1. A tela de tarefas de 14/09 ganha uma
+Guia de apoio para a segunda parte da Sprint 1 (vídeo e aulas de 05 e 07/10). A tela de
+tarefas de 14/09 ganha uma
 segunda tela (detalhe), navegação entre as duas, um layout que muda com a largura da
 janela, ajustes de acessibilidade e testes. São exatamente os critérios da rubrica da
 Sprint 1: navegação com rotas tipadas e deep link, layout adaptado a pelo menos duas
 larguras, acessibilidade e pelo menos cinco testes de interface.
 
 Exemplo de referência (Android + Desktop): `exemplos/tarefas-compose/` do repositório
-`sistemas-moveis-2026-2`, passos 6 a 9 do `PASSOS.md`. Versões: Kotlin 2.4.10, Compose
+`sistemas-moveis-2026-2`, passos 6 a 10 do `PASSOS.md` (os passos 4 e 5, formulário e tema,
+estão nos capítulos 8 e 9 da leitura de 14/09). Versões: Kotlin 2.4.10, Compose
 Multiplatform 1.12.0, Navigation Compose multiplataforma 2.9.2, Material 3 Adaptive 1.2.0,
 Android Gradle Plugin 9.1.0, compileSdk e targetSdk 37, minSdk 24.
 
@@ -18,9 +20,21 @@ Os comportamentos descritos foram conferidos em execução:
 - o APK no emulador Android (AVD Pixel 8, Android 17, API 37): deep link por `adb`,
   botão Voltar do sistema e rotação da tela.
 
-Onde rodar: o Android Studio do laboratório (Ladybug, 2024) não abre este projeto, que usa
-AGP 9.1 (exige Android Studio Panda 2, 2025.3.2, ou mais novo). Use o Codespaces do
-repositório: ver a seção *Como abrir e rodar* de `exemplos/tarefas-compose/PASSOS.md`.
+Onde rodar. O projeto usa AGP 9.1, que exige o Android Studio Panda 2 (2025.3.2) ou mais
+novo. Há três caminhos, do mais leve ao mais completo:
+
+| Caminho | Precisa de | Serve para |
+|---|---|---|
+| Alvo desktop, com Hot Reload: `./gradlew :composeApp:hotRunDesktop --auto` | só o JDK; sem Android Studio nem emulador | construir as telas e rodar os testes |
+| Codespaces do repositório (Code → Codespaces) | um navegador | Android Studio com `@Preview`, Hot Reload e geração do APK, sem instalar nada |
+| Android Studio na própria máquina, com emulador | Panda 2 ou mais novo e memória para o emulador | rodar no Android, deep link, TalkBack |
+
+No laboratório, cujo Android Studio é anterior ao Panda 2, o caminho é o Codespaces. Ele
+serve também para quem tem um computador em que o Android Studio ou o emulador ficam pesados:
+o trabalho roda na nuvem, e a máquina só exibe o navegador. Para ver o app no Android sem
+emulador, gere o APK no Codespace e instale num celular. O passo a passo está na seção *Como
+abrir e rodar* de `exemplos/tarefas-compose/PASSOS.md`, e a seção 7.3 responde às dúvidas mais
+comuns.
 
 Capítulos:
 
@@ -98,8 +112,7 @@ import androidx.compose.ui.tooling.preview.Preview          // esta
 import org.jetbrains.compose.ui.tooling.preview.Preview     // descontinuada, não compila
 ```
 
-O slide 03 (aula de 14/09) trazia a antiga e foi corrigido. A leitura de 14/09 (seção 2.6)
-explica a diferença entre as duas.
+A leitura de 14/09 (seção 2.6) explica a diferença entre as duas.
 
 ---
 
@@ -146,7 +159,10 @@ fun App() {
     val largura = currentWindowAdaptiveInfo().windowSizeClass
     val largo = largura.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
 
-    MaterialTheme {
+    // O tema segue o sistema. `MaterialTheme { }` sem `colorScheme` é sempre claro.
+    val cores = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+
+    MaterialTheme(colorScheme = cores) {
         Surface(Modifier.fillMaxSize()) {
             Conteudo(largo = largo, modifier = Modifier.safeDrawingPadding())
         }
@@ -203,16 +219,24 @@ ideia com menos peças.
 
 📖 Ref. Compose Multiplatform — Adaptive layouts: <https://kotlinlang.org/docs/multiplatform/compose-adaptive-layouts.html>
 
-### 2.5 `Surface` e áreas seguras
+### 2.5 Tema, `Surface` e áreas seguras
 
-Dois ajustes na raiz, que resolvem problemas vistos no exemplo de 14/09:
+Três peças na raiz do `App()`, que entram no Passo 5 do exemplo:
 
-- `Surface(Modifier.fillMaxSize())` pinta o fundo com a cor do tema e dá ao texto a cor
-  de conteúdo correspondente. Sem ela, no modo escuro o fundo e o texto fora de
-  componentes não mudavam (achado de 14/09).
+- `MaterialTheme(colorScheme = ...)` com `isSystemInDarkTheme()`: o tema acompanha o
+  sistema. `MaterialTheme { }` sem `colorScheme` é sempre claro.
+- `Surface(Modifier.fillMaxSize())` pinta o fundo com a cor do tema e dá ao texto a cor de
+  conteúdo correspondente. Sem ela, no modo escuro os componentes escurecem, e o fundo e o
+  texto fora de componentes continuam claros.
 - `Modifier.safeDrawingPadding()` afasta o conteúdo da barra de status, da barra de
   navegação e do recorte da câmera. Com targetSdk 35 ou mais, o Android desenha o app de
-  ponta a ponta (edge-to-edge), e o título de 14/09 aparecia embaixo da barra de status.
+  ponta a ponta (edge-to-edge), e sem esse afastamento o título fica embaixo da barra de
+  status.
+
+No Android, o `MainActivity` chama `enableEdgeToEdge()` antes do `setContent`: ele escolhe a
+cor dos ícones da barra de status pelo tema, escuros no modo claro e claros no modo escuro.
+
+Conferido no emulador, nos dois modos, com `adb shell cmd uimode night yes` e `night no`.
 
 📖 Ref. Android — Window insets in Compose: <https://developer.android.com/develop/ui/compose/system/insets>
 
@@ -258,7 +282,7 @@ dessa versão, impressa num teste com `onRoot().printToString()` (trecho):
 Dois nós separados: a caixa sem texto e o texto sem ação. O leitor de tela anuncia uma
 caixa de seleção sem dizer de quê, e tocar no texto não faz nada.
 
-A versão de 21/09:
+A versão do Passo 6:
 
 ```kotlin
 Row(
@@ -709,7 +733,7 @@ O id da rota é `String`, e não `Int` como no exemplo, porque no domínio do MU
 identificada por texto. Rota tipada não obriga a usar inteiro: o argumento é uma
 propriedade, com o tipo do domínio.
 
-Duas armadilhas que apareceram ao ligar o alvo Android, e que valem para o projeto de vocês:
+Dois cuidados que apareceram ao ligar o alvo Android, e que valem para o projeto de vocês:
 
 > Erro comum: `./gradlew build` quebra os testes de interface.
 > O `build` de um módulo com alvo Android roda também a variante de teste **unitário** do
@@ -762,7 +786,7 @@ workflow:
 ```
 
 Isso basta para os testes, que rodam no alvo desktop. Quem quiser **também** gerar o APK no
-CI precisa do SDK do Android no runner, e aí aparece outra armadilha: o identificador da
+CI precisa do SDK do Android no runner, e aí vale um cuidado: o identificador da
 plataforma tem a versão completa. No MUSI, `platforms;android-37` falhou com
 `Failed to find package`, e o certo é `platforms;android-37.0` — o mesmo que está no
 `package.xml` da plataforma instalada.
@@ -806,13 +830,25 @@ plataforma tem a versão completa. No MUSI, `platforms;android-37` falhou com
 
 ### 7.3 Dúvidas frequentes
 
-- O Android Studio do laboratório não abre o projeto. E agora? O Ladybug (2024) aceita AGP
+- O Android Studio do laboratório não abre o projeto. Como faço? O Ladybug (2024) aceita AGP
   até 8.7, e o exemplo usa 9.1. Use o Codespaces com o Android Studio na área de trabalho
   do navegador, ou gere o APK no Codespaces e instale no emulador do laboratório (ver
   *Como abrir e rodar* em `exemplos/tarefas-compose/PASSOS.md`).
+- O Android Studio ou o emulador ficam pesados no meu computador. O que usar? Para construir
+  as telas e rodar os testes, o alvo desktop com Hot Reload basta, sem Android Studio nem
+  emulador. Para o `@Preview` e o APK, use o Codespaces. Para ver o app no Android, instale o
+  APK num celular: baixe o arquivo do Codespace e abra no aparelho, ou use `adb install`.
+- Como é a primeira vez no Codespaces? A criação leva alguns minutos. A área de trabalho abre
+  na aba Portas, porta 6080 (senha `vscode`). `mise run studio` baixa e abre o Android Studio;
+  ele pergunta sobre o envio de estatísticas e se você confia no projeto (Trust Project), e
+  depois sincroniza o Gradle. O primeiro `@Preview` pede Build & Refresh, que leva alguns
+  minutos. `mise run app:celular` abre o app numa janela de celular, com Hot Reload. O uso
+  gratuito mensal é limitado: pare o Codespace ao terminar.
+- Posso usar o Codespaces no projeto do grupo? Sim. Copie a pasta `.devcontainer/` para o
+  repositório do grupo; ela traz o JDK, o SDK do Android e a área de trabalho no navegador.
 - O deep link funciona no desktop? Não da mesma forma: não há `intent-filter` nem
   `adb` no desktop. O `navDeepLink` do grafo existe em `commonMain`, mas abrir um endereço
-  a partir de fora do app é coisa do sistema de cada plataforma.
+  a partir de fora do app depende do sistema de cada plataforma.
 - Navigation 3 não é o mais novo? Existe uma biblioteca nova (Navigation 3), com a pilha
   como uma lista que o próprio app controla. O curso usa o Navigation Compose (2.x), que é
   o que a rubrica pede e tem rotas tipadas e deep links.

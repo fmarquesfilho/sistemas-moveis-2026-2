@@ -83,48 +83,44 @@ style: |
   .tag { display:inline-block; background:#f3f4f6; border:1px solid #d1d5db; color:#374151; font-size:0.85em; padding:0.1em 0.5em; border-radius:4px; font-family:'Consolas',monospace; }
 
 
+
 ---
 
 # Desenvolvimento de Sistemas para Dispositivos Móveis
 
-## Responsividade, acessibilidade, navegação e testes
+## Formulário, tema, acessibilidade, navegação, layout adaptativo e testes
 
-DIM0524 — Turma 01 · Sprint 1 · 21/09
+DIM0524 — Turma 01 · Sprint 1 · parte 2 (vídeo)
 
 Prof. Fernando · UFRN · 2026.2
 
 ---
 
-# Roteiro da semana
+# Errata do material já publicado
 
-**Segunda, 21/09**
-
-| Bloco | O que vemos |
+| Onde | O que corrigir |
 |---|---|
-| Ambiente | Codespaces: `@Preview` e Hot Reload no navegador |
-| Responsividade | Classes de tamanho de janela, lista e detalhe |
-| Acessibilidade | Árvore de semântica, alvos de toque, leitor de tela |
-| Navegação | Rotas tipadas, argumentos, pilha de retorno, deep link |
-| Testes | `kotlin.test` e teste de interface · oficina |
-
-**Quarta, 23/09 — Acompanhamento online** (projeto)
-**28 e 30/09 — Apresentações** · 🚀 **Entrega da Sprint 1: 02/10, 23:59**
+| Slides 03, "Android Studio" e "Como rodar hoje"; leitura pte1, cap. 2 | O Android Studio do laboratório (Ladybug, 2024) **não abre** o exemplo: o AGP 9.1 exige o Panda 2 ou mais novo. Até a atualização, use o **Codespaces**: Android Studio com `@Preview` e app com Hot Reload, no navegador (próximo slide) |
+| Slides 03, "`@Preview` — ver sem rodar" | O import certo é `androidx.compose.ui.tooling.preview.Preview`; o antigo, `org.jetbrains.compose...`, não compila com o exemplo |
+| Slides 03, "Passo 5" | `MaterialTheme(colorScheme = ...)` troca as cores dos componentes, mas **não pinta o fundo**: falta uma `Surface` na raiz. E o `App()` do exemplo ficava sempre claro: corrigido (Passo 5, a seguir) |
+| Cronograma | Entrega da Sprint 1 adiada para **16/10 (sexta), 23:59**. A aula de 23/09 foi cancelada; em 28 e 30/09, no lugar das apresentações, houve uma *daily meeting* online com cada grupo. O semestre passa a ter só mais uma sprint, a de novembro |
 
 ---
 
 # Ambiente: o laboratório e o Codespaces
 
-O Android Studio do laboratório (Ladybug, 2024) **não abre** o exemplo: o AGP 9.1 exige o Panda 2 (2025.3.2) ou mais novo.
+O exemplo usa AGP 9.1, que exige o Android Studio Panda 2 (2025.3.2) ou mais novo. No laboratório, e em computadores em que o Android Studio ou o emulador ficam pesados, use o **Codespaces** do repositório: o trabalho roda na nuvem, e a máquina só exibe o navegador.
 
 | Precisa de | Onde |
 |---|---|
-| `@Preview` | Android Studio **dentro do Codespace**: `bash .devcontainer/android-studio.sh` |
-| App com Hot Reload | Janela de celular no Codespace: `hotDevDesktop` |
-| Android de verdade | APK gerado no Codespace, instalado no **emulador do laboratório** |
+| Construir telas e rodar os testes | alvo desktop com Hot Reload, só com o JDK: `mise run app` |
+| `@Preview` | Android Studio **dentro do Codespace**: `mise run studio` |
+| App em janela de celular | no Codespace: `mise run app:celular` |
+| Ver no Android | APK gerado no Codespace (`mise run apk`), instalado no emulador do laboratório ou num **celular** |
 
-Tudo aparece na **porta 6080** (área de trabalho no navegador, senha `vscode`).
+No Codespace, tudo aparece na **porta 6080** (área de trabalho no navegador, senha `vscode`). Pare o Codespace ao terminar: o uso gratuito mensal é limitado.
 
-> O `@Preview` é desenhado pela IDE; o VS Code não tem esse renderizador.
+> Conferido num Codespace novo em 29/09. Na primeira vez, o Android Studio pergunta sobre estatísticas e se você confia no projeto (**Trust Project**); o primeiro `@Preview` pede **Build & Refresh** (alguns minutos). O VS Code não tem o renderizador do `@Preview`.
 
 ---
 
@@ -149,109 +145,113 @@ adb uninstall br.ufrn.exemplo.tarefas
 
 # Onde paramos
 
-Em 14/09, uma tela de tarefas, tudo em `App.kt`:
+No vídeo da parte 1, **passos 1 a 3**, tudo em `App.kt`:
 
 ```
-  LazyColumn com key · formulário com validação
-  estado elevado · val + copy + reatribuição
-  Material 3, claro e escuro
+  @Composable com estado: remember + mutableStateOf
+  CartaoTarefa: recebe a tarefa, devolve o evento (estado elevado)
+  LazyColumn com key · val + copy + reatribuição
 ```
 
-Hoje: **duas telas**, e o código se divide.
+| Hoje | O que entra |
+|---|---|
+| 4 e 5 | Formulário com validação · tema claro e escuro |
+| 6 | Acessibilidade — e o código se divide em três arquivos |
+| 7 | Navegação: rotas tipadas, argumento, deep link |
+| 8 | Janela compacta × larga |
+| 9 e 10 | Testes de regra e de interface · o ambiente em tasks do `mise` |
+
+---
+
+<!-- _class: lead -->
+
+# Passo 4
+
+## Formulário com validação
+
+---
+
+# Passo 4 — formulário
+
+```kotlin
+var texto by remember { mutableStateOf("") }
+var proximoId by remember { mutableStateOf(3) }
+
+val valido = texto.isNotBlank()          // derivado do estado, não guardado
+
+Row(verticalAlignment = Alignment.CenterVertically) {
+    OutlinedTextField(
+        value = texto,
+        onValueChange = { texto = it },
+        label = { Text("Nova tarefa") },
+        isError = texto.isNotEmpty() && !valido,
+        modifier = Modifier.weight(1f),
+    )
+    Button(onClick = { tarefas = tarefas + Tarefa(proximoId++, texto.trim()); texto = "" },
+           enabled = valido) { Text("Adicionar") }
+}
+```
+
+- O botão nasce desabilitado; espaços não habilitam; um título habilita
+- `valido` é recalculado a cada recomposição: não existe um `botaoAtivo` para esquecer de atualizar
+
+📖 **Ref.** [Compose — campos de texto](https://developer.android.com/develop/ui/compose/text/user-input)
+
+---
+
+<!-- _class: lead -->
+
+# Passo 5
+
+## Material 3: tema claro e escuro
+
+---
+
+# Passo 5 — o tema segue o sistema
+
+```kotlin
+@Composable
+fun App() {
+    // `MaterialTheme { }` sem `colorScheme` é sempre claro.
+    val cores = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+
+    MaterialTheme(colorScheme = cores) {
+        Surface(Modifier.fillMaxSize()) {                 // pinta o fundo e a cor do texto
+            Column(Modifier.safeDrawingPadding().padding(16.dp)) { /* ... */ }
+        }
+    }
+}
+```
+
+| Sem | O que acontece |
+|---|---|
+| `colorScheme` | o app fica claro, mesmo com o sistema escuro |
+| `Surface` | os componentes escurecem, o **fundo e o texto solto não** |
+| `safeDrawingPadding()` | o título fica embaixo da barra de status (Android desenha de ponta a ponta) |
+
+No emulador: `adb shell cmd uimode night yes`. O `MainActivity` chama `enableEdgeToEdge()`, que ajusta a cor dos ícones da barra de status.
+
+---
+
+<!-- _class: lead -->
+
+# Passo 6
+
+## Acessibilidade: a linha inteira é a caixa de seleção
+
+---
+
+# Passo 6 — o código se divide
+
+Com duas telas chegando, `App.kt` sozinho não dá mais conta:
 
 | Arquivo | O que tem |
 |---|---|
-| `Tarefa.kt` | modelo e **regras puras** (`tituloValido`, `alternando`) |
-| `Telas.kt` | `TelaLista`, `TelaDetalhe`, componentes, previews |
-| `App.kt` | rotas, estado, uma tela ou duas (`Conteudo`) |
+| `Tarefa.kt` | modelo e **regras puras** (`tituloValido`, `comNova`, `alternando`) |
+| `Telas.kt` | `TelaLista`, `CartaoTarefa`, `FormularioTarefa`, previews |
+| `App.kt` | tema e estado (`Conteudo`); no Passo 7, as rotas |
 
-
----
-
-# Correção do slide de 14/09
-
-No slide "`@Preview` — ver sem rodar", da aula passada, o import está desatualizado:
-
-```kotlin
-import org.jetbrains.compose.ui.tooling.preview.Preview   // antiga: não compila no exemplo
-```
-
-O certo, usado no exemplo e no `PASSOS.md`:
-
-```kotlin
-import androidx.compose.ui.tooling.preview.Preview
-```
-
-> A diferença entre as duas anotações está na leitura de 14/09 (`moveis-s1-pte1.md`, seção 2.6).
----
-
-<!-- _class: lead -->
-
-# Responsividade
-
-## A largura da janela decide
-
----
-
-# Classes de tamanho de janela
-
-| Classe | Largura | Exemplos |
-|---|---|---|
-| Compacta | < 600 dp | celular em pé |
-| Média | 600 a 839 dp | celular deitado, tablet pequeno |
-| Expandida | ≥ 840 dp | tablet deitado, desktop |
-
-```kotlin
-val largo = currentWindowAdaptiveInfo().windowSizeClass
-    .isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
-```
-
-- **Janela**, não aparelho: tela dividida, dobrável, janela desktop
-- **Largura**, não orientação: tablet em pé é mais largo que celular deitado
-- Conferido: 599 px → uma tela; 600 → dois painéis
-
----
-
-# Lista e detalhe
-
-<div class="columns">
-<div class="col">
-
-**Compacta** <span class="pill-blue">navega</span>
-
-```
-┌────────────┐     ┌────────────┐
-│ Lista      │ ──▶ │ Detalhe    │
-│            │ ◀── │  Voltar    │
-└────────────┘     └────────────┘
-```
-
-</div>
-<div class="col">
-
-**Larga** <span class="pill-green">seleciona</span>
-
-```
-┌────────────┬───────────────┐
-│ Lista      │ Detalhe       │
-│            │ (selecionada) │
-└────────────┴───────────────┘
-```
-
-</div>
-</div>
-
-- As **mesmas telas** nos dois modos; muda quem as organiza
-- `App()` decide, `Conteudo(largo)` monta: o teste escolhe o modo
-- Na raiz: `Surface` (fundo do tema) e `safeDrawingPadding()` (barra de status)
-
----
-
-<!-- _class: lead -->
-
-# Acessibilidade
-
-## O leitor de tela lê a árvore de semântica
+> Regras fora do Compose são funções comuns: testáveis com `kotlin.test`, sem montar tela (Passo 9).
 
 ---
 
@@ -260,7 +260,7 @@ val largo = currentWindowAdaptiveInfo().windowSizeClass
 <div class="columns">
 <div class="col">
 
-**14/09** <span class="pill-red">2 nós</span>
+**Antes** <span class="pill-red">2 nós</span>
 
 ```
 Node #3  Role = 'Checkbox'
@@ -273,7 +273,7 @@ Caixa sem nome, texto sem ação
 </div>
 <div class="col">
 
-**21/09** <span class="pill-green">1 nó</span>
+**Passo 6** <span class="pill-green">1 nó</span>
 
 ```
 Node #9  Role = 'Checkbox'
@@ -314,9 +314,9 @@ Mais: títulos com `semantics { heading() }`, texto em `sp`.
 
 <!-- _class: lead -->
 
-# Navegação
+# Passo 7
 
-## Um grafo, com pilha de retorno
+## Navegação: um grafo, com pilha de retorno
 
 ---
 
@@ -374,9 +374,71 @@ adb shell am start -a android.intent.action.VIEW -d "tarefas://tarefa/2"
 
 <!-- _class: lead -->
 
-# Testes
+# Passo 8
 
-## `kotlin.test` e teste de interface
+## Responsividade: a largura da janela decide
+
+---
+
+# Classes de tamanho de janela
+
+| Classe | Largura | Exemplos |
+|---|---|---|
+| Compacta | < 600 dp | celular em pé |
+| Média | 600 a 839 dp | celular deitado, tablet pequeno |
+| Expandida | ≥ 840 dp | tablet deitado, desktop |
+
+```kotlin
+val largo = currentWindowAdaptiveInfo().windowSizeClass
+    .isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
+```
+
+- **Janela**, não aparelho: tela dividida, dobrável, janela desktop
+- **Largura**, não orientação: tablet em pé é mais largo que celular deitado
+- Conferido: 599 px → uma tela; 600 → dois painéis
+
+---
+
+# Lista e detalhe
+
+<div class="columns">
+<div class="col">
+
+**Compacta** <span class="pill-blue">navega</span>
+
+```
+┌────────────┐     ┌────────────┐
+│ Lista      │ ──▶ │ Detalhe    │
+│            │ ◀── │  Voltar    │
+└────────────┘     └────────────┘
+```
+
+</div>
+<div class="col">
+
+**Larga** <span class="pill-green">seleciona</span>
+
+```
+┌────────────┬───────────────┐
+│ Lista      │ Detalhe       │
+│            │ (selecionada) │
+└────────────┴───────────────┘
+```
+
+</div>
+</div>
+
+- As **mesmas telas** nos dois modos; muda quem as organiza
+- `App()` decide, `Conteudo(largo)` monta: o teste escolhe o modo
+- `Surface` e `safeDrawingPadding()` já estão na raiz desde o Passo 5
+
+---
+
+<!-- _class: lead -->
+
+# Passo 9
+
+## Testes: `kotlin.test` e teste de interface
 
 ---
 
@@ -451,6 +513,33 @@ O workflow da Sprint 0 (build, `ktlint`, `detekt`) ganha os testes:
 
 ---
 
+# Passo 10 — o ambiente em tasks
+
+```toml
+# mise.toml, na raiz do repositório
+[tools]
+java = "temurin-21"
+
+[tasks.app]
+dir = "exemplos/tarefas-compose"
+run = '''
+if [ -n "$CODESPACES" ]; then DISPLAY=:1 ./gradlew :composeApp:hotRunDesktop --auto
+else ./gradlew :composeApp:hotRunDesktop --auto; fi
+'''
+```
+
+```bash
+mise tasks            # app, app:celular, test, apk, apk:instalar, studio
+mise run test         # == ./gradlew :composeApp:desktopTest
+mise run studio       # Android Studio no Codespace, para o @Preview
+```
+
+> O mesmo comando dos passos anteriores, com nome — e o detalhe do ambiente resolvido: no Codespace, a janela vai para a área de trabalho do navegador.
+
+📖 **Ref.** [mise — tasks](https://mise.jdx.dev/tasks/)
+
+---
+
 # No MUSI
 
 O projeto de referência ligou o alvo Android nesta sprint (`app/`):
@@ -470,7 +559,7 @@ O projeto de referência ligou o alvo Android nesta sprint (`app/`):
 
 ---
 
-# Entrega da Sprint 1 — 02/10, 23:59
+# Entrega da Sprint 1 — 16/10, 23:59
 
 | Critério | Peso |
 |---|---|
@@ -480,16 +569,59 @@ O projeto de referência ligou o alvo Android nesta sprint (`app/`):
 | Acessibilidade: descrições, contraste, alvos ≥ 48 dp, leitor de tela | 15% |
 | ≥ 5 testes de interface, verdes no CI | 15% |
 
-Guia e tarefas: `docs/SPRINT-1.md` e `docs/SPRINT-1-TAREFAS.md`. Apresentações: 28/09 (Coorte B, online) e 30/09 (Coorte A, em sala).
+Guia e tarefas: `docs/SPRINT-1.md` e `docs/SPRINT-1-TAREFAS.md`. Exemplo: `exemplos/tarefas-compose/`, passos 1 a 10.
 
 ---
 
-# Próximas aulas
+# O que muda no semestre
 
-- **23/09** — acompanhamento online: tragam a navegação e os primeiros testes
-- **28 e 30/09** — apresentações da Sprint 1
-- **05/10** — Sprint 2: coroutines, `Flow` e `StateFlow`, ViewModel multiplataforma
-- **07/10** (online) — estado de tela com classes seladas, camadas, Koin, testes com Turbine
+| | Antes | Agora |
+|---|---|---|
+| Entrega da Sprint 1 | 02/10 | **16/10** (sexta), 23:59 |
+| Depois da Sprint 1 | Sprint 2, Sprint 3 e bloco final | **só a Sprint 2**, que é a entrega final, em **30/11** |
+| Prova escrita | 21/10 | **09/11** (segunda), em laboratório |
+| Prova de reposição | 30/11 | **02/12** (quarta) |
+| Fim de cada sprint | apresentação por coorte | ***daily meeting*** online com cada grupo, como em 28 e 30/09 |
+| Unidades | três sprints e duas provas espalhadas | U1 = Sprint 0 (30%) + Sprint 1 (70%) · U2 = prova · U3 = Sprint 2 |
+
+- Dentro de cada sprint, **nada muda**: entrega técnica 50%, atividade no repositório 30%, comunicação 20%
+- A *daily meeting* entra onde antes entrava a apresentação; as de 28 e 30/09 valeram para a Sprint 1
+- Vale a **maior nota** entre a prova e a reposição
+
+> Tudo está em `docs/CRONOGRAMA.md`, `docs/AVALIACAO.md` e `docs/RUBRICAS.md`.
+
+---
+
+# O calendário até dezembro
+
+| Semana | Segunda | Quarta |
+|---|---|---|
+| 05 e 07/10 | 🟢 em sala: conteúdo da Sprint 1 | 🟢 em sala: conteúdo da Sprint 1 |
+| 12 e 14/10 | feriado | 🔵 online: acompanhamento · 🚀 **sexta, 16/10: entrega da Sprint 1** |
+| 19 e 21/10 | 🟢 em sala: conteúdo da Sprint 2 | 🟢 em sala: conteúdo da Sprint 2 |
+| 26 e 28/10 | 🔵 online: acompanhamento | feriado |
+| 02 e 04/11 | feriado | 🔵 online: revisão para a prova |
+| 09 e 11/11 | 🟢 em sala: **prova escrita** | 🔵 online: acompanhamento |
+| 16 e 18/11 | 🔵 online: acompanhamento | 🟢 em sala: oficina de projeto |
+| 23 e 25/11 | 🔵 online: *daily meetings* | 🔵 online: *daily meetings* |
+| 30/11 e 02/12 | a definir · 🚀 **entrega final** | 🟢 em sala: **prova de reposição** |
+
+> O conteúdo da Sprint 2 cabe em duas aulas porque vai ser liberado **antes, em vídeo** (aula invertida): assistam antes de 19/10.
+
+---
+
+# A Sprint 2, a última
+
+| Critério | Peso |
+|---|---|
+| Estado e arquitetura: ViewModel com `StateFlow`, camadas, domínio sem Compose | 30% |
+| Estados da interface: carregando, erro, vazio e sucesso | 15% |
+| Dados reais e erro de rede, com Ktor Client | 25% |
+| Persistência local: os dados sobrevivem ao fechamento do app | 10% |
+| Testes de lógica: ≥ 5 testes de ViewModel no CI | 10% |
+| App e documentação: MVP sem crash, `docs/arquitetura.md`, APK numa release | 10% |
+
+> O que vocês entregarem em 30/11 é o produto final. A prova de 09/11 cobre as Sprints 0, 1 e 2.
 
 ---
 
@@ -498,7 +630,7 @@ Guia e tarefas: `docs/SPRINT-1.md` e `docs/SPRINT-1-TAREFAS.md`. Apresentações
 | Fonte | Foco |
 |---|---|
 | `leituras/moveis-s1-pte2.md` | Esta aula, com erros comuns e exercícios |
-| `exemplos/tarefas-compose/PASSOS.md` | Passos 6 a 9 |
+| `exemplos/tarefas-compose/PASSOS.md` | Passos 1 a 10 |
 | `developer.android.com/develop/ui/compose/accessibility` | Acessibilidade em Compose |
 | `kotlinlang.org/docs/multiplatform/compose-navigation.html` | Navegação multiplataforma |
 | `kotlinlang.org/docs/multiplatform/compose-test.html` | Testes de interface |

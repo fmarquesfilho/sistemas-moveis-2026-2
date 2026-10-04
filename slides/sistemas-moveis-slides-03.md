@@ -101,7 +101,7 @@ Prof. Fernando · UFRN · 2026.2
 
 | Bloco | O que vemos |
 |---|---|
-| Ambiente | Android Studio no laboratório |
+| Ambiente | Android Studio 2025.3.2+ ou Codespaces |
 | Fecha a Sprint 0 | `@Composable`, estado, componentes, Material 3 |
 | Abre a Sprint 1 | Listas com `LazyColumn`, formulários e validação |
 | Tema | Material 3, claro e escuro |
@@ -115,28 +115,24 @@ Prof. Fernando · UFRN · 2026.2
 
 # Android Studio
 
-O laboratório tem Android Studio instalado — vamos usá-lo no lugar do Codespaces.
+O exemplo usa AGP 9.1, que exige o **Android Studio Panda 2 (2025.3.2) ou mais novo**. O do laboratório (Ladybug, 2024) **não abre** o projeto; até a atualização, use o Codespaces.
 
-| | Codespaces | Android Studio (lab) |
+| | Codespaces (navegador) | Android Studio local (Panda 2+) |
 |---|---|---|
-| Hot Reload | instável | funciona |
-| `@Preview` | fraco | funciona |
-| Emulador Android | não | sim |
+| `@Preview` | Android Studio no Codespace: `mise run studio` | funciona |
+| Hot Reload | janela de celular: `mise run app:celular` | funciona |
+| Emulador Android | não: gere o APK e instale no emulador | sim |
 
-> No Codespaces, Hot Reload e `@Preview` não funcionam bem.
+> Tudo aparece na porta 6080 do Codespace (área de trabalho no navegador, senha `vscode`). Passo a passo: `exemplos/tarefas-compose/PASSOS.md`.
 
 ---
 
-# Como rodar hoje
+# Como rodar
 
-No Android Studio, com o projeto aberto:
-
-- Emulador Android: run configuration `composeApp` → botão Run ▸.
-- Desktop (janela JVM): `./gradlew :composeApp:run`.
+- **Android Studio (local ou no Codespace):** run configuration `composeApp` → Run ▸, ou o `@Preview` em **Split**.
+- **Desktop com Hot Reload:** `./gradlew :composeApp:hotRunDesktop --auto` (ou `mise run app`): cada salvamento recarrega a tela.
 
 A UI compartilhada fica em `composeApp/src/commonMain/kotlin`. A mesma `App()` roda no Android e no Desktop. O `@Preview` mostra a tela sem rodar o app.
-
-> Para iterar rápido no emulador, use o Apply Changes; no desktop, edite e rode de novo.
 
 ---
 
