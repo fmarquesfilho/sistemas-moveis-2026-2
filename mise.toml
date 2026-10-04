@@ -1,0 +1,90 @@
+# DIM0524 - ferramentas e tasks do exemplo.
+#
+# O `mise` fixa a versao do JDK e da um nome curto para cada comando. Nada aqui e
+# obrigatorio: o comentario de cada task traz o comando completo, que continua
+# funcionando sem o mise. Instalacao: https://mise.jdx.dev/getting-started.html
+#
+#   mise install            # baixa o JDK desta lista
+#   mise tasks              # lista tudo o que da para rodar
+#
+# No Codespace deste repositorio, `mise install` ja roda na criacao.
+
+[tools]
+java = "temurin-21"    # a mesma versao do Codespace; o Android Studio usa o JDK dele
+# O Gradle nao entra aqui: a versao vem do wrapper (./gradlew).
+# O SDK do Android tambem nao: vem do Android Studio (Mac) ou do .devcontainer (Codespace).
+
+# ---------------------------------------------------------------------------
+# A tela, no desktop - o ciclo rapido, sem emulador
+# ---------------------------------------------------------------------------
+
+# Em Codespaces ($CODESPACES definido) a janela vai para a area de trabalho do
+# navegador (noVNC, aba Portas -> 6080), que nao tem GPU.
+[tasks.app]
+description = "Abre a tela no desktop, com Hot Reload (recarrega ao salvar)"
+dir = "exemplos/tarefas-compose"
+run = '''
+if [ -n "$CODESPACES" ]; then
+  DISPLAY=:1 ./gradlew :composeApp:hotRunDesktop --auto
+else
+  ./gradlew :composeApp:hotRunDesktop --auto
+fi
+'''
+
+# Mesma coisa, mas numa janela do tamanho de um celular (desktopMain/PreviewCelular.kt).
+[tasks."app:celular"]
+description = "Abre a tela numa janela de celular, com Hot Reload"
+dir = "exemplos/tarefas-compose"
+run = '''
+ALVO="--className=br.ufrn.exemplo.tarefas.PreviewCelularKt --funName=TelaCelular"
+if [ -n "$CODESPACES" ]; then
+  DISPLAY=:1 ./gradlew :composeApp:hotDevDesktop --auto $ALVO
+else
+  ./gradlew :composeApp:hotDevDesktop --auto $ALVO
+fi
+'''
+
+[tasks."app:janela"]
+description = "Abre a tela no desktop sem Hot Reload (janela simples)"
+dir = "exemplos/tarefas-compose"
+run = '''
+if [ -n "$CODESPACES" ]; then
+  DISPLAY=:1 ./gradlew :composeApp:run
+else
+  ./gradlew :composeApp:run
+fi
+'''
+
+# ---------------------------------------------------------------------------
+# Android
+# ---------------------------------------------------------------------------
+
+[tasks.apk]
+description = "Gera o APK de debug (precisa do SDK do Android em ANDROID_HOME)"
+dir = "exemplos/tarefas-compose"
+run = "./gradlew :composeApp:assembleDebug"
+
+# Com mais de um aparelho/emulador conectado, escolha um:
+#   ANDROID_SERIAL=emulator-5554 mise run apk:instalar
+[tasks."apk:instalar"]
+description = "Instala o APK no emulador/aparelho e abre o deep link de exemplo"
+dir = "exemplos/tarefas-compose"
+depends = ["apk"]
+run = [
+  "adb install -r composeApp/build/outputs/apk/debug/composeApp-debug.apk",
+  'adb shell am start -a android.intent.action.VIEW -d "tarefas://tarefa/2"',
+]
+
+# ---------------------------------------------------------------------------
+# Testes e ambiente
+# ---------------------------------------------------------------------------
+
+[tasks.test]
+description = "Testes de regra e de interface, no alvo desktop (sem emulador)"
+dir = "exemplos/tarefas-compose"
+run = "./gradlew :composeApp:desktopTest"
+
+# So faz sentido dentro do Codespace, onde ha area de trabalho no navegador.
+[tasks.studio]
+description = "Abre o Android Studio na area de trabalho do Codespace (para o @Preview)"
+run = "bash .devcontainer/android-studio.sh"
