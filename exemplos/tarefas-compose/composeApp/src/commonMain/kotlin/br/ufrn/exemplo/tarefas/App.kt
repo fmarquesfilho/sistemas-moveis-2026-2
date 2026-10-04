@@ -1,116 +1,63 @@
 package br.ufrn.exemplo.tarefas
 
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.VerticalDivider
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navDeepLink
-import androidx.navigation.toRoute
-import androidx.window.core.layout.WindowSizeClass
-import kotlinx.serialization.Serializable
 
-// Rotas tipadas: cada destino é um tipo, e os argumentos são propriedades.
-@Serializable
-object Lista
-
-@Serializable
-data class Detalhe(val id: Int)
+// O modelo da tela. Imutável: mudar uma tarefa é criar outra (`copy`).
+data class Tarefa(val id: Int, val titulo: String, val feita: Boolean = false)
 
 @Composable
 fun App() {
-    // Largura da janela: compacta (celular em pé) ou média/expandida (tablet, desktop).
-    val largura = currentWindowAdaptiveInfo().windowSizeClass
-    val largo = largura.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
+    MaterialTheme {
+        // O estado da lista fica aqui em cima; o cartão só recebe e avisa.
+        var tarefas by remember {
+            mutableStateOf(listOf(Tarefa(1, "Estudar Compose"), Tarefa(2, "Entender estado elevado")))
+        }
 
-    // O tema segue o sistema. `MaterialTheme { }` sem `colorScheme` é sempre claro.
-    val cores = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+        Column(Modifier.padding(16.dp)) {
+            Text("Minhas tarefas", style = MaterialTheme.typography.headlineSmall)
+            Spacer(Modifier.height(12.dp))
 
-    MaterialTheme(colorScheme = cores) {
-        // Surface pinta o fundo do tema (claro/escuro); safeDrawingPadding evita a barra
-        // de status e o recorte da câmera no Android.
-        Surface(Modifier.fillMaxSize()) {
-            Conteudo(largo = largo, modifier = Modifier.safeDrawingPadding())
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(tarefas, key = { it.id }) { tarefa ->
+                    CartaoTarefa(tarefa) {
+                        tarefas = tarefas.map { if (it.id == tarefa.id) it.copy(feita = !it.feita) else it }
+                    }
+                }
+            }
         }
     }
 }
 
-// Estado elevado acima da navegação: as duas telas enxergam a mesma lista.
-// `largo` vem de fora para que os testes escolham o layout.
+// COMPONENTE PRÓPRIO: recebe o que mostra e devolve o evento. Não guarda estado.
 @Composable
-fun Conteudo(
-    largo: Boolean,
-    modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController(),
-) {
-    var tarefas by remember { mutableStateOf(tarefasIniciais) }
-    var texto by rememberSaveable { mutableStateOf("") }
-    var proximoId by remember { mutableStateOf(3) }
-    var selecionada by rememberSaveable { mutableStateOf<Int?>(null) }
-
-    val adicionar = {
-        tarefas = tarefas.comNova(proximoId, texto)
-        proximoId++
-        texto = ""
-    }
-    val alternar = { id: Int -> tarefas = tarefas.alternando(id) }
-
-    if (largo) {
-        // Janela larga: lista e detalhe lado a lado, sem navegar.
-        Row(modifier.fillMaxSize()) {
-            TelaLista(
-                tarefas, texto, { texto = it }, adicionar, alternar,
-                onAbrir = { selecionada = it },
-                modifier = Modifier.width(360.dp),
-            )
-            VerticalDivider()
-            TelaDetalhe(
-                tarefa = tarefas.find { it.id == selecionada },
-                onAlternar = { selecionada?.let(alternar) },
-                onVoltar = null,
-                modifier = Modifier.fillMaxHeight(),
-            )
-        }
-    } else {
-        // Janela compacta: uma tela por vez, com pilha de retorno.
-        NavHost(navController, startDestination = Lista, modifier = modifier) {
-            composable<Lista> {
-                TelaLista(
-                    tarefas, texto, { texto = it }, adicionar, alternar,
-                    onAbrir = { id -> navController.navigate(Detalhe(id)) },
-                )
-            }
-            composable<Detalhe>(
-                // tarefas://tarefa/2 abre direto o detalhe da tarefa 2 (Android).
-                deepLinks = listOf(navDeepLink<Detalhe>(basePath = "tarefas://tarefa")),
-            ) { entrada ->
-                val rota = entrada.toRoute<Detalhe>()
-                TelaDetalhe(
-                    tarefa = tarefas.find { it.id == rota.id },
-                    onAlternar = { alternar(rota.id) },
-                    onVoltar = { navController.popBackStack() },
-                )
-            }
+fun CartaoTarefa(tarefa: Tarefa, onAlternar: () -> Unit) {
+    Card(Modifier.fillMaxWidth()) {
+        Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(checked = tarefa.feita, onCheckedChange = { onAlternar() })
+            Spacer(Modifier.width(8.dp))
+            Text(tarefa.titulo)
         }
     }
 }

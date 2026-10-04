@@ -13,7 +13,9 @@
     "ghcr.io/devcontainers/features/desktop-lite:1": {},
     // Executor das tasks do mise.toml (`mise tasks`). O JDK continua vindo da feature
     // acima; o `mise install` do postCreate alinha as versões.
-    "ghcr.io/devcontainers-extra/features/mise:1": {}
+    "ghcr.io/devcontainers-extra/features/mise:1": {},
+    // Acesso por terminal (gh codespace ssh), usado para preparar o Codespace antes da aula.
+    "ghcr.io/devcontainers/features/sshd:1": {}
   },
 
   "containerEnv": {
@@ -24,8 +26,8 @@
 
   // O alvo Android não roda aqui, mas o Gradle precisa do SDK para configurar o projeto.
   "onCreateCommand": "bash .devcontainer/android-sdk.sh",
-  // Baixa dependências e o JetBrains Runtime antes da aula, não durante.
-  "postCreateCommand": "mise trust && mise install; cd exemplos/tarefas-compose && ./gradlew :composeApp:desktopJar --console=plain",
+  // Baixa dependências, o JetBrains Runtime e o Android Studio antes da aula, não durante.
+  "postCreateCommand": "bash .devcontainer/aquecer.sh",
 
   "forwardPorts": [6080],
   "portsAttributes": {
