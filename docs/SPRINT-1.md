@@ -2,7 +2,7 @@
 
 Prazo em [CRONOGRAMA.md](CRONOGRAMA.md#visão-geral): entrega em **16/10 (sexta), 23:59** (adiada; era 02/10). As *daily meetings* da sprint foram as reuniões online de 28 e 30/09. O que entregar e como é avaliado: [RUBRICAS.md](RUBRICAS.md#sprint-1). Os enunciados, prontos para virar cartões no quadro, estão em [SPRINT-1-TAREFAS.md](SPRINT-1-TAREFAS.md).
 
-A Sprint 1 é a sprint da **interface e da navegação**: as telas do MVP ficam de pé, ligadas por um grafo de navegação, adaptadas a mais de uma largura de janela, acessíveis e cobertas por testes de interface.
+A Sprint 1 é a sprint da **interface e da navegação**: as telas do MVP ficam de pé, ligadas por um grafo de navegação, adaptadas a mais de uma largura de janela e acessíveis.
 
 ---
 
@@ -10,11 +10,10 @@ A Sprint 1 é a sprint da **interface e da navegação**: as telas do MVP ficam 
 
 | Critério da rubrica | Peso | Em uma frase |
 |---|---|---|
-| Telas do MVP | 25% | As telas principais implementadas, com componentes próprios reutilizáveis |
-| Navegação | 25% | Navigation Compose com rotas tipadas, argumentos e ao menos um deep link demonstrado |
+| Telas do MVP | 30% | As telas principais implementadas, com componentes próprios reutilizáveis |
+| Navegação | 30% | Navigation Compose com rotas tipadas, argumentos e ao menos um deep link demonstrado |
 | Tema, responsividade e adaptatividade | 20% | Material 3 claro e escuro, layout adaptado a ≥ 2 larguras, sem overflow |
-| Acessibilidade | 15% | Descrições de conteúdo, contraste verificado, alvos ≥ 48 dp, leitor de tela testado |
-| Testes de interface | 15% | ≥ 5 testes cobrindo as telas principais e a validação do formulário, verdes no CI |
+| Acessibilidade | 20% | Descrições de conteúdo, contraste verificado, alvos ≥ 48 dp, leitor de tela testado |
 
 Além da entrega técnica, a nota da sprint tem a atividade no repositório (30%) e a comunicação (20%): ver [AVALIACAO.md](AVALIACAO.md#2-nota-de-cada-sprint).
 
@@ -22,8 +21,8 @@ Além da entrega técnica, a nota da sprint tem a atividade no repositório (30%
 
 ## Material de apoio
 
-- Leituras da sprint: [`leituras/moveis-s1-pte1.md`](../leituras/moveis-s1-pte1.md) (listas, formulários e Material 3, 14/09) e [`leituras/moveis-s1-pte2.md`](../leituras/moveis-s1-pte2.md) (responsividade, acessibilidade, navegação e testes, 21/09).
-- Exemplo: `exemplos/tarefas-compose/`, passos 1 a 9 do `PASSOS.md`. Tem tudo o que a rubrica pede em escala pequena: duas telas, rotas tipadas com argumento, deep link, lista e detalhe lado a lado em janela larga, linha acessível e 8 testes.
+- Leituras da sprint: [`leituras/moveis-s1-pte1.md`](../leituras/moveis-s1-pte1.md) (listas, formulários e Material 3, 14/09) e [`leituras/moveis-s1-pte2.md`](../leituras/moveis-s1-pte2.md) (responsividade, acessibilidade, navegação e testes; segunda parte da sprint). Os capítulos de testes dessa leitura servem à Sprint 2.
+- Exemplo: `exemplos/tarefas-compose/`, passos 1 a 8 do `PASSOS.md`. Tem tudo o que a rubrica pede em escala pequena: duas telas, rotas tipadas com argumento, deep link, lista e detalhe lado a lado em janela larga e linha acessível. O Passo 9 (testes) é conteúdo da Sprint 2.
 - Ambiente sem instalação: o `.devcontainer/` do repositório abre um Codespace com o Android Studio (para o `@Preview`) e com o app em janela de celular (Compose Hot Reload). Ver a seção *Como abrir e rodar* do `PASSOS.md`.
 
 ---
@@ -73,21 +72,15 @@ Grupos com alvo iOS: o deep link é demonstrado no simulador, com evidência no 
 
 ---
 
-## Testes de interface
+## Testes: na Sprint 2
 
-- Ficam em `commonTest` e rodam no alvo desktop: `./gradlew :composeApp:desktopTest`.
-- No mínimo 5 testes: um por tela principal, os casos inválido e válido do formulário, e um de navegação (abre, age, volta, confere).
-- Encontrem os elementos pelo texto visível ou pela descrição, e ajam como o usuário (`performClick`, `performTextInput`). Assim o teste também verifica a acessibilidade.
-- Para testar as duas larguras, separem a decisão de layout do conteúdo (como o `Conteudo(largo)` do exemplo).
-- Regras puras (validação, transformação de listas) vão para funções testadas com `kotlin.test`: não contam para os 5 de interface, mas são os testes mais baratos.
-- O workflow da Sprint 0 (compilação, `ktlint` e `detekt`) passa a rodar também o `desktopTest`. Os testes de interface não precisam de tela, mas o Skia (que desenha o Compose no desktop) precisa de três bibliotecas do sistema; num runner Linux, instale-as antes dos testes:
+Os testes de interface saíram desta sprint (ajuste de 06/10, combinado com a turma) e passam a ser avaliados na Sprint 2, junto com os testes de ViewModel. Nesta sprint:
 
-  ```yaml
-  - run: sudo apt-get update && sudo apt-get install -y libgl1 libegl1 libfontconfig1
-  - run: ./gradlew :composeApp:desktopTest
-  ```
+- O workflow da Sprint 0 (compilação, `ktlint` e `detekt`) continua rodando e deve estar verde na branch principal no prazo.
+- Separar a decisão de layout do conteúdo (como o `Conteudo(largo)` do exemplo) e manter as regras em funções puras (validação, transformação de listas) já deixa o código pronto para ser testado.
+- Quem já escreveu testes pode mantê-los no repositório: eles contam na Sprint 2.
 
-  Sem elas, os testes falham com `UnsatisfiedLinkError: ... libGL.so.1` (ou `libEGL.so.1`). Verde na branch principal no prazo.
+O conteúdo sobre testes continua disponível: capítulos 5 e 6 da leitura `moveis-s1-pte2.md` e Passo 9 do exemplo.
 
 ---
 
@@ -99,7 +92,7 @@ Grupos com alvo iOS: o deep link é demonstrado no simulador, com evidência no 
 | 1 min 30 s | Demonstração das telas do MVP e da navegação, incluindo o Voltar |
 | 1 min | Deep link funcionando e o layout nas duas larguras |
 | 1 min | Acessibilidade: o leitor de tela percorrendo uma tela e o que foi ajustado |
-| 1 min | Os testes rodando e o CI verde; o que ficou para a Sprint 2 |
+| 1 min | O CI verde e o que ficou para a Sprint 2 |
 
 Todos os integrantes devem falar. Link no `README.md`.
 

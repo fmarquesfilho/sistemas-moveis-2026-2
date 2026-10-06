@@ -46,11 +46,12 @@ Templates, exemplos e estrutura do vídeo e da proposta: [SPRINT-0.md](SPRINT-0.
 
 | Critério | Peso | Excelente (10) | Suficiente (6) | Insuficiente (0–4) |
 |----------|------|----------------|----------------|--------------------|
-| **Telas do MVP** | 25% | Todas as telas principais implementadas, com composição limpa e componentes próprios reutilizáveis | Maioria das telas, com repetição de código | Poucas telas ou layout quebrado |
-| ⚙️ **Navegação** | 25% | Navigation Compose com rotas tipadas, argumentos, aninhamento onde faz sentido e ≥ 1 *deep link* funcional demonstrado | Navegação funciona, sem argumentos ou deep link | Troca de tela por estado solto, sem grafo de navegação |
+| **Telas do MVP** | 30% | Todas as telas principais implementadas, com composição limpa e componentes próprios reutilizáveis | Maioria das telas, com repetição de código | Poucas telas ou layout quebrado |
+| ⚙️ **Navegação** | 30% | Navigation Compose com rotas tipadas, argumentos, aninhamento onde faz sentido e ≥ 1 *deep link* funcional demonstrado | Navegação funciona, sem argumentos ou deep link | Troca de tela por estado solto, sem grafo de navegação |
 | **Tema, responsividade e adaptatividade** | 20% | Material 3 com esquema de cor coerente, modo claro e escuro, layout adaptado a ≥ 2 larguras sem *overflow* | Tema aplicado, adaptação parcial | Sem tema ou com overflow visível |
-| **Acessibilidade** | 15% | Descrições de conteúdo nos elementos interativos, contraste verificado, alvos de toque ≥ 48dp, navegação por leitor de tela testada | Descrições parciais | Ausente |
-| ⚙️ **Testes de interface** | 15% | ≥ 5 testes cobrindo as telas principais e a validação do formulário, verdes no CI | ≥ 3 testes, cobertura rasa | < 3 testes ou falhando |
+| **Acessibilidade** | 20% | Descrições de conteúdo nos elementos interativos, contraste verificado, alvos de toque ≥ 48dp, navegação por leitor de tela testada | Descrições parciais | Ausente |
+
+Os testes de interface, que estavam nesta sprint com 15%, passaram para a Sprint 2 (ajuste de 06/10, combinado com a turma). O peso foi distribuído entre Telas do MVP, Navegação e Acessibilidade. O CI da Sprint 0 (compilação, `ktlint` e `detekt`) continua valendo na atividade no repositório.
 
 ---
 
@@ -60,11 +61,11 @@ Templates, exemplos e estrutura do vídeo e da proposta: [SPRINT-0.md](SPRINT-0.
 
 | Critério | Peso | Excelente (10) | Suficiente (6) | Insuficiente (0–4) |
 |----------|------|----------------|----------------|--------------------|
-| ⚙️ **Estado e arquitetura** | 30% | ViewModel multiplataforma expondo `StateFlow`; `data` / `domain` / `presentation` separados em `commonMain`; **domínio não importa Compose nem bibliotecas de infraestrutura**; repositórios definidos por interface; sem lógica de negócio dentro de `@Composable` | Solução aplicada com vazamentos pontuais entre camadas | Estado espalhado em `remember`, camadas indistintas |
+| ⚙️ **Estado e arquitetura** | 25% | ViewModel multiplataforma expondo `StateFlow`; `data` / `domain` / `presentation` separados em `commonMain`; **domínio não importa Compose nem bibliotecas de infraestrutura**; repositórios definidos por interface; sem lógica de negócio dentro de `@Composable` | Solução aplicada com vazamentos pontuais entre camadas | Estado espalhado em `remember`, camadas indistintas |
 | **Estados da interface** | 15% | Carregando, erro, vazio e sucesso modelados por interface selada e refletidos na tela | Estados tratados de forma parcial | Só caminho feliz |
 | **Dados reais e erro de rede** | 25% | Dados do backend escolhido, consumidos com Ktor Client e kotlinx.serialization, com DTO separado da entidade de domínio; falha de conexão e resposta inválida tratadas, cada uma com estado de tela próprio | Dados reais, erro genérico | Dados fictícios, falha silenciosa ou crash |
 | **Persistência local** | 10% | Dados do usuário sobrevivem ao fechamento do app (Room, SQLDelight ou DataStore), e o app abre sem rede mostrando o último conteúdo | Persistência só de preferências | Ausente |
-| ⚙️ **Testes de lógica** | 10% | ≥ 5 testes de ViewModel com Turbine e dublês, verdes no CI junto com os testes de interface da Sprint 1 | ≥ 3 testes, cobertura rasa | < 3 testes ou falhando |
+| ⚙️ **Testes** | 15% | ≥ 5 testes de interface, cobrindo as telas principais e a validação do formulário, e ≥ 5 testes de ViewModel com Turbine e dublês, todos verdes no CI | ≥ 3 testes de cada tipo, ou só um dos tipos completo | < 3 testes, ou falhando |
 | **App e documentação** | 10% | Fluxos do MVP sem crash na plataforma-alvo; `docs/arquitetura.md` com diagrama de camadas e a justificativa do gerenciamento de estado; README permite rodar em menos de 15 min; APK de debug anexado a uma release | App roda com falhas menores, documentação com lacunas | Instável, ou não é possível rodar |
 
 ---
@@ -113,7 +114,6 @@ Pode ser copiado para o `README.md` do repositório.
 - [ ] Layout adaptado a ≥2 tamanhos de janela, sem quebra
 - [ ] Acessibilidade: descrição de conteúdo, contraste, alvos ≥48dp
 - [ ] Formulário com validação
-- [ ] ≥5 testes de interface verdes no CI
 - [ ] Vídeo 5 min
 
 ### Sprint 2 (final)
@@ -123,7 +123,7 @@ Pode ser copiado para o `README.md` do repositório.
 - [ ] Dados reais do backend escolhido, via Ktor Client, com DTO separado
 - [ ] Falha de conexão e resposta inválida com estado de tela próprio
 - [ ] Dados do usuário sobrevivem ao fechamento do app
-- [ ] ≥5 testes de ViewModel com Turbine, verdes no CI
+- [ ] ≥5 testes de interface e ≥5 testes de ViewModel com Turbine, verdes no CI
 - [ ] docs/arquitetura.md, README e APK de debug numa release
 - [ ] Vídeo 5 min
 ```

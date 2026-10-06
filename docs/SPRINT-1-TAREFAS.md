@@ -12,17 +12,17 @@ em [CRONOGRAMA.md](CRONOGRAMA.md#visão-geral): **16/10, 23:59** (adiada; era 02
 | # | Tarefa | Critério da rubrica |
 |---|---|---|
 | T1 | Quebrar as histórias P1 em cartões da sprint | Atividade no repositório |
-| T2 | Construir as telas do MVP com componentes próprios | Telas do MVP (25%) |
-| T3 | Validar os formulários | Telas do MVP (25%) · Testes de interface (15%) |
-| T4 | Montar o grafo de navegação com rotas tipadas | Navegação (25%) |
-| T5 | Declarar e demonstrar um deep link | Navegação (25%) |
+| T2 | Construir as telas do MVP com componentes próprios | Telas do MVP (30%) |
+| T3 | Validar os formulários | Telas do MVP (30%) |
+| T4 | Montar o grafo de navegação com rotas tipadas | Navegação (30%) |
+| T5 | Declarar e demonstrar um deep link | Navegação (30%) |
 | T6 | Aplicar o tema claro e escuro | Tema, responsividade e adaptatividade (20%) |
 | T7 | Adaptar o layout a duas larguras de janela | Tema, responsividade e adaptatividade (20%) |
-| T8 | Revisar a acessibilidade e testar com o leitor de tela | Acessibilidade (15%) |
-| T9 | Escrever os testes de interface e colocá-los no CI | Testes de interface (15%) |
+| T8 | Revisar a acessibilidade e testar com o leitor de tela | Acessibilidade (20%) |
+| T9 | Movida para a Sprint 2: testes de interface | — |
 | T10 | Gravar o vídeo de 5 minutos | Comunicação |
 
-> Exemplo de referência: `exemplos/tarefas-compose/` deste repositório, passos 6 a 9 do
+> Exemplo de referência: `exemplos/tarefas-compose/` deste repositório, passos 6 a 8 do
 > `PASSOS.md`. Projeto de referência: `github.com/fmarquesfilho/musi`, pasta `app/`.
 
 ---
@@ -33,7 +33,7 @@ em [CRONOGRAMA.md](CRONOGRAMA.md#visão-geral): **16/10, 23:59** (adiada; era 02
 
 **O que fazer.**
 - [ ] Mover para a coluna da sprint as histórias P1 que viram telas
-- [ ] Criar os cartões das tarefas T2 a T10 que se aplicam ao produto
+- [ ] Criar os cartões das tarefas T2 a T8 e T10 que se aplicam ao produto
 - [ ] Atribuir um responsável a cada cartão e ligá-lo ao PR que o resolve
 
 **Pronto quando.** O quadro mostra o que está na sprint, com dono, e cada cartão fechado aponta para um PR integrado.
@@ -128,7 +128,7 @@ em [CRONOGRAMA.md](CRONOGRAMA.md#visão-geral): **16/10, 23:59** (adiada; era 02
 **O que fazer.**
 - [ ] Ler a classe de largura com `currentWindowAdaptiveInfo().windowSizeClass`
 - [ ] Definir o layout de cada largura (por exemplo, lista e detalhe lado a lado a partir de 600 dp)
-- [ ] Separar a decisão de layout do conteúdo, para testar os dois modos
+- [ ] Separar a decisão de layout do conteúdo, para conferir os dois modos (e testá-los na Sprint 2)
 - [ ] Conferir: celular em pé, celular deitado ou tablet, janela desktop redimensionada
 
 **Pronto quando.** O app muda de layout em ≥ 2 larguras e nenhuma tela tem conteúdo cortado ou vazando.
@@ -154,19 +154,9 @@ em [CRONOGRAMA.md](CRONOGRAMA.md#visão-geral): **16/10, 23:59** (adiada; era 02
 
 ---
 
-## T9 — Escrever os testes de interface e colocá-los no CI
+## T9 — Testes de interface (movida para a Sprint 2)
 
-**Objetivo.** Ter uma suíte que prove que as telas funcionam e continua verde.
-
-**O que fazer.**
-- [ ] Configurar `commonTest` com `kotlin("test")` e `compose.ui:ui-test`, e o `desktopTest` com `compose.desktop.currentOs`
-- [ ] Escrever ≥ 5 testes de interface: um por tela principal, inválido e válido do formulário, um de navegação
-- [ ] Testar as regras puras com `kotlin.test`
-- [ ] Acrescentar `./gradlew :composeApp:desktopTest` ao workflow da Sprint 0, precedido da instalação de `libgl1 libegl1 libfontconfig1` (ver o guia)
-
-**Pronto quando.** Há ≥ 5 testes de interface cobrindo as telas principais e o formulário, e o CI roda os testes e fica verde na branch principal.
-
-**Referência.** [SPRINT-1.md](SPRINT-1.md) *Testes de interface* · `moveis-s1-pte2.md`, capítulos 5 e 6.
+Esta tarefa saiu da Sprint 1 em 06/10, por decisão tomada com a turma, e será avaliada na Sprint 2. Quem já criou o cartão pode movê-lo de volta para o backlog. A numeração das outras tarefas não mudou.
 
 ---
 
@@ -175,7 +165,7 @@ em [CRONOGRAMA.md](CRONOGRAMA.md#visão-geral): **16/10, 23:59** (adiada; era 02
 **Objetivo.** Mostrar o incremento funcionando e explicar as escolhas.
 
 **O que fazer.**
-- [ ] Seguir o roteiro do guia (telas · navegação · deep link e larguras · acessibilidade · testes e CI)
+- [ ] Seguir o roteiro do guia (telas · navegação · deep link e larguras · acessibilidade · CI e o que ficou para a Sprint 2)
 - [ ] Garantir que **todos os integrantes falam**
 - [ ] Publicar o vídeo e linkar no `README.md`
 - [ ] Mostrar o andamento na reunião online do grupo (28 ou 30/09)
