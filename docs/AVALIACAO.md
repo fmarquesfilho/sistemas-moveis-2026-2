@@ -132,7 +132,7 @@ A justificativa vale nota: escolha declarada sem argumento derivado do produto e
 
 | Prova | Data | Conteúdo |
 |-------|------|----------|
-| Prova escrita, obrigatória | 09/11 | Sprints 0, 1 e 2: Kotlin, estrutura de um projeto multiplataforma, Compose, estado e recomposição, Material 3, navegação, acessibilidade, testes de interface, coroutines e Flow, ViewModel, arquitetura em camadas, Ktor Client, serialização, persistência local e os quatro estados de interface |
+| Prova escrita, obrigatória | 11/11 | Sprints 0, 1 e 2: Kotlin, estrutura de um projeto multiplataforma, Compose, estado e recomposição, Material 3, navegação, acessibilidade, testes de interface, coroutines e Flow, ViewModel, arquitetura em camadas, Ktor Client, serialização, persistência local e os quatro estados de interface |
 | Prova de reposição, opcional | 02/12 | O mesmo conteúdo da prova escrita |
 
 Ambas são individuais, com questões fechadas, no Multiprova, presenciais, em laboratório, aplicadas no horário da aula. Permitida consulta a uma folha A4 manuscrita, frente e verso.
