@@ -49,7 +49,7 @@ Templates, exemplos e estrutura do vídeo e da proposta: [SPRINT-0.md](SPRINT-0.
 | **Telas do MVP** | 30% | Todas as telas principais implementadas, com composição limpa e componentes próprios reutilizáveis | Maioria das telas, com repetição de código | Poucas telas ou layout quebrado |
 | ⚙️ **Navegação** | 30% | Navigation Compose com rotas tipadas, argumentos, aninhamento onde faz sentido e ≥ 1 *deep link* funcional demonstrado | Navegação funciona, sem argumentos ou deep link | Troca de tela por estado solto, sem grafo de navegação |
 | **Tema, responsividade e adaptatividade** | 20% | Material 3 com esquema de cor coerente, modo claro e escuro, layout adaptado a ≥ 2 larguras sem *overflow* | Tema aplicado, adaptação parcial | Sem tema ou com overflow visível |
-| **Acessibilidade** | 20% | Descrições de conteúdo nos elementos interativos, contraste verificado, alvos de toque ≥ 48dp, navegação por leitor de tela testada | Descrições parciais | Ausente |
+| **Acessibilidade** | 20% | Descrições de conteúdo nos elementos interativos, cores pelos papéis do tema (sem cores fixas que prejudiquem o contraste), alvos de toque ≥ 48dp, navegação por leitor de tela testada | Descrições parciais | Ausente |
 
 Os testes de interface, que estavam nesta sprint com 15%, passaram para a Sprint 2 (ajuste de 06/10, combinado com a turma). O peso foi distribuído entre Telas do MVP, Navegação e Acessibilidade. O CI da Sprint 0 (compilação, `ktlint` e `detekt`) continua valendo na atividade no repositório.
 
@@ -112,7 +112,7 @@ Pode ser copiado para o `README.md` do repositório.
 - [ ] Navigation Compose: rotas tipadas, com argumento, ≥1 deep link
 - [ ] Material 3 com modo claro/escuro
 - [ ] Layout adaptado a ≥2 tamanhos de janela, sem quebra
-- [ ] Acessibilidade: descrição de conteúdo, contraste, alvos ≥48dp
+- [ ] Acessibilidade: descrição de conteúdo, cores pelos papéis do tema, alvos ≥48dp
 - [ ] Formulário com validação
 - [ ] Vídeo 5 min
 

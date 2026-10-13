@@ -13,7 +13,7 @@ A Sprint 1 é a sprint da **interface e da navegação**: as telas do MVP ficam 
 | Telas do MVP | 30% | As telas principais implementadas, com componentes próprios reutilizáveis |
 | Navegação | 30% | Navigation Compose com rotas tipadas, argumentos e ao menos um deep link demonstrado |
 | Tema, responsividade e adaptatividade | 20% | Material 3 claro e escuro, layout adaptado a ≥ 2 larguras, sem overflow |
-| Acessibilidade | 20% | Descrições de conteúdo, contraste verificado, alvos ≥ 48 dp, leitor de tela testado |
+| Acessibilidade | 20% | Descrições de conteúdo, cores pelos papéis do tema, alvos ≥ 48 dp, leitor de tela testado |
 
 Além da entrega técnica, a nota da sprint tem a atividade no repositório (30%) e a comunicação (20%): ver [AVALIACAO.md](AVALIACAO.md#2-nota-de-cada-sprint).
 
@@ -67,7 +67,7 @@ Grupos com alvo iOS: o deep link é demonstrado no simulador, com evidência no 
 - Linhas que alternam algo são um único elemento (`Modifier.toggleable` com `role`), não uma caixa pequena mais um texto solto.
 - Títulos de tela marcados com `semantics { heading() }`.
 - Alvos de toque de pelo menos 48 × 48 dp. Os componentes Material 3 já garantem; cuidado com `clickable` em ícones feitos à mão.
-- Cores pelos papéis do tema; verificar contraste com o Accessibility Scanner.
+- Cores pelos papéis do tema (`MaterialTheme.colorScheme`), sem cores fixas: os pares de cores do Material 3 já garantem o contraste nos dois modos.
 - Percorrer as telas com o TalkBack (ou VoiceOver, no iOS) e registrar o que foi corrigido.
 
 ---

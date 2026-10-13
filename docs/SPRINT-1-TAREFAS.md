@@ -145,10 +145,10 @@ em [CRONOGRAMA.md](CRONOGRAMA.md#visão-geral): **16/10, 23:59** (adiada; era 02
 - [ ] Dar `contentDescription` a todo elemento interativo sem texto visível
 - [ ] Juntar em um elemento as linhas que alternam algo (`toggleable` com `role`)
 - [ ] Marcar os títulos de tela com `heading()`
-- [ ] Conferir alvos de toque ≥ 48 dp e contraste (Accessibility Scanner)
+- [ ] Conferir alvos de toque ≥ 48 dp e usar as cores pelos papéis do tema, sem cores fixas
 - [ ] Percorrer as telas com o TalkBack e registrar no `README.md` o que foi ajustado
 
-**Pronto quando.** Cada elemento é anunciado com um nome que faz sentido, toda ação é alcançável pelo leitor de tela, e contraste e alvos foram verificados.
+**Pronto quando.** Cada elemento é anunciado com um nome que faz sentido, toda ação é alcançável pelo leitor de tela, os alvos têm ≥ 48 dp e as cores vêm do tema.
 
 **Referência.** [SPRINT-1.md](SPRINT-1.md) *Acessibilidade* · `moveis-s1-pte2.md`, capítulo 3.
 
