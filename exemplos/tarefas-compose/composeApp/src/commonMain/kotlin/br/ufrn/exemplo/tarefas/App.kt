@@ -1,5 +1,12 @@
 package br.ufrn.exemplo.tarefas
 
+import br.ufrn.exemplo.tarefas.apresentacao.EstadoLista
+import br.ufrn.exemplo.tarefas.apresentacao.EstadoTela
+import br.ufrn.exemplo.tarefas.apresentacao.TarefasViewModel
+import br.ufrn.exemplo.tarefas.apresentacao.TelaCarregando
+import br.ufrn.exemplo.tarefas.apresentacao.TelaDetalhe
+import br.ufrn.exemplo.tarefas.apresentacao.TelaErro
+import br.ufrn.exemplo.tarefas.apresentacao.TelaLista
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -15,12 +22,14 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.compose.KoinApplication
+import org.koin.compose.viewmodel.koinViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -38,7 +47,7 @@ object Lista
 data class Detalhe(val id: Int)
 
 @Composable
-fun App() {
+fun App(diretorioDeDados: String) {
     // Largura da janela: compacta (celular em pé) ou média/expandida (tablet, desktop).
     val largura = currentWindowAdaptiveInfo().windowSizeClass
     val largo = largura.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
@@ -46,47 +55,44 @@ fun App() {
     // O tema segue o sistema. `MaterialTheme { }` sem `colorScheme` é sempre claro.
     val cores = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
 
-    MaterialTheme(colorScheme = cores) {
-        // Surface pinta o fundo do tema (claro/escuro); safeDrawingPadding evita a barra
-        // de status e o recorte da câmera no Android.
-        Surface(Modifier.fillMaxSize()) {
-            Conteudo(largo = largo, modifier = Modifier.safeDrawingPadding())
+    // O Koin fica disponível para tudo o que está dentro do bloco (21/10).
+    KoinApplication(application = { modules(moduloTarefas(diretorioDeDados)) }) {
+        MaterialTheme(colorScheme = cores) {
+            // Surface pinta o fundo do tema (claro/escuro); safeDrawingPadding evita a barra
+            // de status e o recorte da câmera no Android.
+            Surface(Modifier.fillMaxSize()) {
+                Conteudo(largo = largo, modifier = Modifier.safeDrawingPadding())
+            }
         }
     }
 }
 
-// Estado elevado acima da navegação: as duas telas enxergam a mesma lista.
-// `largo` vem de fora para que os testes escolham o layout.
+// O estado mora no ViewModel, acima da navegação: as duas telas enxergam a mesma lista.
+// `largo` e o ViewModel vêm de fora para que os testes escolham o layout e o estado.
 @Composable
 fun Conteudo(
     largo: Boolean,
     modifier: Modifier = Modifier,
+    viewModel: TarefasViewModel = koinViewModel(),
     navController: NavHostController = rememberNavController(),
 ) {
-    var tarefas by remember { mutableStateOf(tarefasIniciais) }
-    var texto by rememberSaveable { mutableStateOf("") }
-    var proximoId by remember { mutableStateOf(3) }
-    var selecionada by rememberSaveable { mutableStateOf<Int?>(null) }
-
-    val adicionar = {
-        tarefas = tarefas.comNova(proximoId, texto)
-        proximoId++
-        texto = ""
-    }
-    val alternar = { id: Int -> tarefas = tarefas.alternando(id) }
+    // collectAsStateWithLifecycle: lê o StateFlow como estado do Compose, e para de
+    // coletar quando a tela não está visível.
+    val estado by viewModel.estado.collectAsStateWithLifecycle()
+    var selecionada by rememberSaveable { mutableStateOf<Int?>(null) }   // estado só da interface
 
     if (largo) {
         // Janela larga: lista e detalhe lado a lado, sem navegar.
         Row(modifier.fillMaxSize()) {
-            TelaLista(
-                tarefas, texto, { texto = it }, adicionar, alternar,
+            ListaConformeEstado(
+                estado, viewModel,
                 onAbrir = { selecionada = it },
                 modifier = Modifier.width(360.dp),
             )
             VerticalDivider()
             TelaDetalhe(
-                tarefa = tarefas.find { it.id == selecionada },
-                onAlternar = { selecionada?.let(alternar) },
+                tarefa = estado.tarefas.find { it.id == selecionada },
+                onAlternar = { selecionada?.let(viewModel::alternar) },
                 onVoltar = null,
                 modifier = Modifier.fillMaxHeight(),
             )
@@ -95,8 +101,8 @@ fun Conteudo(
         // Janela compacta: uma tela por vez, com pilha de retorno.
         NavHost(navController, startDestination = Lista, modifier = modifier) {
             composable<Lista> {
-                TelaLista(
-                    tarefas, texto, { texto = it }, adicionar, alternar,
+                ListaConformeEstado(
+                    estado, viewModel,
                     onAbrir = { id -> navController.navigate(Detalhe(id)) },
                 )
             }
@@ -106,8 +112,8 @@ fun Conteudo(
             ) { entrada ->
                 val rota = entrada.toRoute<Detalhe>()
                 TelaDetalhe(
-                    tarefa = tarefas.find { it.id == rota.id },
-                    onAlternar = { alternar(rota.id) },
+                    tarefa = estado.tarefas.find { it.id == rota.id },
+                    onAlternar = { viewModel.alternar(rota.id) },
                     onVoltar = { navController.popBackStack() },
                 )
             }
@@ -115,8 +121,32 @@ fun Conteudo(
     }
 }
 
+// Um ramo por caso da classe selada. Sem `else`: se surgir um quinto estado, o `when`
+// deixa de compilar até que alguém decida como mostrá-lo.
+@Composable
+fun ListaConformeEstado(
+    estado: EstadoLista,
+    viewModel: TarefasViewModel,
+    onAbrir: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    when (val tela = estado.tela) {
+        EstadoTela.Carregando -> TelaCarregando(modifier)
+        is EstadoTela.Erro -> TelaErro(tela.mensagem, onTentarDeNovo = viewModel::carregar, modifier = modifier)
+        EstadoTela.Vazio, is EstadoTela.Sucesso -> TelaLista(
+            estado.tarefas, estado.texto, viewModel::mudarTexto, viewModel::adicionar, viewModel::alternar,
+            onAbrir = onAbrir,
+            modifier = modifier,
+            // Lista guardada no aparelho: avisa que pode estar desatualizada.
+            aviso = estado.aviso ?: if ((tela as? EstadoTela.Sucesso)?.doCache == true) {
+                "Sem conexão: mostrando a última lista salva."
+            } else null,
+        )
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun AppPreview() {
-    App()
+    App(diretorioDeDados = "build/preview")
 }

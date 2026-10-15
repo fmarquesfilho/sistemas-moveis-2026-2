@@ -32,6 +32,18 @@ fi
 '''
 
 # Mesma coisa, mas numa janela do tamanho de um celular (desktopMain/PreviewCelular.kt).
+[tasks."app:sem-api"]
+description = "Abre a tela no desktop sem a API de Web II (repositório em memória)"
+dir = "exemplos/tarefas-compose"
+env = { TAREFAS_API = "memoria" }
+run = '''
+if [ -n "$CODESPACES" ]; then
+  DISPLAY=:1 ./gradlew :composeApp:hotRunDesktop --auto
+else
+  ./gradlew :composeApp:hotRunDesktop --auto
+fi
+'''
+
 [tasks."app:celular"]
 description = "Abre a tela numa janela de celular, com Hot Reload"
 dir = "exemplos/tarefas-compose"

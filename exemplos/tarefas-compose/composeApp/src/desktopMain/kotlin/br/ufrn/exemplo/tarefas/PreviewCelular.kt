@@ -9,5 +9,5 @@ import org.jetbrains.compose.reload.DevelopmentEntryPoint
 @DevelopmentEntryPoint(windowWidth = 412, windowHeight = 915)
 @Composable
 fun TelaCelular() {
-    App()
+    App(diretorioDeDados = diretorioDoDesktop())
 }

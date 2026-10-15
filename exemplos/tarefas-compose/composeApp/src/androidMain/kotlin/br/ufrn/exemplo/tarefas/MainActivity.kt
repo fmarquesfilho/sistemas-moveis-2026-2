@@ -13,6 +13,6 @@ class MainActivity : ComponentActivity() {
         // do sistema: escuros no modo claro, claros no modo escuro.
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        setContent { App() }
+        setContent { App(diretorioDeDados = filesDir.path) }   // a pasta privada do app
     }
 }

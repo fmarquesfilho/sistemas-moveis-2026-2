@@ -15,6 +15,10 @@ fun main() = application {
         title = "Tarefas",
         state = rememberWindowState(size = DpSize(412.dp, 915.dp)),
     ) {
-        App()
+        App(diretorioDeDados = diretorioDoDesktop())
     }
 }
+
+// No desktop, uma pasta na home do usuário.
+fun diretorioDoDesktop(): String =
+    java.io.File(System.getProperty("user.home"), ".tarefas-compose").apply { mkdirs() }.path

@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Acesso à rede, para chamar a API de Tarefas (21/10). -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- usesCleartextTraffic: aceita http:// sem TLS, para a API local de desenvolvimento.
+         Num app publicado, a API usa https e esta linha sai. -->
     <application
         android:label="Tarefas"
+        android:usesCleartextTraffic="true"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
         <activity
             android:name=".MainActivity"
