@@ -1,16 +1,11 @@
-package br.ufrn.exemplo.tarefas
+package br.ufrn.exemplo.tarefas.dados
 
+import br.ufrn.exemplo.tarefas.dominio.RepositorioDeTarefas
+import br.ufrn.exemplo.tarefas.dominio.Tarefa
+import br.ufrn.exemplo.tarefas.dominio.tarefasIniciais
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
-
-// De onde vêm as tarefas. A tela e o ViewModel conhecem só esta interface; quem a
-// implementa (memória, rede, banco local) é escolhido de fora.
-interface RepositorioDeTarefas {
-    // suspend: a resposta pode demorar (rede, disco), e a função espera sem travar a tela.
-    suspend fun listar(): List<Tarefa>
-    suspend fun adicionar(titulo: String): Tarefa
-}
 
 // Implementação em memória, com uma demora para imitar a rede. `falhar` simula a rede fora.
 class RepositorioEmMemoria(

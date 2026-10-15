@@ -1,5 +1,10 @@
-package br.ufrn.exemplo.tarefas
+package br.ufrn.exemplo.tarefas.apresentacao
 
+import br.ufrn.exemplo.tarefas.dominio.Tarefa
+import br.ufrn.exemplo.tarefas.dominio.alternando
+import br.ufrn.exemplo.tarefas.dominio.comNova
+import br.ufrn.exemplo.tarefas.dominio.tituloValido
+import br.ufrn.exemplo.tarefas.dominio.RepositorioDeTarefas
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CancellationException
@@ -27,9 +32,9 @@ data class EstadoLista(
 }
 
 // O ViewModel guarda o estado fora da composição: sobrevive à rotação da tela e à troca
-// de destino na navegação. O repositório chega pelo construtor.
+// de destino na navegação. O repositório chega pelo construtor, entregue pelo Koin.
 class TarefasViewModel(
-    private val repositorio: RepositorioDeTarefas = RepositorioEmMemoria(),
+    private val repositorio: RepositorioDeTarefas,
 ) : ViewModel() {
 
     // MutableStateFlow é privado: só o ViewModel altera. A tela enxerga um StateFlow.

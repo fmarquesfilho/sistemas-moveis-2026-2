@@ -1,5 +1,8 @@
-package br.ufrn.exemplo.tarefas
+package br.ufrn.exemplo.tarefas.apresentacao
 
+import br.ufrn.exemplo.tarefas.dominio.Tarefa
+import br.ufrn.exemplo.tarefas.dominio.tarefasIniciais
+import br.ufrn.exemplo.tarefas.dominio.tituloValido
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

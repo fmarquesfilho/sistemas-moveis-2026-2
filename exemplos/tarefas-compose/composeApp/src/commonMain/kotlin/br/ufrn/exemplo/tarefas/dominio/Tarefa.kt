@@ -1,6 +1,6 @@
-package br.ufrn.exemplo.tarefas
+package br.ufrn.exemplo.tarefas.dominio
 
-// Modelo de UI. Esta MESMA UI roda no Android e no desktop, porque está em commonMain.
+// O domínio: o modelo e as regras, em Kotlin puro. Não importa Compose, Ktor nem banco.
 data class Tarefa(val id: Int, val titulo: String, val feita: Boolean = false)
 
 // Regras da tela como funções puras: sem Compose, testáveis com kotlin.test (21/09).
@@ -15,3 +15,11 @@ val tarefasIniciais = listOf(
     Tarefa(1, "Estudar Compose"),
     Tarefa(2, "Entender estado elevado"),
 )
+
+// De onde vêm as tarefas. A tela e o ViewModel conhecem só esta interface; quem a
+// implementa (memória, rede, banco local) é escolhido de fora.
+interface RepositorioDeTarefas {
+    // suspend: a resposta pode demorar (rede, disco), e a função espera sem travar a tela.
+    suspend fun listar(): List<Tarefa>
+    suspend fun adicionar(titulo: String): Tarefa
+}

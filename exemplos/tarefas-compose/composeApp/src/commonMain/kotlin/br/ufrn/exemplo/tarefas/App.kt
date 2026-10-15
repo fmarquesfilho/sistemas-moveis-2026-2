@@ -1,5 +1,12 @@
 package br.ufrn.exemplo.tarefas
 
+import br.ufrn.exemplo.tarefas.apresentacao.EstadoLista
+import br.ufrn.exemplo.tarefas.apresentacao.EstadoTela
+import br.ufrn.exemplo.tarefas.apresentacao.TarefasViewModel
+import br.ufrn.exemplo.tarefas.apresentacao.TelaCarregando
+import br.ufrn.exemplo.tarefas.apresentacao.TelaDetalhe
+import br.ufrn.exemplo.tarefas.apresentacao.TelaErro
+import br.ufrn.exemplo.tarefas.apresentacao.TelaLista
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -21,7 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.compose.KoinApplication
+import org.koin.compose.viewmodel.koinViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -47,11 +55,14 @@ fun App() {
     // O tema segue o sistema. `MaterialTheme { }` sem `colorScheme` é sempre claro.
     val cores = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
 
-    MaterialTheme(colorScheme = cores) {
-        // Surface pinta o fundo do tema (claro/escuro); safeDrawingPadding evita a barra
-        // de status e o recorte da câmera no Android.
-        Surface(Modifier.fillMaxSize()) {
-            Conteudo(largo = largo, modifier = Modifier.safeDrawingPadding())
+    // O Koin fica disponível para tudo o que está dentro do bloco (21/10).
+    KoinApplication(application = { modules(moduloTarefas) }) {
+        MaterialTheme(colorScheme = cores) {
+            // Surface pinta o fundo do tema (claro/escuro); safeDrawingPadding evita a barra
+            // de status e o recorte da câmera no Android.
+            Surface(Modifier.fillMaxSize()) {
+                Conteudo(largo = largo, modifier = Modifier.safeDrawingPadding())
+            }
         }
     }
 }
@@ -62,7 +73,7 @@ fun App() {
 fun Conteudo(
     largo: Boolean,
     modifier: Modifier = Modifier,
-    viewModel: TarefasViewModel = viewModel { TarefasViewModel() },
+    viewModel: TarefasViewModel = koinViewModel(),
     navController: NavHostController = rememberNavController(),
 ) {
     // collectAsStateWithLifecycle: lê o StateFlow como estado do Compose, e para de

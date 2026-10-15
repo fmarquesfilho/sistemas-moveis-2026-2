@@ -37,6 +37,7 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.lifecycle.viewmodel.compose) // ViewModel multiplataforma (19/10)
             implementation(libs.lifecycle.runtime.compose)   // collectAsStateWithLifecycle
+            implementation(libs.koin.compose.viewmodel)      // injeção de dependência (21/10)
         }
         // Testes compartilhados: kotlin.test e testes de interface do Compose (21/09).
         commonTest.dependencies {

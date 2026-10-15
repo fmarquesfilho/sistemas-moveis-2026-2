@@ -1,5 +1,7 @@
 package br.ufrn.exemplo.tarefas
 
+import br.ufrn.exemplo.tarefas.apresentacao.TarefasViewModel
+import br.ufrn.exemplo.tarefas.dados.RepositorioEmMemoria
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotEnabled

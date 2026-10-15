@@ -1,4 +1,8 @@
-package br.ufrn.exemplo.tarefas
+package br.ufrn.exemplo.tarefas.apresentacao
+
+import br.ufrn.exemplo.tarefas.dados.RepositorioEmMemoria
+import br.ufrn.exemplo.tarefas.dominio.Tarefa
+import br.ufrn.exemplo.tarefas.dominio.tarefasIniciais
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
