@@ -291,6 +291,141 @@ mise run studio         # Android Studio na área de trabalho (só no Codespace)
 
 ---
 
+## Passos 11 a 16 — Sprint 2: estado, dados reais e testes
+
+A partir daqui, o app deixa de guardar tudo na tela e passa a buscar as tarefas na API de
+Tarefas de Web II (`web2-2026-2/exemplos/ktor-tarefas`), com o estado num ViewModel, as
+camadas separadas, o Koin ligando as peças, uma cópia local para abrir sem rede e testes de
+ViewModel com Turbine.
+
+```
+br.ufrn.exemplo.tarefas
+├── App.kt, Modulos.kt           tema, navegação e a raiz de composição (Koin)
+├── dominio/Tarefa.kt            Tarefa, regras, a porta RepositorioDeTarefas, falhas
+├── dados/                       RepositorioRemoto (Ktor Client), RepositorioComCache
+│                                (DataStore), RepositorioEmMemoria, Endereco (expect/actual)
+└── apresentacao/                TarefasViewModel, EstadoTela, Telas.kt
+```
+
+Versões novas: Lifecycle ViewModel 2.9.6 (a mesma da Navigation 2.9.2), Koin 4.2.2, Ktor
+Client 3.5.2 (OkHttp no Android, CIO no desktop), DataStore 1.2.1, kotlinx-coroutines 1.11.0,
+Turbine 1.2.1.
+
+### Passo 11 — O estado sai da tela: ViewModel com `StateFlow`
+
+```kotlin
+class TarefasViewModel : ViewModel() {
+    private val _estado = MutableStateFlow(EstadoLista())     // só o ViewModel altera
+    val estado: StateFlow<EstadoLista> = _estado.asStateFlow()  // a tela só lê
+
+    fun adicionar() = _estado.update { ... }                  // eventos viram funções
+}
+
+// Na tela:
+val estado by viewModel.estado.collectAsStateWithLifecycle()
+```
+
+O texto do formulário e a lista sobrevivem à rotação e à troca de destino. O alvo desktop
+precisa de `kotlinx-coroutines-swing` para ter `Dispatchers.Main`.
+
+### Passo 12 — Carregar sem travar a tela: `suspend`, `viewModelScope` e estado selado
+
+```kotlin
+sealed interface EstadoTela {
+    data object Carregando : EstadoTela
+    data object Vazio : EstadoTela
+    data class Sucesso(val tarefas: List<Tarefa>) : EstadoTela
+    data class Erro(val mensagem: String) : EstadoTela
+}
+
+fun carregar() {
+    _estado.update { it.copy(tela = EstadoTela.Carregando) }
+    viewModelScope.launch {                          // cancelada quando o ViewModel some
+        val tela = try { ... repositorio.listar() ... } catch (...) { EstadoTela.Erro(...) }
+        _estado.update { it.copy(tela = tela) }
+    }
+}
+```
+
+Na tela, um `when (estado.tela)` sem `else`: um caso novo deixa de compilar até ser tratado.
+O repositório em memória tem uma demora de 800 ms, para ver o indicador de carregamento.
+
+### Passo 13 — Camadas e injeção de dependência com Koin
+
+O código se divide em `dominio`, `dados` e `apresentacao`. O domínio não importa Compose,
+Ktor nem DataStore. O ViewModel recebe o repositório pelo construtor, e o Koin monta tudo:
+
+```kotlin
+val moduloTarefas = module {
+    single<RepositorioDeTarefas> { RepositorioEmMemoria() }
+    viewModelOf(::TarefasViewModel)
+}
+
+KoinApplication(application = { modules(moduloTarefas) }) { ... }   // em App()
+viewModel: TarefasViewModel = koinViewModel()                       // em Conteudo()
+```
+
+### Passo 14 — Dados reais: Ktor Client, DTO e erros de rede com nome
+
+`RepositorioRemoto` faz `GET` e `POST /tarefas` na API de Web II. O JSON chega num DTO
+(`TarefaDto`), convertido para a `Tarefa` do domínio. As exceções do Ktor viram falhas do
+domínio, e cada uma tem a sua mensagem na tela:
+
+| O que aconteceu | Exceção do Ktor | Falha do domínio |
+|---|---|---|
+| API fora do ar, sem rede | `IOException` | `SemConexao` |
+| status 4xx ou 5xx | `ResponseException` (com `expectSuccess = true`) | `RespostaInvalida` |
+| JSON fora do formato | `ContentConvertException`, `SerializationException` | `RespostaInvalida` |
+
+Endereço da API: `http://localhost:8080` no desktop (ou `TAREFAS_API`) e
+`http://10.0.2.2:8080` no emulador (`expect`/`actual`). Sem a API, o app roda com o
+repositório em memória: `TAREFAS_API=memoria ./gradlew :composeApp:run` ou
+`mise run app:sem-api` (no Codespace, `TAREFAS_API=memoria` já vem definido). O Android precisa da permissão
+`INTERNET` e, para `http://` local, de `usesCleartextTraffic`.
+
+```bash
+# terminal 1, no repositório de Web II: a API, o banco e o serviço Go
+cd web2-2026-2/exemplos && docker compose up --build
+# terminal 2, aqui
+./gradlew :composeApp:run
+```
+
+### Passo 15 — Abrir sem rede: a última lista guardada com DataStore
+
+`RepositorioComCache` envolve o remoto: guarda cada lista recebida e, sem conexão, devolve a
+última guardada, com `doCache = true`. A tela mostra "Sem conexão: mostrando a última lista
+salva.". O diretório do arquivo vem de cada plataforma: `filesDir` no Android, `~/.tarefas-compose`
+no desktop (`App(diretorioDeDados = ...)`).
+
+Para conferir: abra o app com a API no ar, feche, pare a API (`docker compose stop api-ktor`)
+e abra de novo.
+
+### Passo 16 — Testes de ViewModel com Turbine e dublês
+
+```kotlin
+@Test
+fun carregarPassaPorCarregandoEChegaASucesso() = runTest {
+    Dispatchers.setMain(StandardTestDispatcher(testScheduler))   // relógio virtual
+    TarefasViewModel(RepositorioFalso()).estado.test {           // Turbine
+        assertEquals(EstadoTela.Carregando, awaitItem().tela)
+        assertIs<EstadoTela.Sucesso>(awaitItem().tela)
+    }
+}
+```
+
+O `RepositorioFalso` espera 500 ms de tempo virtual: o teste vê o estado intermediário
+(`Carregando`) e não espera de verdade. São 7 testes de ViewModel, 7 de interface, 4 do
+repositório remoto (com `MockEngine`), 3 do cache, 3 de regras e 1 do módulo do Koin: 25 no
+total, todos no alvo desktop.
+
+```bash
+./gradlew :composeApp:desktopTest
+```
+
+📖 [Android — StateFlow and SharedFlow](https://developer.android.com/kotlin/flow/stateflow-and-sharedflow) · [Compose Multiplatform — ViewModel](https://kotlinlang.org/docs/multiplatform/compose-viewmodel.html) · [Koin — Compose Multiplatform](https://insert-koin.io/docs/reference/koin-compose/compose) · [Ktor — Client](https://ktor.io/docs/client-create-new-application.html) · [DataStore — Kotlin Multiplatform](https://developer.android.com/kotlin/multiplatform/datastore) · [Turbine](https://github.com/cashapp/turbine)
+
+---
+
 ## Onde isto encosta no MUSI
 
 `@Composable`, estado elevado, componente próprio e `LazyColumn` são as mesmas peças da
