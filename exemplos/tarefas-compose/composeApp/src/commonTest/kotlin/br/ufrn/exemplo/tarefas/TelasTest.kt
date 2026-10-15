@@ -2,6 +2,7 @@ package br.ufrn.exemplo.tarefas
 
 import br.ufrn.exemplo.tarefas.apresentacao.TarefasViewModel
 import br.ufrn.exemplo.tarefas.dados.RepositorioEmMemoria
+import br.ufrn.exemplo.tarefas.dominio.RepositorioDeTarefas
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -89,5 +90,15 @@ class TelasTest {
         repositorio.falhar = false
         onNodeWithText("Tentar de novo").performClick()
         onNodeWithText("Estudar Compose").assertIsDisplayed()
+    }
+
+    @Test
+    fun listaDoCacheMostraAviso() = runComposeUiTest {
+        val remoto = RepositorioEmMemoria(demora = Duration.ZERO)
+        val vm = TarefasViewModel(object : RepositorioDeTarefas by remoto {
+            override suspend fun listar() = remoto.listar().copy(doCache = true)
+        })
+        setContent { Conteudo(largo = false, viewModel = vm) }
+        onNodeWithText("Sem conexão: mostrando a última lista salva.").assertIsDisplayed()
     }
 }

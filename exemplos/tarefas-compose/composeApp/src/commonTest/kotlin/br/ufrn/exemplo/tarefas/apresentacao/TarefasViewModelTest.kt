@@ -1,72 +1,127 @@
 package br.ufrn.exemplo.tarefas.apresentacao
 
-import br.ufrn.exemplo.tarefas.dados.RepositorioEmMemoria
+import app.cash.turbine.test
+import br.ufrn.exemplo.tarefas.dominio.FalhaNoRepositorio
+import br.ufrn.exemplo.tarefas.dominio.Listagem
+import br.ufrn.exemplo.tarefas.dominio.RepositorioDeTarefas
 import br.ufrn.exemplo.tarefas.dominio.Tarefa
-import br.ufrn.exemplo.tarefas.dominio.tarefasIniciais
-
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
-import kotlin.time.Duration
 
-// O ViewModel sem tela. viewModelScope usa Dispatchers.Main; no teste, ele é trocado por
-// um despachante que executa as corrotinas na hora.
+// Dublê do repositório: responde o que o teste mandar, depois de 500 ms de "rede".
+// O tempo é virtual: o teste não espera de verdade.
+class RepositorioFalso(
+    var listar: () -> Listagem = { Listagem(listOf(Tarefa(1, "Estudar Flow"))) },
+) : RepositorioDeTarefas {
+    var proximoId = 10
+    override suspend fun listar(): Listagem {
+        delay(500)
+        return listar.invoke()
+    }
+    override suspend fun adicionar(titulo: String): Tarefa {
+        delay(500)
+        return Tarefa(proximoId++, titulo)
+    }
+}
+
+// O ViewModel observado como um Flow, com o Turbine: cada awaitItem() é o próximo estado
+// emitido, na ordem. Assim o teste vê também os estados intermediários (Carregando).
 @OptIn(ExperimentalCoroutinesApi::class)
 class TarefasViewModelTest {
 
-    @BeforeTest
-    fun trocarMain() = Dispatchers.setMain(UnconfinedTestDispatcher())
+    // viewModelScope usa Dispatchers.Main; aqui ele vira um despachante de teste que
+    // compartilha o relógio virtual do runTest.
+    private fun TestScope.usarRelogioDoTeste() = Dispatchers.setMain(StandardTestDispatcher(testScheduler))
 
     @AfterTest
     fun restaurarMain() = Dispatchers.resetMain()
 
-    private fun vm(falhar: Boolean = false, iniciais: List<Tarefa> = tarefasIniciais) =
-        TarefasViewModel(RepositorioEmMemoria(Duration.ZERO, falhar, iniciais))
-
     @Test
-    fun carregaAsTarefas() {
-        assertEquals(2, assertIs<EstadoTela.Sucesso>(vm().estado.value.tela).tarefas.size)
+    fun carregarPassaPorCarregandoEChegaASucesso() = runTest {
+        usarRelogioDoTeste()
+        TarefasViewModel(RepositorioFalso()).estado.test {
+            assertEquals(EstadoTela.Carregando, awaitItem().tela)
+            val tela = assertIs<EstadoTela.Sucesso>(awaitItem().tela)
+            assertEquals("Estudar Flow", tela.tarefas.single().titulo)
+        }
     }
 
     @Test
-    fun listaVaziaViraVazio() {
-        assertEquals(EstadoTela.Vazio, vm(iniciais = emptyList()).estado.value.tela)
+    fun listaVaziaViraVazio() = runTest {
+        usarRelogioDoTeste()
+        TarefasViewModel(RepositorioFalso { Listagem(emptyList()) }).estado.test {
+            assertEquals(EstadoTela.Carregando, awaitItem().tela)
+            assertEquals(EstadoTela.Vazio, awaitItem().tela)
+        }
     }
 
     @Test
-    fun falhaViraErro() {
-        assertIs<EstadoTela.Erro>(vm(falhar = true).estado.value.tela)
+    fun semConexaoViraErroComMensagemPropria() = runTest {
+        usarRelogioDoTeste()
+        TarefasViewModel(RepositorioFalso { throw FalhaNoRepositorio.SemConexao() }).estado.test {
+            assertEquals(EstadoTela.Carregando, awaitItem().tela)
+            val erro = assertIs<EstadoTela.Erro>(awaitItem().tela)
+            assertTrue("Sem conexão" in erro.mensagem)
+        }
     }
 
     @Test
-    fun adicionarAcrescentaELimpaOTexto() {
-        val vm = vm()
-        vm.mudarTexto("Estudar Flow")
-        vm.adicionar()
-        assertEquals("Estudar Flow", vm.estado.value.tarefas.last().titulo)
-        assertEquals("", vm.estado.value.texto)
+    fun respostaInvalidaViraOutroErro() = runTest {
+        usarRelogioDoTeste()
+        TarefasViewModel(RepositorioFalso { throw FalhaNoRepositorio.RespostaInvalida("status 500") }).estado.test {
+            assertEquals(EstadoTela.Carregando, awaitItem().tela)
+            val erro = assertIs<EstadoTela.Erro>(awaitItem().tela)
+            assertTrue("inesperado" in erro.mensagem)
+        }
     }
 
     @Test
-    fun tituloEmBrancoNaoAcrescenta() {
-        val vm = vm()
-        vm.mudarTexto("   ")
-        vm.adicionar()
-        assertEquals(2, vm.estado.value.tarefas.size)
+    fun tentarDeNovoDepoisDoErro() = runTest {
+        usarRelogioDoTeste()
+        val repositorio = RepositorioFalso { throw FalhaNoRepositorio.SemConexao() }
+        val vm = TarefasViewModel(repositorio)
+        vm.estado.test {
+            skipItems(1)                                         // Carregando
+            assertIs<EstadoTela.Erro>(awaitItem().tela)
+            repositorio.listar = { Listagem(listOf(Tarefa(1, "Voltou"))) }
+            vm.carregar()
+            assertEquals(EstadoTela.Carregando, awaitItem().tela)
+            assertIs<EstadoTela.Sucesso>(awaitItem().tela)
+        }
     }
 
     @Test
-    fun alternarMarcaATarefa() {
-        val vm = vm()
-        vm.alternar(1)
-        assertTrue(vm.estado.value.tarefas.first { it.id == 1 }.feita)
+    fun listaDoCacheChegaMarcada() = runTest {
+        usarRelogioDoTeste()
+        TarefasViewModel(RepositorioFalso { Listagem(listOf(Tarefa(1, "Guardada")), doCache = true) }).estado.test {
+            skipItems(1)
+            assertTrue(assertIs<EstadoTela.Sucesso>(awaitItem().tela).doCache)
+        }
+    }
+
+    @Test
+    fun adicionarAcrescentaELimpaOTexto() = runTest {
+        usarRelogioDoTeste()
+        val vm = TarefasViewModel(RepositorioFalso())
+        vm.estado.test {
+            skipItems(2)                                         // Carregando, Sucesso
+            vm.mudarTexto("Escrever testes")
+            assertEquals("Escrever testes", awaitItem().texto)
+            vm.adicionar()
+            val depois = awaitItem()
+            assertEquals("Escrever testes", depois.tarefas.last().titulo)
+            assertEquals("", depois.texto)
+        }
     }
 }

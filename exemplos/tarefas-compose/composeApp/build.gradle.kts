@@ -49,6 +49,8 @@ kotlin {
             implementation(kotlin("test"))
             implementation(libs.compose.ui.test)
             implementation(libs.ktor.client.mock)   // servidor HTTP de mentira, para testar o repositório
+            implementation(libs.kotlinx.coroutines.test) // runTest e despachantes de teste
+            implementation(libs.turbine)                 // testar a sequência de valores de um Flow
         }
         androidMain.dependencies {
             implementation("org.jetbrains.compose.ui:ui-tooling:${libs.versions.compose.get()}") // render do @Preview no Android Studio
