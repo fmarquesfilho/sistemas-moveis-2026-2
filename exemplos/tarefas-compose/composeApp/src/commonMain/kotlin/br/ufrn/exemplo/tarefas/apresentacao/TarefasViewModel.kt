@@ -4,10 +4,10 @@ import br.ufrn.exemplo.tarefas.dominio.Tarefa
 import br.ufrn.exemplo.tarefas.dominio.alternando
 import br.ufrn.exemplo.tarefas.dominio.comNova
 import br.ufrn.exemplo.tarefas.dominio.tituloValido
+import br.ufrn.exemplo.tarefas.dominio.FalhaNoRepositorio
 import br.ufrn.exemplo.tarefas.dominio.RepositorioDeTarefas
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,10 +23,12 @@ sealed interface EstadoTela {
     data class Erro(val mensagem: String) : EstadoTela
 }
 
-// O estado da tela de lista: o conteúdo (um dos quatro casos) e o texto do formulário.
+// O estado da tela de lista: o conteúdo (um dos quatro casos), o texto do formulário e
+// um aviso passageiro (quando salvar falha, a lista continua na tela).
 data class EstadoLista(
     val tela: EstadoTela = EstadoTela.Carregando,
     val texto: String = "",
+    val aviso: String? = null,
 ) {
     val tarefas: List<Tarefa> get() = (tela as? EstadoTela.Sucesso)?.tarefas.orEmpty()
 }
@@ -52,10 +54,10 @@ class TarefasViewModel(
             val tela = try {
                 val tarefas = repositorio.listar()
                 if (tarefas.isEmpty()) EstadoTela.Vazio else EstadoTela.Sucesso(tarefas)
-            } catch (e: CancellationException) {
-                throw e        // cancelamento não é erro: deixa a corrotina terminar
-            } catch (e: Exception) {
-                EstadoTela.Erro("Não foi possível carregar as tarefas.")
+            } catch (e: FalhaNoRepositorio.SemConexao) {
+                EstadoTela.Erro("Sem conexão com o servidor. Confira a rede e tente de novo.")
+            } catch (e: FalhaNoRepositorio.RespostaInvalida) {
+                EstadoTela.Erro("O servidor respondeu algo inesperado (${e.message}).")
             }
             _estado.update { it.copy(tela = tela) }
         }
@@ -69,11 +71,9 @@ class TarefasViewModel(
         viewModelScope.launch {
             try {
                 val nova = repositorio.adicionar(texto)
-                _estado.update { it.copy(tela = EstadoTela.Sucesso(it.tarefas + nova), texto = "") }
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                _estado.update { it.copy(tela = EstadoTela.Erro("Não foi possível salvar a tarefa.")) }
+                _estado.update { it.copy(tela = EstadoTela.Sucesso(it.tarefas + nova), texto = "", aviso = null) }
+            } catch (e: FalhaNoRepositorio) {
+                _estado.update { it.copy(aviso = "A tarefa não foi salva: ${e.message}.") }
             }
         }
     }

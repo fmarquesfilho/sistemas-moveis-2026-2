@@ -1,5 +1,6 @@
 package br.ufrn.exemplo.tarefas.dados
 
+import br.ufrn.exemplo.tarefas.dominio.FalhaNoRepositorio
 import br.ufrn.exemplo.tarefas.dominio.RepositorioDeTarefas
 import br.ufrn.exemplo.tarefas.dominio.Tarefa
 import br.ufrn.exemplo.tarefas.dominio.tarefasIniciais
@@ -18,13 +19,13 @@ class RepositorioEmMemoria(
 
     override suspend fun listar(): List<Tarefa> {
         delay(demora)          // suspende a corrotina; a thread da interface continua livre
-        if (falhar) error("sem conexão")
+        if (falhar) throw FalhaNoRepositorio.SemConexao()
         return tarefas.toList()
     }
 
     override suspend fun adicionar(titulo: String): Tarefa {
         delay(demora)
-        if (falhar) error("sem conexão")
+        if (falhar) throw FalhaNoRepositorio.SemConexao()
         return Tarefa(proximoId++, titulo.trim()).also { tarefas += it }
     }
 }

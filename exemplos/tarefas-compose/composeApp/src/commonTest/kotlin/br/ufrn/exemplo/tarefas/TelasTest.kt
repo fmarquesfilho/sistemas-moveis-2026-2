@@ -85,7 +85,7 @@ class TelasTest {
     fun erroMostraMensagemEBotaoDeTentarDeNovo() = runComposeUiTest {
         val repositorio = RepositorioEmMemoria(demora = Duration.ZERO, falhar = true)
         setContent { Conteudo(largo = false, viewModel = TarefasViewModel(repositorio)) }
-        onNodeWithText("Não foi possível carregar as tarefas.").assertIsDisplayed()
+        onNodeWithText("Sem conexão com o servidor. Confira a rede e tente de novo.").assertIsDisplayed()
         repositorio.falhar = false
         onNodeWithText("Tentar de novo").performClick()
         onNodeWithText("Estudar Compose").assertIsDisplayed()

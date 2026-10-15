@@ -137,6 +137,7 @@ fun ListaConformeEstado(
             estado.tarefas, estado.texto, viewModel::mudarTexto, viewModel::adicionar, viewModel::alternar,
             onAbrir = onAbrir,
             modifier = modifier,
+            aviso = estado.aviso,
         )
     }
 }

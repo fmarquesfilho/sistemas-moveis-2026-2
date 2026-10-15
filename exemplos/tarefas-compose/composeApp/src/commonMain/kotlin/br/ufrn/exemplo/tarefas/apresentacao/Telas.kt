@@ -45,6 +45,7 @@ fun TelaLista(
     onAlternar: (Int) -> Unit,
     onAbrir: (Int) -> Unit,
     modifier: Modifier = Modifier,
+    aviso: String? = null,
 ) {
     Column(modifier.padding(16.dp)) {
         // heading(): leitores de tela anunciam como título e permitem pular entre títulos.
@@ -56,6 +57,10 @@ fun TelaLista(
         Spacer(Modifier.height(12.dp))
         FormularioTarefa(texto, onTextoChange, tituloValido(texto), onAdicionar)
         Spacer(Modifier.height(12.dp))
+        if (aviso != null) {
+            Text(aviso, color = MaterialTheme.colorScheme.error)
+            Spacer(Modifier.height(8.dp))
+        }
         if (tarefas.isEmpty()) {
             Text("Nenhuma tarefa ainda. Que tal criar a primeira?")
         }

@@ -23,3 +23,9 @@ interface RepositorioDeTarefas {
     suspend fun listar(): List<Tarefa>
     suspend fun adicionar(titulo: String): Tarefa
 }
+
+// Por que a lista não veio. Cada caso vira uma mensagem diferente na tela.
+sealed class FalhaNoRepositorio(mensagem: String) : Exception(mensagem) {
+    class SemConexao : FalhaNoRepositorio("sem conexão com o servidor")
+    class RespostaInvalida(detalhe: String) : FalhaNoRepositorio("resposta inválida: $detalhe")
+}
