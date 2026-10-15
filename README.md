@@ -21,6 +21,7 @@ Cada informação vive em um único documento. Em caso de divergência, vale o d
 | [Rúbricas](docs/RUBRICAS.md) | **O que entregar** em cada sprint e como é avaliado |
 | [Guia da Sprint 0](docs/SPRINT-0.md) | Templates de visão do produto, MVP e backlog |
 | [Guia da Sprint 1](docs/SPRINT-1.md) · [tarefas](docs/SPRINT-1-TAREFAS.md) | Telas, navegação, responsividade e acessibilidade |
+| [Guia da Sprint 2](docs/SPRINT-2.md) · [tarefas](docs/SPRINT-2-TAREFAS.md) | ViewModel e estado selado, camadas, dados reais com Ktor Client, cache local e testes |
 | [Leituras](leituras/) | Guias de leitura de cada aula (`moveis-s1-pte1.md`, `moveis-s1-pte2.md`, ...) |
 | [Stack Tecnológica](docs/STACK.md) | **Kotlin Multiplatform e Compose Multiplatform**, bibliotecas, backend, plataforma-alvo e ambiente |
 
