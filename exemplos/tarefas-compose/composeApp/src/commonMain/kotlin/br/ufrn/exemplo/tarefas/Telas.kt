@@ -22,6 +22,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -49,11 +53,36 @@ fun TelaLista(
         Spacer(Modifier.height(12.dp))
         FormularioTarefa(texto, onTextoChange, tituloValido(texto), onAdicionar)
         Spacer(Modifier.height(12.dp))
+        if (tarefas.isEmpty()) {
+            Text("Nenhuma tarefa ainda. Que tal criar a primeira?")
+        }
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             items(tarefas, key = { it.id }) { tarefa ->
                 CartaoTarefa(tarefa, onAlternar = { onAlternar(tarefa.id) }, onAbrir = { onAbrir(tarefa.id) })
             }
         }
+    }
+}
+
+// Enquanto a lista chega. O indicador tem descrição, para o leitor de tela.
+@Composable
+fun TelaCarregando(modifier: Modifier = Modifier) {
+    Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator(Modifier.semantics { contentDescription = "Carregando tarefas" })
+    }
+}
+
+// Quando a lista não chegou: a mensagem e uma saída para o usuário.
+@Composable
+fun TelaErro(mensagem: String, onTentarDeNovo: () -> Unit, modifier: Modifier = Modifier) {
+    Column(
+        modifier.fillMaxSize().padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(mensagem)
+        Spacer(Modifier.height(12.dp))
+        Button(onClick = onTentarDeNovo) { Text("Tentar de novo") }
     }
 }
 

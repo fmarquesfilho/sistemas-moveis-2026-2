@@ -21,6 +21,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.Duration
 
 // Testes de interface: montam a tela, agem como o usuário e conferem a árvore de semântica
 // (a mesma que os leitores de tela usam). Rodam no alvo desktop: ./gradlew :composeApp:desktopTest
@@ -37,7 +38,7 @@ class TelasTest {
 
     @Test
     fun adicionaTarefaPeloFormulario() = runComposeUiTest {
-        setContent { Conteudo(largo = false, viewModel = TarefasViewModel()) }
+        setContent { Conteudo(largo = false, viewModel = TarefasViewModel(RepositorioEmMemoria(demora = Duration.ZERO))) }
         onNodeWithText("Adicionar").assertIsNotEnabled()
         onNodeWithText("Nova tarefa").performTextInput("Escrever testes")
         onNodeWithText("Adicionar").performClick()
@@ -46,7 +47,7 @@ class TelasTest {
 
     @Test
     fun linhaInteiraEUmaCaixaDeSelecao() = runComposeUiTest {
-        setContent { Conteudo(largo = false, viewModel = TarefasViewModel()) }
+        setContent { Conteudo(largo = false, viewModel = TarefasViewModel(RepositorioEmMemoria(demora = Duration.ZERO))) }
         onNodeWithText("Estudar Compose").assertIsToggleable().assertIsOff()
         onNodeWithText("Estudar Compose").performClick()
         onNodeWithText("Estudar Compose").assertIsOn()
@@ -54,13 +55,13 @@ class TelasTest {
 
     @Test
     fun tituloEAnunciadoComoCabecalho() = runComposeUiTest {
-        setContent { Conteudo(largo = false, viewModel = TarefasViewModel()) }
+        setContent { Conteudo(largo = false, viewModel = TarefasViewModel(RepositorioEmMemoria(demora = Duration.ZERO))) }
         assertEquals(1, onAllNodes(isHeading()).fetchSemanticsNodes().size)
     }
 
     @Test
     fun compactaNavegaParaODetalheEVolta() = runComposeUiTest {
-        setContent { Conteudo(largo = false, viewModel = TarefasViewModel()) }
+        setContent { Conteudo(largo = false, viewModel = TarefasViewModel(RepositorioEmMemoria(demora = Duration.ZERO))) }
         onAllNodesWithText("Detalhes")[0].performClick()
         onNodeWithText("Situação: pendente").assertIsDisplayed()
         onNodeWithText("Marcar como feita").performClick()
@@ -71,10 +72,20 @@ class TelasTest {
 
     @Test
     fun largaMostraListaEDetalheLadoALado() = runComposeUiTest {
-        setContent { Conteudo(largo = true, viewModel = TarefasViewModel()) }
+        setContent { Conteudo(largo = true, viewModel = TarefasViewModel(RepositorioEmMemoria(demora = Duration.ZERO))) }
         onNodeWithText("Selecione uma tarefa").assertIsDisplayed()
         onAllNodesWithText("Detalhes")[1].performClick()
         onNodeWithText("Situação: pendente").assertIsDisplayed()
         onNodeWithText("Nova tarefa").assertIsDisplayed() // a lista continua na tela
+    }
+
+    @Test
+    fun erroMostraMensagemEBotaoDeTentarDeNovo() = runComposeUiTest {
+        val repositorio = RepositorioEmMemoria(demora = Duration.ZERO, falhar = true)
+        setContent { Conteudo(largo = false, viewModel = TarefasViewModel(repositorio)) }
+        onNodeWithText("Não foi possível carregar as tarefas.").assertIsDisplayed()
+        repositorio.falhar = false
+        onNodeWithText("Tentar de novo").performClick()
+        onNodeWithText("Estudar Compose").assertIsDisplayed()
     }
 }

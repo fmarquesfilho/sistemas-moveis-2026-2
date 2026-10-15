@@ -73,8 +73,8 @@ fun Conteudo(
     if (largo) {
         // Janela larga: lista e detalhe lado a lado, sem navegar.
         Row(modifier.fillMaxSize()) {
-            TelaLista(
-                estado.tarefas, estado.texto, viewModel::mudarTexto, viewModel::adicionar, viewModel::alternar,
+            ListaConformeEstado(
+                estado, viewModel,
                 onAbrir = { selecionada = it },
                 modifier = Modifier.width(360.dp),
             )
@@ -90,8 +90,8 @@ fun Conteudo(
         // Janela compacta: uma tela por vez, com pilha de retorno.
         NavHost(navController, startDestination = Lista, modifier = modifier) {
             composable<Lista> {
-                TelaLista(
-                    estado.tarefas, estado.texto, viewModel::mudarTexto, viewModel::adicionar, viewModel::alternar,
+                ListaConformeEstado(
+                    estado, viewModel,
                     onAbrir = { id -> navController.navigate(Detalhe(id)) },
                 )
             }
@@ -107,6 +107,26 @@ fun Conteudo(
                 )
             }
         }
+    }
+}
+
+// Um ramo por caso da classe selada. Sem `else`: se surgir um quinto estado, o `when`
+// deixa de compilar até que alguém decida como mostrá-lo.
+@Composable
+fun ListaConformeEstado(
+    estado: EstadoLista,
+    viewModel: TarefasViewModel,
+    onAbrir: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    when (val tela = estado.tela) {
+        EstadoTela.Carregando -> TelaCarregando(modifier)
+        is EstadoTela.Erro -> TelaErro(tela.mensagem, onTentarDeNovo = viewModel::carregar, modifier = modifier)
+        EstadoTela.Vazio, is EstadoTela.Sucesso -> TelaLista(
+            estado.tarefas, estado.texto, viewModel::mudarTexto, viewModel::adicionar, viewModel::alternar,
+            onAbrir = onAbrir,
+            modifier = modifier,
+        )
     }
 }
 
