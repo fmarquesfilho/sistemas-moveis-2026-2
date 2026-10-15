@@ -19,7 +19,10 @@
   "containerEnv": {
     "ANDROID_HOME": "/home/vscode/android-sdk",
     // Área de trabalho larga o bastante para o Android Studio.
-    "VNC_RESOLUTION": "1600x1000x24"
+    "VNC_RESOLUTION": "1600x1000x24",
+    // O Codespace não tem a API de Tarefas de Web II: o app roda com o repositório em
+    // memória. Para usar uma API no ar, troque por http://endereco:porta.
+    "TAREFAS_API": "memoria"
   },
 
   // O alvo Android não roda aqui, mas o Gradle precisa do SDK para configurar o projeto.
