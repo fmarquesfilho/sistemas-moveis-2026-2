@@ -35,6 +35,8 @@ kotlin {
             implementation(libs.navigation.compose) // Navigation Compose (21/09)
             implementation(libs.material3.adaptive) // classes de tamanho de janela (21/09)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.lifecycle.viewmodel.compose) // ViewModel multiplataforma (19/10)
+            implementation(libs.lifecycle.runtime.compose)   // collectAsStateWithLifecycle
         }
         // Testes compartilhados: kotlin.test e testes de interface do Compose (21/09).
         commonTest.dependencies {
@@ -51,6 +53,9 @@ kotlin {
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
+            // Dispatchers.Main no desktop (a thread da interface do Swing): o ViewModel e o
+            // collectAsStateWithLifecycle precisam dele (19/10).
+            implementation(libs.kotlinx.coroutines.swing)
             implementation("org.jetbrains.compose.hot-reload:hot-reload-runtime-api:1.2.0") // @DevelopmentEntryPoint
         }
     }

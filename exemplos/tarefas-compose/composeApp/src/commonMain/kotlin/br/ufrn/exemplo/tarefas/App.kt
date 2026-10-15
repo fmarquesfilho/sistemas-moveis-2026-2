@@ -15,12 +15,13 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -55,38 +56,32 @@ fun App() {
     }
 }
 
-// Estado elevado acima da navegação: as duas telas enxergam a mesma lista.
-// `largo` vem de fora para que os testes escolham o layout.
+// O estado mora no ViewModel, acima da navegação: as duas telas enxergam a mesma lista.
+// `largo` e o ViewModel vêm de fora para que os testes escolham o layout e o estado.
 @Composable
 fun Conteudo(
     largo: Boolean,
     modifier: Modifier = Modifier,
+    viewModel: TarefasViewModel = viewModel { TarefasViewModel() },
     navController: NavHostController = rememberNavController(),
 ) {
-    var tarefas by remember { mutableStateOf(tarefasIniciais) }
-    var texto by rememberSaveable { mutableStateOf("") }
-    var proximoId by remember { mutableStateOf(3) }
-    var selecionada by rememberSaveable { mutableStateOf<Int?>(null) }
-
-    val adicionar = {
-        tarefas = tarefas.comNova(proximoId, texto)
-        proximoId++
-        texto = ""
-    }
-    val alternar = { id: Int -> tarefas = tarefas.alternando(id) }
+    // collectAsStateWithLifecycle: lê o StateFlow como estado do Compose, e para de
+    // coletar quando a tela não está visível.
+    val estado by viewModel.estado.collectAsStateWithLifecycle()
+    var selecionada by rememberSaveable { mutableStateOf<Int?>(null) }   // estado só da interface
 
     if (largo) {
         // Janela larga: lista e detalhe lado a lado, sem navegar.
         Row(modifier.fillMaxSize()) {
             TelaLista(
-                tarefas, texto, { texto = it }, adicionar, alternar,
+                estado.tarefas, estado.texto, viewModel::mudarTexto, viewModel::adicionar, viewModel::alternar,
                 onAbrir = { selecionada = it },
                 modifier = Modifier.width(360.dp),
             )
             VerticalDivider()
             TelaDetalhe(
-                tarefa = tarefas.find { it.id == selecionada },
-                onAlternar = { selecionada?.let(alternar) },
+                tarefa = estado.tarefas.find { it.id == selecionada },
+                onAlternar = { selecionada?.let(viewModel::alternar) },
                 onVoltar = null,
                 modifier = Modifier.fillMaxHeight(),
             )
@@ -96,7 +91,7 @@ fun Conteudo(
         NavHost(navController, startDestination = Lista, modifier = modifier) {
             composable<Lista> {
                 TelaLista(
-                    tarefas, texto, { texto = it }, adicionar, alternar,
+                    estado.tarefas, estado.texto, viewModel::mudarTexto, viewModel::adicionar, viewModel::alternar,
                     onAbrir = { id -> navController.navigate(Detalhe(id)) },
                 )
             }
@@ -106,8 +101,8 @@ fun Conteudo(
             ) { entrada ->
                 val rota = entrada.toRoute<Detalhe>()
                 TelaDetalhe(
-                    tarefa = tarefas.find { it.id == rota.id },
-                    onAlternar = { alternar(rota.id) },
+                    tarefa = estado.tarefas.find { it.id == rota.id },
+                    onAlternar = { viewModel.alternar(rota.id) },
                     onVoltar = { navController.popBackStack() },
                 )
             }
