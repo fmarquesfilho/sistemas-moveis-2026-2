@@ -1,6 +1,7 @@
 package br.ufrn.exemplo.tarefas.dados
 
 import br.ufrn.exemplo.tarefas.dominio.FalhaNoRepositorio
+import br.ufrn.exemplo.tarefas.dominio.Listagem
 import br.ufrn.exemplo.tarefas.dominio.RepositorioDeTarefas
 import br.ufrn.exemplo.tarefas.dominio.Tarefa
 import io.ktor.client.HttpClient
@@ -35,8 +36,8 @@ class RepositorioRemoto(
     private val enderecoDaApi: String,
 ) : RepositorioDeTarefas {
 
-    override suspend fun listar(): List<Tarefa> = traduzindoFalhas {
-        cliente.get("$enderecoDaApi/tarefas").body<List<TarefaDto>>().map { it.paraDominio() }
+    override suspend fun listar(): Listagem = traduzindoFalhas {
+        Listagem(cliente.get("$enderecoDaApi/tarefas").body<List<TarefaDto>>().map { it.paraDominio() })
     }
 
     override suspend fun adicionar(titulo: String): Tarefa = traduzindoFalhas {

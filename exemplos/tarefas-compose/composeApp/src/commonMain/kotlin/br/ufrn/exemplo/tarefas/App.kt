@@ -47,7 +47,7 @@ object Lista
 data class Detalhe(val id: Int)
 
 @Composable
-fun App() {
+fun App(diretorioDeDados: String) {
     // Largura da janela: compacta (celular em pé) ou média/expandida (tablet, desktop).
     val largura = currentWindowAdaptiveInfo().windowSizeClass
     val largo = largura.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
@@ -56,7 +56,7 @@ fun App() {
     val cores = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
 
     // O Koin fica disponível para tudo o que está dentro do bloco (21/10).
-    KoinApplication(application = { modules(moduloTarefas) }) {
+    KoinApplication(application = { modules(moduloTarefas(diretorioDeDados)) }) {
         MaterialTheme(colorScheme = cores) {
             // Surface pinta o fundo do tema (claro/escuro); safeDrawingPadding evita a barra
             // de status e o recorte da câmera no Android.
@@ -137,7 +137,10 @@ fun ListaConformeEstado(
             estado.tarefas, estado.texto, viewModel::mudarTexto, viewModel::adicionar, viewModel::alternar,
             onAbrir = onAbrir,
             modifier = modifier,
-            aviso = estado.aviso,
+            // Lista guardada no aparelho: avisa que pode estar desatualizada.
+            aviso = estado.aviso ?: if ((tela as? EstadoTela.Sucesso)?.doCache == true) {
+                "Sem conexão: mostrando a última lista salva."
+            } else null,
         )
     }
 }
@@ -145,5 +148,5 @@ fun ListaConformeEstado(
 @Preview(showBackground = true)
 @Composable
 fun AppPreview() {
-    App()
+    App(diretorioDeDados = "build/preview")
 }

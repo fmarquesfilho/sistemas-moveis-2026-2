@@ -42,6 +42,7 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.negotiation)
             implementation(libs.ktor.client.json)
+            implementation(libs.datastore.preferences.core) // a última lista, guardada no aparelho (21/10)
         }
         // Testes compartilhados: kotlin.test e testes de interface do Compose (21/09).
         commonTest.dependencies {

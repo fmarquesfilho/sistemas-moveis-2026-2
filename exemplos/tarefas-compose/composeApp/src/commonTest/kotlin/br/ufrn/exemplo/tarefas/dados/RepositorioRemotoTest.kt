@@ -31,7 +31,7 @@ class RepositorioRemotoTest {
     @Test
     fun converteOJsonDaApiEmTarefas() = runTest {
         val repo = repositorio(MockEngine { respond("""[{"id":1,"titulo":"Estudar Ktor","feita":true}]""", headers = json) })
-        val tarefas = repo.listar()
+        val tarefas = repo.listar().tarefas
         assertEquals("Estudar Ktor", tarefas.single().titulo)
         assertEquals(true, tarefas.single().feita)
     }

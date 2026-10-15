@@ -1,6 +1,7 @@
 package br.ufrn.exemplo.tarefas.dados
 
 import br.ufrn.exemplo.tarefas.dominio.FalhaNoRepositorio
+import br.ufrn.exemplo.tarefas.dominio.Listagem
 import br.ufrn.exemplo.tarefas.dominio.RepositorioDeTarefas
 import br.ufrn.exemplo.tarefas.dominio.Tarefa
 import br.ufrn.exemplo.tarefas.dominio.tarefasIniciais
@@ -17,10 +18,10 @@ class RepositorioEmMemoria(
     private val tarefas = iniciais.toMutableList()
     private var proximoId = (iniciais.maxOfOrNull { it.id } ?: 0) + 1
 
-    override suspend fun listar(): List<Tarefa> {
+    override suspend fun listar(): Listagem {
         delay(demora)          // suspende a corrotina; a thread da interface continua livre
         if (falhar) throw FalhaNoRepositorio.SemConexao()
-        return tarefas.toList()
+        return Listagem(tarefas.toList())
     }
 
     override suspend fun adicionar(titulo: String): Tarefa {

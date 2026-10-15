@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 sealed interface EstadoTela {
     data object Carregando : EstadoTela
     data object Vazio : EstadoTela
-    data class Sucesso(val tarefas: List<Tarefa>) : EstadoTela
+    data class Sucesso(val tarefas: List<Tarefa>, val doCache: Boolean = false) : EstadoTela
     data class Erro(val mensagem: String) : EstadoTela
 }
 
@@ -52,8 +52,8 @@ class TarefasViewModel(
         _estado.update { it.copy(tela = EstadoTela.Carregando) }
         viewModelScope.launch {
             val tela = try {
-                val tarefas = repositorio.listar()
-                if (tarefas.isEmpty()) EstadoTela.Vazio else EstadoTela.Sucesso(tarefas)
+                val listagem = repositorio.listar()
+                if (listagem.tarefas.isEmpty()) EstadoTela.Vazio else EstadoTela.Sucesso(listagem.tarefas, listagem.doCache)
             } catch (e: FalhaNoRepositorio.SemConexao) {
                 EstadoTela.Erro("Sem conexão com o servidor. Confira a rede e tente de novo.")
             } catch (e: FalhaNoRepositorio.RespostaInvalida) {

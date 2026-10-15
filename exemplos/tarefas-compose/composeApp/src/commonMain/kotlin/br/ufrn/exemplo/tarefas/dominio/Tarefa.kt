@@ -20,9 +20,13 @@ val tarefasIniciais = listOf(
 // implementa (memória, rede, banco local) é escolhido de fora.
 interface RepositorioDeTarefas {
     // suspend: a resposta pode demorar (rede, disco), e a função espera sem travar a tela.
-    suspend fun listar(): List<Tarefa>
+    suspend fun listar(): Listagem
     suspend fun adicionar(titulo: String): Tarefa
 }
+
+// O que listar() devolve: as tarefas e de onde vieram. doCache = true quando o servidor
+// não respondeu e a lista é a última guardada no aparelho.
+data class Listagem(val tarefas: List<Tarefa>, val doCache: Boolean = false)
 
 // Por que a lista não veio. Cada caso vira uma mensagem diferente na tela.
 sealed class FalhaNoRepositorio(mensagem: String) : Exception(mensagem) {

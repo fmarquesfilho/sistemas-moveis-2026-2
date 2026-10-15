@@ -6,6 +6,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
+import kotlinx.io.files.SystemTemporaryDirectory
 import org.koin.dsl.koinApplication
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -25,7 +26,7 @@ class ModulosTest {
 
     @Test
     fun oModuloMontaOViewModel() {
-        val koin = koinApplication { modules(moduloTarefas) }.koin
+        val koin = koinApplication { modules(moduloTarefas(SystemTemporaryDirectory.toString())) }.koin
         assertNotNull(koin.get<TarefasViewModel>())
         koin.close()
     }

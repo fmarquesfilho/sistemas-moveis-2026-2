@@ -16,6 +16,7 @@ lifecycle = "2.9.6"   # a mesma que a Navigation 2.9.2 usa
 coroutines = "1.11.0"
 koin = "4.2.2"
 ktor = "3.5.2"
+datastore = "1.2.1"
 android-compileSdk = "37"
 android-minSdk = "24"
 android-targetSdk = "37"
@@ -35,6 +36,7 @@ ktor-client-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
+datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
 lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
 
 [plugins]
