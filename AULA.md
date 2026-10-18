@@ -40,6 +40,31 @@ Do Passo 10 em diante, os mesmos comandos têm nome: `mise run app`, `mise run t
 `mise run studio`. Do Passo 14 em diante, o app busca as tarefas na API de Web II; no
 Codespace, sem a API, ele roda com o repositório em memória (`TAREFAS_API=memoria`).
 
+## Roteiro da segunda, 19/10: passos 11 e 12
+
+Na raiz do repositório (`/workspaces/sistemas-moveis-2026-2`), com a área de trabalho aberta (porta 6080). Os comandos `mise run` funcionam de qualquer pasta do repositório.
+
+```bash
+./passo.sh 11
+mise run app       # o app, agora com o estado num ViewModel
+mise run test      # 11 testes, entre eles os do ViewModel, sem tela
+./passo.sh 12
+mise run app       # carregando por 800 ms, depois a lista
+```
+
+No Passo 12, em `RepositorioEmMemoria`, troque `falhar` para `true` (tela de erro e **Tentar de novo**) e depois a lista inicial por uma vazia ("Nenhuma tarefa ainda").
+
+## Roteiro da quarta, 21/10: passos 13 a 16
+
+Também na raiz do repositório.
+
+| Passo | Comandos |
+|---|---|
+| 13 | `./passo.sh 13` · `mise run app` · `mise run test` (inclui o `ModulosTest`) |
+| 14 | `./passo.sh 14` · com a API de Web II no ar, `mise run app`: as tarefas vêm do banco. No Codespace, sem a API, o app usa o repositório em memória; para ver a tela de erro, `TAREFAS_API=http://localhost:9999 mise run app` |
+| 15 | `./passo.sh 15` · abra o app com a API no ar, feche, pare a API e abra de novo: "mostrando a última lista salva" |
+| 16 | `./passo.sh 16` · `mise run test` (25 testes) |
+
 ## O que muda em cada passo
 
 | Passo | Assunto | Diferença em relação ao passo anterior |
