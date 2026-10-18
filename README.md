@@ -1,9 +1,6 @@
 # DIM0524 — Desenvolvimento de Sistemas para Dispositivos Móveis
 
-**Bacharelado em Engenharia de Software — UFRN/DIMAp**
-**Período letivo 2026.2 — 17/08/2026 a 19/12/2026**
-**Turma 01 · Segundas e quartas, 14:50 às 16:30 (24T34)**
-**Docente**: Fernando Figueira Filho — fernando.figueira@ufrn.br
+**Bacharelado em Engenharia de Software — UFRN/DIMAp** **Período letivo 2026.2 — 17/08/2026 a 19/12/2026** **Turma 01 · Segundas e quartas, 14:50 às 16:30 (24T34)** **Docente**: Fernando Figueira Filho — fernando.figueira@ufrn.br
 
 As aulas de 10/08, 12/08 e 17/08 não foram realizadas. O curso inicia em 19/08.
 
@@ -37,10 +34,7 @@ O semestre é organizado em uma Sprint 0 e duas sprints de projeto (a Sprint 2 �
 
 ## Exemplo das aulas
 
-[`exemplos/tarefas-compose`](exemplos/tarefas-compose) é uma tela construída do zero,
-passo a passo, em Compose Multiplatform, com os alvos **Android** e **Desktop**. O
-[`PASSOS.md`](exemplos/tarefas-compose/PASSOS.md) reconstrói o exemplo do primeiro
-`@Composable` aos testes de interface.
+[`exemplos/tarefas-compose`](exemplos/tarefas-compose) é uma tela construída do zero, passo a passo, em Compose Multiplatform, com os alvos **Android** e **Desktop**. O [`PASSOS.md`](exemplos/tarefas-compose/PASSOS.md) reconstrói o exemplo do primeiro `@Composable` aos testes de interface.
 
 ### Como rodar
 
@@ -56,14 +50,9 @@ mise run test         # regras e interface, no alvo desktop (sem emulador)
 mise run apk          # APK de debug (precisa do SDK do Android)
 ```
 
-O `mise` é conveniência, não requisito: cada task mostra, no `mise.toml`, o comando
-completo (`./gradlew :composeApp:hotRunDesktop --auto`) que continua valendo. Instalação:
-[mise.jdx.dev](https://mise.jdx.dev/getting-started.html).
+O `mise` é conveniência, não requisito: cada task mostra, no `mise.toml`, o comando completo (`./gradlew :composeApp:hotRunDesktop --auto`) que continua valendo. Instalação: [mise.jdx.dev](https://mise.jdx.dev/getting-started.html).
 
-**Sem instalar nada:** crie um Codespace (Code → Codespaces). O
-[`.devcontainer/`](.devcontainer) traz o JDK, o SDK do Android, o `mise` e uma área de
-trabalho no navegador (aba **Portas** → **6080**), onde a janela do app e o Android Studio
-aparecem. Lá, `mise run studio` abre o Android Studio para ver o `@Preview`.
+**Sem instalar nada:** crie um Codespace (Code → Codespaces). O [`.devcontainer/`](.devcontainer) traz o JDK, o SDK do Android, o `mise` e uma área de trabalho no navegador (aba **Portas** → **6080**), onde a janela do app e o Android Studio aparecem. Lá, `mise run studio` abre o Android Studio para ver o `@Preview`.
 
 ---
 

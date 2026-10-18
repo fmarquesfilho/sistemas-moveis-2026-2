@@ -1,12 +1,8 @@
 # Tarefas da Sprint 0 — DIM0524
 
-Estes são os enunciados das tarefas da Sprint 0, prontos para virar cartões no GitHub
-Projects. Cada um tem um objetivo, o que fazer, e o *pronto quando* alinhado à rubrica.
+Estes são os enunciados das tarefas da Sprint 0, prontos para virar cartões no GitHub Projects. Cada um tem um objetivo, o que fazer, e o *pronto quando* alinhado à rubrica.
 
-O **como** (templates, exemplos e a estrutura da proposta e do vídeo) está em
-[SPRINT-0.md](SPRINT-0.md) — as tarefas apontam para a seção certa em vez de repeti-la. Os
-pesos vêm de [RUBRICAS.md](RUBRICAS.md#sprint-0). As opções de plataforma, interface e
-backend estão em [STACK.md](STACK.md). Prazo em [CRONOGRAMA.md](CRONOGRAMA.md#visão-geral).
+O **como** (templates, exemplos e a estrutura da proposta e do vídeo) está em [SPRINT-0.md](SPRINT-0.md) — as tarefas apontam para a seção certa em vez de repeti-la. Os pesos vêm de [RUBRICAS.md](RUBRICAS.md#sprint-0). As opções de plataforma, interface e backend estão em [STACK.md](STACK.md). Prazo em [CRONOGRAMA.md](CRONOGRAMA.md#visão-geral).
 
 | # | Tarefa | Critério da rubrica |
 |---|---|---|
@@ -20,8 +16,7 @@ backend estão em [STACK.md](STACK.md). Prazo em [CRONOGRAMA.md](CRONOGRAMA.md#v
 | T8 | Consolidar `docs/proposta.md` | Todos |
 | T9 | Gravar o vídeo de 5 minutos | Todos |
 
-> Projeto de referência: `github.com/fmarquesfilho/musi`, pasta `app/` — tem a tela em
-> Compose com componente próprio e estado elevado, que é o alvo de T6.
+> Projeto de referência: `github.com/fmarquesfilho/musi`, pasta `app/` — tem a tela em Compose com componente próprio e estado elevado, que é o alvo de T6.
 
 ---
 

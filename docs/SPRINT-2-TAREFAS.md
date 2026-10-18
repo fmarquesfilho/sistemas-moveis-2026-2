@@ -1,12 +1,8 @@
 # Tarefas da Sprint 2 — DIM0524
 
-Estes são os enunciados das tarefas da Sprint 2, prontos para virar cartões no GitHub
-Projects. Cada um tem um objetivo, o que fazer, e o *pronto quando* alinhado à rubrica.
+Estes são os enunciados das tarefas da Sprint 2, prontos para virar cartões no GitHub Projects. Cada um tem um objetivo, o que fazer, e o *pronto quando* alinhado à rubrica.
 
-O **como** está em [SPRINT-2.md](SPRINT-2.md) e na leitura da sprint
-([`leituras/moveis-s2.md`](../leituras/moveis-s2.md)): as tarefas apontam para a seção certa
-em vez de repeti-la. Os pesos vêm de [RUBRICAS.md](RUBRICAS.md#sprint-2). Prazo em
-[CRONOGRAMA.md](CRONOGRAMA.md#visão-geral): **30/11, 23:59**.
+O **como** está em [SPRINT-2.md](SPRINT-2.md) e na leitura da sprint ([`leituras/moveis-s2.md`](../leituras/moveis-s2.md)): as tarefas apontam para a seção certa em vez de repeti-la. Os pesos vêm de [RUBRICAS.md](RUBRICAS.md#sprint-2). Prazo em [CRONOGRAMA.md](CRONOGRAMA.md#visão-geral): **30/11, 23:59**.
 
 | # | Tarefa | Critério da rubrica |
 |---|---|---|
@@ -22,8 +18,7 @@ em vez de repeti-la. Os pesos vêm de [RUBRICAS.md](RUBRICAS.md#sprint-2). Prazo
 | T10 | Documentar a arquitetura e publicar o APK | App e documentação (10%) |
 | T11 | Gravar o vídeo de 5 minutos | Comunicação |
 
-> Exemplo de referência: `exemplos/tarefas-compose/` deste repositório, passos 11 a 16 do
-> `PASSOS.md`. Projeto de referência: `github.com/fmarquesfilho/musi`, pastas `app/` e `shared/`.
+> Exemplo de referência: `exemplos/tarefas-compose/` deste repositório, passos 11 a 16 do `PASSOS.md`. Projeto de referência: `github.com/fmarquesfilho/musi`, pastas `app/` e `shared/`.
 
 ---
 

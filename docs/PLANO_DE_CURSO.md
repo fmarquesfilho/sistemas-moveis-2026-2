@@ -1,10 +1,6 @@
 # Plano de Curso — DIM0524 Desenvolvimento de Sistemas para Dispositivos Móveis
 
-**Curso**: Bacharelado em Engenharia de Software — UFRN/DIMAp
-**Carga horária**: 60 horas
-**Horário**: Segundas e quartas, 14:50 às 16:30 (24T34)
-**Período**: 17/08/2026 a 19/12/2026
-**Docente**: Fernando Figueira Filho — fernando.figueira@ufrn.br
+**Curso**: Bacharelado em Engenharia de Software — UFRN/DIMAp **Carga horária**: 60 horas **Horário**: Segundas e quartas, 14:50 às 16:30 (24T34) **Período**: 17/08/2026 a 19/12/2026 **Docente**: Fernando Figueira Filho — fernando.figueira@ufrn.br
 
 As aulas de 10/08, 12/08 e 17/08 não foram realizadas. O curso inicia em 19/08.
 
