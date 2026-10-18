@@ -283,7 +283,7 @@ class TarefasViewModel : ViewModel() {
 val estado by viewModel.estado.collectAsStateWithLifecycle()
 ```
 
-O texto do formulário e a lista sobrevivem à rotação e à troca de destino. O alvo desktop precisa de `kotlinx-coroutines-swing` para ter `Dispatchers.Main`.
+O alvo desktop precisa de `kotlinx-coroutines-swing` para ter `Dispatchers.Main`.
 
 ### Passo 12 — Carregar sem travar a tela: `suspend`, `viewModelScope` e estado selado
 

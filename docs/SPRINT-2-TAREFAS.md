@@ -39,7 +39,7 @@ O **como** está em [SPRINT-2.md](SPRINT-2.md) e na leitura da sprint ([`leitura
 
 ## T2 — Levar o estado de cada tela para um ViewModel
 
-**Objetivo.** O estado sobrevive à rotação e sai das funções `@Composable`.
+**Objetivo.** O estado e as decisões saem das funções `@Composable` e vão para um ViewModel.
 
 **O que fazer.**
 - [ ] Acrescentar o ViewModel multiplataforma (`org.jetbrains.androidx.lifecycle`, na mesma versão da Navigation)
@@ -48,7 +48,7 @@ O **como** está em [SPRINT-2.md](SPRINT-2.md) e na leitura da sprint ([`leitura
 - [ ] Na tela, ler o estado com `collectAsStateWithLifecycle()`; receber o ViewModel por parâmetro
 - [ ] No desktop, acrescentar `kotlinx-coroutines-swing`
 
-**Pronto quando.** Nenhuma tela com dados guarda estado de negócio em `remember`, e o estado sobrevive à rotação.
+**Pronto quando.** Nenhuma tela com dados guarda estado de negócio em `remember`.
 
 **Referência.** `moveis-s2.md`, capítulos 2 e 3 · exemplo, Passo 11.
 

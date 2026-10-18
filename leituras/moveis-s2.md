@@ -79,7 +79,7 @@ _estado.update { it.copy(texto = novo) }
 
 ### 3.2 O ViewModel
 
-O ViewModel guarda o estado fora da composição. Ele sobrevive à rotação da tela e à troca de destino na navegação, e é onde ficam as decisões: a tela mostra o estado e repassa os eventos.
+O ViewModel guarda o estado fora da composição e é onde ficam as decisões: a tela mostra o estado e repassa os eventos.
 
 ```kotlin
 class TarefasViewModel(private val repositorio: RepositorioDeTarefas) : ViewModel() {
@@ -374,7 +374,7 @@ Os testes de interface, que rodam o Compose, também precisam de um `Dispatchers
 
 ### Exercícios
 
-1. No projeto do grupo, leve o estado de uma tela para um ViewModel com `StateFlow`, e confira que ele sobrevive à rotação.
+1. No projeto do grupo, leve o estado de uma tela para um ViewModel com `StateFlow`.
 2. Modele os estados dessa tela como classe selada. Acrescente um quinto estado de propósito e veja o `when` deixar de compilar.
 3. No exemplo, troque no `Modulos.kt` o repositório pelo `RepositorioEmMemoria` e rode o app sem a API. O que mudou na tela? E no ViewModel?
 4. Com a API de Web II no ar, rode o app; depois pare a API e toque em **Tentar de novo**. Feche e abra o app. Qual mensagem aparece em cada momento, e por quê?
