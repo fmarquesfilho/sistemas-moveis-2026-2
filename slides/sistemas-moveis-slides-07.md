@@ -145,6 +145,25 @@ br.ufrn.exemplo.tarefas
 
 ---
 
+# Injeção de dependência, sem biblioteca
+
+```kotlin
+class TarefasViewModel(private val repositorio: RepositorioDeTarefas) : ViewModel()
+
+// Alguém precisa montar a cadeia inteira, na ordem certa:
+val cliente = criarClienteHttp()
+val cache = CacheDeTarefas(criarDataStore(diretorio))
+val repositorio = RepositorioComCache(RepositorioRemoto(cliente, endereco), cache)
+val vm = TarefasViewModel(repositorio)
+```
+
+- **Injeção de dependência:** a classe recebe o que usa, em vez de criar. O ViewModel não faz `RepositorioRemoto(...)` por conta própria
+- Ganho: o teste passa um dublê pelo mesmo construtor
+- Custo: alguém tem de montar a cadeia, e cada objeto deve ser criado uma vez só (um cliente HTTP, um DataStore)
+- O Koin é esse "alguém": a montagem vira uma lista de definições, e ele resolve a ordem
+
+---
+
 # Koin: quem monta as peças
 
 ```kotlin
@@ -172,6 +191,45 @@ fun Conteudo(largo: Boolean, viewModel: TarefasViewModel = koinViewModel()) { ..
 - `ModulosTest` confere que o módulo consegue montar o ViewModel
 
 📖 **Ref.** [Koin — Compose Multiplatform](https://insert-koin.io/docs/reference/koin-compose/compose)
+
+---
+
+# O vocabulário do Koin
+
+| Peça | O que faz |
+|---|---|
+| `module { }` | uma lista de definições: como criar cada coisa |
+| `single { ... }` | cria na primeira vez que alguém pede e reaproveita depois |
+| `factory { ... }` | cria uma instância nova a cada pedido |
+| `get()` | dentro de uma definição: pede ao Koin uma dependência já declarada |
+| `viewModelOf(::TarefasViewModel)` | ViewModel com o ciclo de vida certo; o construtor recebe o que pede |
+| `KoinApplication(application = { modules(...) }) { }` | liga o Koin à interface, em `App()` |
+| `koinViewModel()` | numa função `@Composable`: pede o ViewModel |
+
+> Erro comum: esquecer uma definição. O app compila e só quebra ao abrir a tela: "No definition found for type RepositorioDeTarefas".
+
+---
+
+# Conferir o módulo num teste
+
+```kotlin
+// O módulo do Koin consegue montar o ViewModel? Se faltar uma definição, o teste acusa
+// aqui, e não com o app aberto.
+class ModulosTest {
+    @BeforeTest fun trocarMain() = Dispatchers.setMain(UnconfinedTestDispatcher())
+    @AfterTest fun restaurarMain() = Dispatchers.resetMain()
+
+    @Test
+    fun oModuloMontaOViewModel() {
+        val koin = koinApplication { modules(moduloTarefas(SystemTemporaryDirectory.toString())) }.koin
+        assertNotNull(koin.get<TarefasViewModel>())
+        koin.close()
+    }
+}
+```
+
+- Os outros testes não usam o Koin: criam o ViewModel com o dublê que querem
+- Este é o único que liga as peças de verdade, e transforma o erro de execução em erro de teste
 
 ---
 
@@ -213,6 +271,34 @@ Se a API mudar um nome de campo, mudam o DTO e a conversão; o domínio e as tel
 
 ---
 
+# O cliente e o repositório remoto
+
+```kotlin
+fun criarClienteHttp(): HttpClient = HttpClient {     // sem motor: OkHttp no Android, CIO no desktop
+    expectSuccess = true                              // 4xx e 5xx viram exceção
+    install(ContentNegotiation) {
+        json(Json { ignoreUnknownKeys = true })       // campos novos na API não quebram o app
+    }
+}
+
+class RepositorioRemoto(private val cliente: HttpClient, private val enderecoDaApi: String) : RepositorioDeTarefas {
+    override suspend fun listar(): Listagem = traduzindoFalhas {
+        Listagem(cliente.get("$enderecoDaApi/tarefas").body<List<TarefaDto>>().map { it.paraDominio() })
+    }
+
+    override suspend fun adicionar(titulo: String): Tarefa = traduzindoFalhas {
+        cliente.post("$enderecoDaApi/tarefas") {
+            contentType(ContentType.Application.Json)
+            setBody(NovaTarefaDto(titulo))
+        }.body<TarefaDto>().paraDominio()
+    }
+}
+```
+
+São as rotas `GET` e `POST /tarefas` da API de Tarefas de Web II.
+
+---
+
 # Erros de rede com nome
 
 ```kotlin
@@ -231,6 +317,35 @@ sealed class FalhaNoRepositorio(mensagem: String) : Exception(mensagem) {      /
 - Cada falha tem um estado de tela próprio: é o que a rubrica pede em "Dados reais e erro de rede"
 - O ViewModel não conhece o Ktor: só as falhas do domínio
 - Salvar que falha não apaga a lista: vira um aviso acima dela
+
+---
+
+# Traduzir as exceções da biblioteca
+
+```kotlin
+// Exceções da biblioteca viram falhas do domínio: o ViewModel não precisa conhecer o Ktor.
+private suspend fun <T> traduzindoFalhas(chamada: suspend () -> T): T = try {
+    chamada()
+} catch (e: IOException) {
+    throw FalhaNoRepositorio.SemConexao()             // servidor fora, sem rede, recusado
+} catch (e: ResponseException) {
+    throw FalhaNoRepositorio.RespostaInvalida("status ${e.response.status.value}")
+} catch (e: ContentConvertException) {
+    throw FalhaNoRepositorio.RespostaInvalida("JSON fora do formato")
+} catch (e: SerializationException) {
+    throw FalhaNoRepositorio.RespostaInvalida("JSON fora do formato")
+}
+```
+
+```kotlin
+// no ViewModel: salvar que falha vira um aviso, e a lista continua na tela
+} catch (e: FalhaNoRepositorio) {
+    _estado.update { it.copy(aviso = "A tarefa não foi salva: ${e.message}.") }
+}
+```
+
+- `chamada: suspend () -> T` é uma função como parâmetro: o mesmo tratamento serve para `listar` e `adicionar`
+- O `catch` pega só as falhas do domínio: o cancelamento segue adiante sozinho
 
 ---
 
@@ -257,6 +372,33 @@ actual val enderecoDaApi: String? = "http://10.0.2.2:8080"   // Android (emulado
 No Android: permissão `INTERNET` e, para `http://` local, `usesCleartextTraffic="true"` (num app publicado, a API usa `https` e essa linha sai).
 
 **Demonstração:** a API de Web II no ar, `./passo.sh 14`, `mise run app`: as tarefas vêm do banco. Pare a API e toque em **Tentar de novo**.
+
+---
+
+# Testar o repositório sem a API
+
+```kotlin
+// O repositório contra um servidor HTTP de mentira (MockEngine): sem rede, sem a API.
+private fun repositorio(resposta: MockEngine) = RepositorioRemoto(
+    HttpClient(resposta) { expectSuccess = true; install(ContentNegotiation) { json() } },
+    enderecoDaApi = "http://api",
+)
+
+@Test
+fun converteOJsonDaApiEmTarefas() = runTest {
+    val repo = repositorio(MockEngine { respond("""[{"id":1,"titulo":"Estudar Ktor","feita":true}]""", headers = json) })
+    assertEquals("Estudar Ktor", repo.listar().tarefas.single().titulo)
+}
+
+@Test
+fun servidorForaViraSemConexao() = runTest {
+    val repo = repositorio(MockEngine { throw IOException("conexão recusada") })
+    assertFailsWith<FalhaNoRepositorio.SemConexao> { repo.listar() }
+}
+```
+
+- O `MockEngine` responde o que o teste mandar: JSON certo, status 500, JSON fora do formato, conexão recusada
+- São os 4 testes de `RepositorioRemotoTest`, e rodam sem a API de Web II
 
 ---
 
@@ -299,6 +441,50 @@ class CacheDeTarefas(private val dataStore: DataStore<Preferences>) {
 
 ---
 
+# O cache com DataStore
+
+```kotlin
+// A última lista recebida, guardada num arquivo do aparelho. Sobrevive ao fechamento do app.
+class CacheDeTarefas(private val dataStore: DataStore<Preferences>) {
+    private val chave = stringPreferencesKey("ultima_lista")
+
+    suspend fun salvar(tarefas: List<Tarefa>) {
+        val dtos = tarefas.map { TarefaDto(it.id, it.titulo, it.feita) }
+        dataStore.edit { it[chave] = Json.encodeToString(dtos) }
+    }
+
+    suspend fun ler(): List<Tarefa>? =
+        dataStore.data.first()[chave]?.let { json -> Json.decodeFromString<List<TarefaDto>>(json).map { it.paraDominio() } }
+}
+```
+
+- O DataStore guarda pares chave e valor num arquivo, de forma assíncrona: `edit` e `data` não travam a tela
+- `data` é um `Flow`: `first()` lê o valor atual uma vez
+- A lista vai como o JSON dos DTOs, o mesmo formato que vem da API
+
+---
+
+# Um repositório que envolve outro
+
+```
+TarefasViewModel ──► RepositorioComCache ──► RepositorioRemoto ──► API de Tarefas
+                            │   (mesma interface: RepositorioDeTarefas)
+                            ▼
+                       CacheDeTarefas ──► DataStore (arquivo no aparelho)
+```
+
+| Situação | O que `listar()` devolve |
+|---|---|
+| a API respondeu | a lista nova, que também é guardada |
+| sem conexão, com algo guardado | a última lista, com `doCache = true` |
+| sem conexão, nada guardado | a falha `SemConexao` continua: a tela mostra o erro |
+| resposta inválida | a falha continua: o cache só cobre a falta de conexão |
+
+- Um objeto que implementa a mesma interface que recebe e acrescenta um comportamento: o padrão **Decorator**
+- O ViewModel não muda: o Koin entrega o repositório com cache no lugar do remoto
+
+---
+
 # Onde fica o arquivo
 
 ```kotlin
@@ -320,6 +506,23 @@ fun moduloTarefas(diretorioDeDados: String) = module {
 | desktop (`main.kt`) | `~/.tarefas-compose` |
 
 **Demonstração:** abrir o app com a API no ar; fechar; parar a API (`docker compose stop api-ktor`); abrir de novo: "Sem conexão: mostrando a última lista salva."
+
+---
+
+# Onde guardar dados no aparelho
+
+| Opção | Para quê | No projeto |
+|---|---|---|
+| DataStore (Preferences) | pares chave e valor; configurações; um cache pequeno | o exemplo guarda a última lista numa chave só |
+| Room | banco SQLite com consultas conferidas na compilação; Kotlin Multiplatform | listas grandes, buscas, relações entre dados |
+| SQLDelight | você escreve o SQL, e ele gera o código Kotlin; Kotlin Multiplatform | idem, para quem prefere escrever o SQL |
+
+Dois cuidados com o DataStore:
+
+- **Um DataStore por arquivo, por processo.** Dois para o mesmo arquivo é erro; o Koin cria um só (`single`)
+- **Cada plataforma tem a sua pasta**: o diretório chega de fora, como parâmetro de `App`
+
+A rubrica pede que o app abra sem rede mostrando o último conteúdo; a forma de guardar fica a critério do grupo.
 
 ---
 
@@ -356,6 +559,49 @@ fun carregarPassaPorCarregandoEChegaASucesso() = runTest {
 
 ---
 
+# Turbine: a sequência inteira
+
+```kotlin
+@Test
+fun tentarDeNovoDepoisDoErro() = runTest {
+    usarRelogioDoTeste()
+    val repositorio = RepositorioFalso { throw FalhaNoRepositorio.SemConexao() }
+    val vm = TarefasViewModel(repositorio)
+    vm.estado.test {
+        skipItems(1)                                         // Carregando
+        assertIs<EstadoTela.Erro>(awaitItem().tela)
+        repositorio.listar = { Listagem(listOf(Tarefa(1, "Voltou"))) }
+        vm.carregar()
+        assertEquals(EstadoTela.Carregando, awaitItem().tela)
+        assertIs<EstadoTela.Sucesso>(awaitItem().tela)
+    }
+}
+```
+
+- O dublê muda de comportamento no meio do teste: primeiro falha, depois responde
+- `skipItems(1)` pula o que não interessa; `awaitItem()` falha se o estado esperado não chegar
+- No fim do bloco, o Turbine confere que não sobrou estado sem verificação
+
+---
+
+# Dois despachantes de teste
+
+| | `StandardTestDispatcher(testScheduler)` | `UnconfinedTestDispatcher()` |
+|---|---|---|
+| quando a corrotina roda | entra numa fila e roda quando o teste espera | na hora, até a primeira suspensão |
+| no exemplo | testes de ViewModel com Turbine: dá para ver o `Carregando` | testes de tela e o `ModulosTest`: só o resultado importa |
+
+```kotlin
+private fun TestScope.usarRelogioDoTeste() = Dispatchers.setMain(StandardTestDispatcher(testScheduler))
+
+@AfterTest
+fun restaurarMain() = Dispatchers.resetMain()
+```
+
+> Esquecer o `resetMain` faz o próximo teste herdar o despachante do anterior: falhas que dependem da ordem dos testes.
+
+---
+
 # A suíte, no fim do Passo 16
 
 | Arquivo | Testes | O que cobre |
@@ -371,6 +617,16 @@ fun carregarPassaPorCarregandoEChegaASucesso() = runTest {
 ```
 
 A rubrica pede ≥ 5 de interface e ≥ 5 de ViewModel, verdes no CI.
+
+---
+
+# Para conferir o entendimento
+
+1. Por que o ViewModel recebe `RepositorioDeTarefas`, e não `RepositorioRemoto`?
+2. Qual a diferença entre `single` e `factory` no Koin, e por que o DataStore é `single`?
+3. O que acontece com uma resposta 500 se o cliente não tiver `expectSuccess = true`?
+4. Por que a falta de conexão usa o cache e a resposta inválida não?
+5. O que o Turbine mostra que um `assertEquals` no estado final não mostra?
 
 ---
 

@@ -128,7 +128,7 @@ Prof. Fernando · UFRN · 2026.2
                                                      DataStore (no aparelho)
 ```
 
-- O estado sai da tela e vai para um ViewModel, que sobrevive à rotação
+- O estado e as decisões saem da tela e vão para um ViewModel, que se testa sem abrir a tela
 - As tarefas vêm da API de Web II, pela rede; sem rede, da última lista guardada
 - Cada estado da tela (carregando, vazio, erro, sucesso) é um caso de uma classe selada
 
@@ -161,6 +161,65 @@ viewModelScope.launch {
 
 ---
 
+# Por que a tela não pode esperar
+
+```
+thread principal:  [desenha][toque][desenha][ ---- espera a rede, 2 s ---- ][desenha]
+                                              a tela congela; no Android, 5 s viram "o app não responde"
+
+com corrotina:     [desenha][toque][desenha][desenha][desenha][desenha][atualiza a lista]
+                                    └── a busca suspende e volta quando a resposta chega
+```
+
+- A tela é redesenhada a cada ~16 ms (60 quadros por segundo): tudo o que roda na thread principal disputa esse tempo
+- **Bloquear** prende a thread até a resposta chegar; **suspender** libera a thread e continua a função depois, do mesmo ponto
+- `suspend` não cria thread nem deixa nada mais rápido: só permite esperar sem prender
+
+---
+
+# Concorrência estruturada
+
+```
+viewModelScope ─┬─ launch { carregar() }       ← cancelada quando o ViewModel deixa de existir
+                └─ launch { adicionar() }
+```
+
+| Situação | O que acontece |
+|---|---|
+| o usuário sai da tela antes da resposta | o ViewModel é descartado, o escopo é cancelado, e a busca para |
+| uma corrotina filha falha | o erro sobe para o escopo, em vez de sumir em silêncio |
+| o escopo é cancelado | cada corrotina recebe uma `CancellationException` no próximo ponto de suspensão |
+
+```kotlin
+try { repositorio.listar() }
+catch (e: CancellationException) { throw e }   // deixa o cancelamento seguir
+catch (e: Exception) { /* erro de verdade */ }
+```
+
+> `GlobalScope.launch` não tem dono: ninguém cancela. No app, as corrotinas nascem no `viewModelScope`.
+
+---
+
+# Em que thread a corrotina roda
+
+| Despachante | Para quê |
+|---|---|
+| `Dispatchers.Main` | atualizar a interface; é onde o `viewModelScope` começa |
+| `Dispatchers.Default` | cálculo pesado, que usa CPU (ordenar milhares de itens, processar imagem) |
+| `Dispatchers.IO` | chamadas que **bloqueiam** (arquivo com `java.io`, JDBC), só nos alvos JVM e nativos |
+
+```kotlin
+val ordenadas = withContext(Dispatchers.Default) {   // troca de thread e volta com o resultado
+    tarefas.sortedBy { it.titulo }
+}
+```
+
+- Funções `suspend` bem-feitas são seguras para chamar da Main: o Ktor Client e o DataStore trocam de thread por conta própria
+- Por isso o exemplo não tem `withContext`: o ViewModel chama o repositório direto da Main
+- No desktop, a Main é a thread do Swing: vem de `kotlinx-coroutines-swing`, acrescentada no Passo 11
+
+---
+
 # Flow e StateFlow
 
 | | O que é | No app |
@@ -183,9 +242,72 @@ _estado.update { it.copy(texto = novo) }                  // um valor novo, imut
 
 ---
 
+# Flow frio, StateFlow quente
+
+```kotlin
+val contagem: Flow<Int> = flow {
+    for (i in 1..3) { delay(1000); emit(i) }    // só roda quando alguém coleta
+}
+
+contagem.map { it * 10 }.collect { println(it) }  // 10, 20, 30, um por segundo
+```
+
+| | `Flow` (frio) | `StateFlow` (quente) |
+|---|---|---|
+| quando roda | a cada `collect`, do começo | existe antes e depois dos coletores |
+| valor atual | não tem | sempre tem (`.value`) |
+| quem chega depois | recebe a sequência inteira | recebe o valor atual e as mudanças |
+| valor igual ao anterior | é emitido | não é emitido |
+
+- Operadores (`map`, `filter`, `combine`) montam um `Flow` novo sem executar nada: a execução começa no `collect`
+- Na Sprint 2, os `Flow` aparecem no DataStore (`data`) e nos testes com Turbine
+
+---
+
+# Fluxo unidirecional de dados
+
+```
+             estado (StateFlow<EstadoLista>)
+  ViewModel ─────────────────────────────────►  Tela (@Composable)
+      ▲                                              │
+      └──────────── eventos (mudarTexto, adicionar) ─┘
+```
+
+- O estado desce; os eventos sobem. A tela nunca altera o estado direto
+- É a elevação de estado da Sprint 1, um nível acima: quem guarda o estado agora é o ViewModel, e não uma função `@Composable`
+- Para saber por que a tela está assim, basta olhar uma fonte: o `StateFlow`
+- As telas (`TelaLista`, `TelaDetalhe`) não mudam: continuam recebendo valores e funções
+
+---
+
 # Passo 11
 
 ## O estado sai da tela: ViewModel com `StateFlow`
+
+---
+
+# Antes: o estado dentro de `Conteudo`
+
+```kotlin
+@Composable
+fun Conteudo(largo: Boolean, ...) {
+    var tarefas by remember { mutableStateOf(tarefasIniciais) }
+    var texto by rememberSaveable { mutableStateOf("") }
+    var proximoId by remember { mutableStateOf(3) }
+    var selecionada by rememberSaveable { mutableStateOf<Int?>(null) }
+
+    val adicionar = {
+        tarefas = tarefas.comNova(proximoId, texto)
+        proximoId++
+        texto = ""
+    }
+    ...
+}
+```
+
+- Funciona, mas as decisões (validar, gerar o id, limpar o texto) moram numa função de interface
+- Testar `adicionar` exige montar a tela e clicar
+- Não há onde iniciar uma busca que demora: o Passo 12 precisa de um escopo de corrotinas que não seja a composição
 
 ---
 
@@ -217,6 +339,21 @@ As regras (`tituloValido`, `comNova`, `alternando`) são as funções puras da S
 
 ---
 
+# O que fica no ViewModel e o que fica na tela
+
+| No ViewModel (`StateFlow`) | Na tela (`remember` / `rememberSaveable`) |
+|---|---|
+| a lista de tarefas | a tarefa selecionada no painel lateral |
+| o texto do formulário | a posição de rolagem, o foco, animações |
+| carregando, erro, vazio, sucesso | o que só muda a aparência |
+| as regras: validar, gerar id, chamar o repositório | — |
+
+- A pergunta é: "isso é dado do app ou só da interface?"
+- No exemplo, `selecionada` continua em `rememberSaveable` dentro de `Conteudo`: é estado só da interface
+- O ViewModel não recebe `NavController`, `Context` nem tipos do Compose: só dados e o repositório
+
+---
+
 # A tela lê o estado e chama eventos
 
 ```kotlin
@@ -238,11 +375,53 @@ fun Conteudo(
 | Antes (Sprint 1) | Agora |
 |---|---|
 | `var tarefas by remember { mutableStateOf(...) }` na tela | `StateFlow` no ViewModel |
-| perdido ao girar o aparelho, se não for `rememberSaveable` | sobrevive à rotação e à troca de destino |
+| as regras só se testam pela interface | o ViewModel se testa sozinho, sem tela |
 
 `collectAsStateWithLifecycle` para de coletar quando a tela sai de vista.
 
 📖 **Ref.** [Compose Multiplatform — ViewModel](https://kotlinlang.org/docs/multiplatform/compose-viewmodel.html)
+
+---
+
+# Testar o ViewModel sem tela
+
+```kotlin
+// O ViewModel sem tela: cada evento muda o estado, e o teste lê estado.value.
+class TarefasViewModelTest {
+
+    @Test
+    fun adicionarAcrescentaALimpaOTexto() {
+        val vm = TarefasViewModel()
+        vm.mudarTexto("Estudar Flow")
+        vm.adicionar()
+        assertEquals("Estudar Flow", vm.estado.value.tarefas.last().titulo)
+        assertEquals("", vm.estado.value.texto)
+    }
+
+    @Test
+    fun tituloEmBrancoNaoAcrescenta() { ... }
+
+    @Test
+    fun alternarMarcaATarefa() { ... }
+}
+```
+
+```bash
+./passo.sh 11
+./gradlew :composeApp:desktopTest     # 11 testes: regras, telas e o ViewModel
+```
+
+---
+
+# Erros comuns no Passo 11
+
+| Erro | O que acontece | Como fica |
+|---|---|---|
+| `val estado = MutableStateFlow(...)` público | a tela consegue alterar o estado por fora | `_estado` privado e `asStateFlow()` |
+| `TarefasViewModel()` direto no `@Composable` | um ViewModel novo a cada recomposição: o estado some | `viewModel { TarefasViewModel() }` |
+| mudar uma `MutableList` dentro do estado | o objeto é o mesmo, e o `StateFlow` não emite | lista imutável e `copy` |
+| lifecycle numa versão e Navigation em outra | "State must be at least CREATED" ao voltar de uma tela | versões da mesma família (2.9.x) |
+| ler com `.value` dentro do `@Composable` | a tela não recompõe quando o estado muda | `collectAsStateWithLifecycle()` |
 
 ---
 
@@ -277,14 +456,55 @@ when (val tela = estado.tela) {                  // sem else: o compilador confe
 
 ---
 
-# Carregar numa corrotina
+# O estado da tela, com o conteúdo dentro
+
+```kotlin
+// O estado da tela de lista: o conteúdo (um dos quatro casos) e o texto do formulário.
+data class EstadoLista(
+    val tela: EstadoTela = EstadoTela.Carregando,
+    val texto: String = "",
+) {
+    val tarefas: List<Tarefa> get() = (tela as? EstadoTela.Sucesso)?.tarefas.orEmpty()
+}
+```
+
+- O formulário existe em qualquer caso; a lista só existe no `Sucesso`
+- `tarefas` é calculada a partir de `tela`: não há duas fontes para a mesma informação
+- `as?` devolve `null` quando `tela` não é `Sucesso`; `orEmpty()` troca o `null` por lista vazia
+- O estado começa em `Carregando`: a primeira coisa que a tela mostra é o indicador
+
+---
+
+# Um repositório que demora de propósito
 
 ```kotlin
 interface RepositorioDeTarefas {
-    suspend fun listar(): List<Tarefa>
+    suspend fun listar(): List<Tarefa>        // a resposta pode demorar (rede, disco)
     suspend fun adicionar(titulo: String): Tarefa
 }
 
+class RepositorioEmMemoria(
+    private val demora: Duration = 800.milliseconds,
+    var falhar: Boolean = false,
+    iniciais: List<Tarefa> = tarefasIniciais,
+) : RepositorioDeTarefas {
+    override suspend fun listar(): List<Tarefa> {
+        delay(demora)          // suspende a corrotina; a thread da interface continua livre
+        if (falhar) error("sem conexão")
+        return tarefas.toList()
+    }
+    ...
+}
+```
+
+- `delay` suspende; `Thread.sleep` bloquearia a thread da interface
+- É a porta que a quarta vai implementar com a rede (Passo 14) e com cache (Passo 15)
+
+---
+
+# Carregar numa corrotina
+
+```kotlin
 fun carregar() {
     _estado.update { it.copy(tela = EstadoTela.Carregando) }
     viewModelScope.launch {
@@ -306,6 +526,33 @@ fun carregar() {
 
 ---
 
+# As telas de carregando e de erro
+
+```kotlin
+@Composable
+fun TelaCarregando(modifier: Modifier = Modifier) {
+    Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator(Modifier.semantics { contentDescription = "Carregando tarefas" })
+    }
+}
+
+@Composable
+fun TelaErro(mensagem: String, onTentarDeNovo: () -> Unit, modifier: Modifier = Modifier) {
+    Column(modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.Center,
+           horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(mensagem)
+        Spacer(Modifier.height(12.dp))
+        Button(onClick = onTentarDeNovo) { Text("Tentar de novo") }
+    }
+}
+```
+
+- O indicador tem descrição: o leitor de tela anuncia "Carregando tarefas"
+- Toda tela de erro dá uma saída ao usuário; aqui, **Tentar de novo** chama `carregar()`
+- O estado vazio é a `TelaLista` sem itens, com "Nenhuma tarefa ainda. Que tal criar a primeira?"
+
+---
+
 # Demonstração
 
 ```bash
@@ -316,14 +563,47 @@ mise run app          # ou: ./gradlew :composeApp:hotRunDesktop --auto
 1. O app abre com o indicador de carregamento e, 800 ms depois, a lista
 2. No `RepositorioEmMemoria`, `falhar = true`: aparece a mensagem e o botão **Tentar de novo**
 3. Com a lista inicial vazia: aparece "Nenhuma tarefa ainda"
-4. Gire o emulador (ou redimensione a janela): o texto digitado continua lá
 
-Os testes de ViewModel desta etapa trocam o `Dispatchers.Main` por um despachante de teste:
+```bash
+./gradlew :composeApp:desktopTest     # agora com os testes de carregando, vazio e erro
+```
+
+---
+
+# Testes com corrotinas
 
 ```kotlin
-@BeforeTest fun trocarMain() = Dispatchers.setMain(UnconfinedTestDispatcher())
-@AfterTest fun restaurarMain() = Dispatchers.resetMain()
+@OptIn(ExperimentalCoroutinesApi::class)
+class TarefasViewModelTest {
+    @BeforeTest fun trocarMain() = Dispatchers.setMain(UnconfinedTestDispatcher())
+    @AfterTest fun restaurarMain() = Dispatchers.resetMain()
+
+    private fun vm(falhar: Boolean = false, iniciais: List<Tarefa> = tarefasIniciais) =
+        TarefasViewModel(RepositorioEmMemoria(Duration.ZERO, falhar, iniciais))
+
+    @Test fun carregaAsTarefas() {
+        assertEquals(2, assertIs<EstadoTela.Sucesso>(vm().estado.value.tela).tarefas.size)
+    }
+    @Test fun listaVaziaViraVazio() {
+        assertEquals(EstadoTela.Vazio, vm(iniciais = emptyList()).estado.value.tela)
+    }
+    @Test fun falhaViraErro() { assertIs<EstadoTela.Erro>(vm(falhar = true).estado.value.tela) }
+}
 ```
+
+- O `viewModelScope` usa `Dispatchers.Main`, que não existe no teste: `setMain` põe um despachante de teste no lugar
+- O repositório recebe `Duration.ZERO`: o teste não espera os 800 ms
+- O teste só vê o estado final. Para conferir a sequência (carregando → sucesso), a quarta traz o Turbine
+
+---
+
+# Para conferir o entendimento
+
+1. Por que `_estado` é privado e a tela recebe um `StateFlow`?
+2. O que acontece se um `catch (e: Exception)` engolir a `CancellationException`?
+3. Por que o `when` sobre `EstadoTela` não tem `else`?
+4. Onde fica a tarefa selecionada no painel lateral, e por quê?
+5. Num teste, por que o ViewModel recebe um `RepositorioEmMemoria(Duration.ZERO, ...)`?
 
 ---
 
