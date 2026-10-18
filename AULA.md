@@ -40,7 +40,7 @@ Do Passo 10 em diante, os mesmos comandos têm nome: `mise run app`, `mise run t
 `mise run studio`. Do Passo 14 em diante, o app busca as tarefas na API de Web II; no
 Codespace, sem a API, ele roda com o repositório em memória (`TAREFAS_API=memoria`).
 
-## Roteiro da segunda, 19/10: passos 11 e 12
+## Roteiro da quarta, 21/10: passos 11 e 12
 
 Na raiz do repositório (`/workspaces/sistemas-moveis-2026-2`), com a área de trabalho aberta (porta 6080). Os comandos `mise run` funcionam de qualquer pasta do repositório.
 
@@ -54,7 +54,7 @@ mise run app       # carregando por 800 ms, depois a lista
 
 No Passo 12, em `RepositorioEmMemoria`, troque `falhar` para `true` (tela de erro e **Tentar de novo**) e depois a lista inicial por uma vazia ("Nenhuma tarefa ainda").
 
-## Roteiro da quarta, 21/10: passos 13 a 16
+## Roteiro da segunda, 26/10: passos 13 a 16
 
 Também na raiz do repositório.
 
