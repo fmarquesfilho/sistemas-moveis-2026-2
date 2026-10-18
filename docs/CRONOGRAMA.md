@@ -40,7 +40,7 @@ Todos os grupos participam da *daily meeting* em todas as sprints, exceto na Spr
 |-------|---------|------|---------------|---------|
 | Sprint 0 | 17/08 a 14/09 | Kotlin, Compose e a primeira tela | — | 16/09 |
 | Sprint 1 | 14/09 a 16/10 | Interface e navegação | 28 e 30/09, online | 16/10 |
-| Sprint 2 (final) | 01/11 a 30/11, com o conteúdo em 19 e 21/10 | Estado, dados e rede | 23 e 25/11, online | 30/11 |
+| Sprint 2 (final) | 01/11 a 30/11, com o conteúdo em 21 e 26/10 | Estado, dados e rede | 23 e 25/11, online | 30/11 |
 | Prova escrita | 11/11 | Sprints 0 e 1 e o conteúdo da Sprint 2 | — | — |
 | Prova de reposição | 02/12 | Sprints 0 a 2, cumulativa e opcional | — | — |
 
@@ -76,8 +76,8 @@ No fim de cada sprint, o professor conversa com cada grupo no formato de uma *da
 |--------|---------|--------|
 | 05 e 07/10 | 🟢 presencial | 🟢 presencial |
 | 12 e 14/10 | 🔴 feriado | 🔵 online |
-| 19 e 21/10 | 🟢 presencial | 🟢 presencial |
-| 26 e 28/10 | 🔵 online | 🔴 feriado |
+| 19 e 21/10 | 🔴 cancelada | 🟢 presencial |
+| 26 e 28/10 | 🟢 presencial | 🔴 feriado |
 | 02 e 04/11 | 🔴 feriado | 🔵 online |
 | 09 e 11/11 | 🔵 online | 🟢 presencial (prova) |
 | 16 e 18/11 | 🔵 online | 🟢 presencial |
@@ -135,9 +135,9 @@ Esta é a última sprint: o que for entregue em 30/11 é o produto final do seme
 
 | Data | Dia | Tipo | Atividade |
 |------|-----|------|-----------|
-| 19/10 | Seg | 🟢 | Kotlin assíncrono: `suspend`, coroutines e concorrência estruturada. `Flow` e `StateFlow`. ViewModel multiplataforma. Estado de tela com classes seladas |
-| 21/10 | Qua | 🟢 | Camadas de apresentação, domínio e dados; injeção de dependências com Koin; testes de interface e testes de ViewModel com Turbine. Ktor Client e kotlinx.serialization: DTOs e tratamento de erro. Persistência local com Room, SQLDelight ou DataStore |
-| 26/10 | Seg | 🔵 | Encontro online de acompanhamento de projetos |
+| 19/10 | Seg | 🔴 | Aula cancelada — conteúdo deslocado para 21 e 26/10 |
+| 21/10 | Qua | 🟢 | Kotlin assíncrono: `suspend`, coroutines e concorrência estruturada. `Flow` e `StateFlow`. ViewModel multiplataforma. Estado de tela com classes seladas |
+| 26/10 | Seg | 🟢 | Camadas de apresentação, domínio e dados; injeção de dependências com Koin; testes de interface e testes de ViewModel com Turbine. Ktor Client e kotlinx.serialization: DTOs e tratamento de erro. Persistência local com Room, SQLDelight ou DataStore |
 | 28/10 | Qua | 🔴 | Dia do Servidor Público |
 | 02/11 | Seg | 🔴 | Finados |
 | 04/11 | Qua | 🔵 | Encontro online: revisão para a prova e dúvidas |

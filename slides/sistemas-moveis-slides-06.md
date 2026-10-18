@@ -90,7 +90,7 @@ style: |
 
 ## Corrotinas, Flow e ViewModel
 
-DIM0524 — Turma 01 · Sprint 2 · aula de 19/10
+DIM0524 — Turma 01 · Sprint 2 · aula de 21/10
 
 Prof. Fernando · UFRN · 2026.2
 
@@ -100,19 +100,19 @@ Prof. Fernando · UFRN · 2026.2
 
 | | Data |
 |---|---|
-| Conteúdo | hoje (passos 11 e 12) e quarta, 21/10 (passos 13 a 16) |
-| Acompanhamento online | 26/10, 09/11 e 16/11 |
+| Conteúdo | hoje (passos 11 e 12) e segunda, 26/10 (passos 13 a 16) |
+| Acompanhamento online | 09/11 e 16/11 |
 | Prova escrita | **11/11 (quarta)**, em laboratório |
 | *Daily meetings* online | 23 e 25/11 (presencial, se preferirem, em 18/11) |
 | **Entrega final** | **30/11, 23:59** |
 
 | Critério | Peso | Aula |
 |---|---|---|
-| Estado e arquitetura | 25% | hoje e quarta |
+| Estado e arquitetura | 25% | hoje e 26/10 |
 | Estados da interface | 15% | hoje |
-| Dados reais e erro de rede | 25% | quarta |
-| Persistência local | 10% | quarta |
-| Testes (interface e ViewModel) | 15% | quarta |
+| Dados reais e erro de rede | 25% | 26/10 |
+| Persistência local | 10% | 26/10 |
+| Testes (interface e ViewModel) | 15% | 26/10 |
 | App e documentação | 10% | — |
 
 ---
@@ -498,7 +498,7 @@ class RepositorioEmMemoria(
 ```
 
 - `delay` suspende; `Thread.sleep` bloquearia a thread da interface
-- É a porta que a quarta vai implementar com a rede (Passo 14) e com cache (Passo 15)
+- É a porta que a próxima aula vai implementar com a rede (Passo 14) e com cache (Passo 15)
 
 ---
 
@@ -593,7 +593,7 @@ class TarefasViewModelTest {
 
 - O `viewModelScope` usa `Dispatchers.Main`, que não existe no teste: `setMain` põe um despachante de teste no lugar
 - O repositório recebe `Duration.ZERO`: o teste não espera os 800 ms
-- O teste só vê o estado final. Para conferir a sequência (carregando → sucesso), a quarta traz o Turbine
+- O teste só vê o estado final. Para conferir a sequência (carregando → sucesso), a próxima aula traz o Turbine
 
 ---
 
@@ -607,7 +607,7 @@ class TarefasViewModelTest {
 
 ---
 
-# Na quarta, 21/10
+# Na segunda, 26/10
 
 | Passo | Assunto |
 |---|---|
