@@ -137,8 +137,7 @@ Esta é a última sprint: o que for entregue em 30/11 é o produto final do seme
 |------|-----|------|-----------|
 | 19/10 | Seg | 🔴 | Aula cancelada |
 | 21/10 | Qua | 🔴 | Aula cancelada |
-| 23/10 | Sex | 🎥 | Aulas em vídeo, publicadas no SIGAA até esta data: Kotlin assíncrono: `suspend`, coroutines e concorrência estruturada. `Flow` e `StateFlow`. ViewModel multiplataforma. Estado de tela com classes seladas |
-| 26/10 | Seg | 🟢 | Camadas de apresentação, domínio e dados; injeção de dependências com Koin; testes de interface e testes de ViewModel com Turbine. Ktor Client e kotlinx.serialization: DTOs e tratamento de erro. Persistência local com Room, SQLDelight ou DataStore |
+| 26/10 | Seg | 🟢 | **Coroutines, Flow e ViewModel (vídeo); camadas, injeção de dependências, rede e testes**. Em vídeo, publicado no SIGAA até 23/10: Kotlin assíncrono: `suspend`, coroutines e concorrência estruturada. `Flow` e `StateFlow`. ViewModel multiplataforma. Estado de tela com classes seladas. Em sala: Camadas de apresentação, domínio e dados; injeção de dependências com Koin; testes de interface e testes de ViewModel com Turbine. Ktor Client e kotlinx.serialization: DTOs e tratamento de erro. Persistência local com Room, SQLDelight ou DataStore |
 | 28/10 | Qua | 🔴 | Dia do Servidor Público |
 | 02/11 | Seg | 🔴 | Finados |
 | 04/11 | Qua | 🔵 | Encontro online: revisão para a prova e dúvidas |
