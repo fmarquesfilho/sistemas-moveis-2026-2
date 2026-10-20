@@ -114,7 +114,7 @@ Após a instalação, `kdoctor` deve executar sem erros bloqueantes.
 
 A camada de domínio não deve importar Compose nem bibliotecas de infraestrutura. Essa regra é verificada na avaliação a partir da Sprint 2.
 
-### Portão de qualidade do pipeline
+### Exigências do pipeline
 
 Na Sprint 0, quando ainda não há testes:
 
