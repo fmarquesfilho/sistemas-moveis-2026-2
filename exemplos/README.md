@@ -3,7 +3,7 @@
 Uma tela de **tarefas** construída incrementalmente em Compose Multiplatform, em 16 passos. É menor que o `app/` do MUSI de propósito: cabe numa aula.
 
 - **Sprint 1 (passos 1 a 10):** listas, formulários e Material 3; acessibilidade, navegação com deep link, layout adaptativo, testes de interface e tasks do `mise`.
-- **Sprint 2 (passos 11 a 16, aulas de 21 e 26/10):** ViewModel com `StateFlow`, corrotinas e estado selado; camadas e Koin; Ktor Client contra a API de Tarefas de Web II; cache com DataStore; testes de ViewModel com Turbine.
+- **Sprint 2 (passos 11 a 16, em vídeo e na aula de 26/10):** ViewModel com `StateFlow`, corrotinas e estado selado; camadas e Koin; Ktor Client contra a API de Tarefas de Web II; cache com DataStore; testes de ViewModel com Turbine.
 
 Do Passo 14 em diante, o app busca as tarefas na API de Web II. Sem ela (no Codespace ou no laboratório), rode com o repositório em memória: `TAREFAS_API=memoria ./gradlew :composeApp:run`, ou `mise run app:sem-api`. O Codespace já vem com `TAREFAS_API=memoria`.
 
