@@ -521,7 +521,7 @@ fun carregar() {
 }
 ```
 
-- O repositório em memória tem 800 ms de demora e um `falhar`: dá para ver os quatro estados sem rede
+- O repositório em memória tem 800 ms de demora e um `falhar`: é possível ver os quatro estados sem rede
 - `CancellationException` é como a corrotina é cancelada: capturá-la e seguir em frente impede o cancelamento
 
 ---

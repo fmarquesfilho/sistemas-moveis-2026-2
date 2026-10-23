@@ -589,7 +589,7 @@ fun tentarDeNovoDepoisDoErro() = runTest {
 | | `StandardTestDispatcher(testScheduler)` | `UnconfinedTestDispatcher()` |
 |---|---|---|
 | quando a corrotina roda | entra numa fila e roda quando o teste espera | na hora, até a primeira suspensão |
-| no exemplo | testes de ViewModel com Turbine: dá para ver o `Carregando` | testes de tela e o `ModulosTest`: só o resultado importa |
+| no exemplo | testes de ViewModel com Turbine: é possível ver o `Carregando` | testes de tela e o `ModulosTest`: só o resultado importa |
 
 ```kotlin
 private fun TestScope.usarRelogioDoTeste() = Dispatchers.setMain(StandardTestDispatcher(testScheduler))
