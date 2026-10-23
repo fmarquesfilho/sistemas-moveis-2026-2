@@ -90,7 +90,7 @@ style: |
 
 ## Camadas, Koin, dados reais, cache e testes de ViewModel
 
-DIM0524 — Turma 01 · Sprint 2 · aula de 26/10
+DIM0524 — Turma 01 · Sprint 2 · aula em vídeo
 
 Prof. Fernando · UFRN · 2026.2
 

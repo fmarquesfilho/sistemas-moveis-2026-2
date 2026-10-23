@@ -90,7 +90,7 @@ style: |
 
 ## Corrotinas, Flow e ViewModel
 
-DIM0524 — Turma 01 · Sprint 2 · aula em vídeo
+DIM0524 — Turma 01 · Sprint 2 · aula de 26/10
 
 Prof. Fernando · UFRN · 2026.2
 
@@ -100,7 +100,7 @@ Prof. Fernando · UFRN · 2026.2
 
 | | Data |
 |---|---|
-| Conteúdo | hoje (passos 11 e 12) e segunda, 26/10 (passos 13 a 16) |
+| Conteúdo | hoje (passos 11 e 12) e em vídeo, até 30/10 (passos 13 a 16) |
 | Acompanhamento online | 09/11 e 16/11 |
 | Prova escrita | **11/11 (quarta)**, em laboratório |
 | *Daily meetings* online | 23 e 25/11 (presencial, se preferirem, em 18/11) |
@@ -108,11 +108,11 @@ Prof. Fernando · UFRN · 2026.2
 
 | Critério | Peso | Aula |
 |---|---|---|
-| Estado e arquitetura | 25% | hoje e 26/10 |
+| Estado e arquitetura | 25% | hoje e vídeo |
 | Estados da interface | 15% | hoje |
-| Dados reais e erro de rede | 25% | 26/10 |
-| Persistência local | 10% | 26/10 |
-| Testes (interface e ViewModel) | 15% | 26/10 |
+| Dados reais e erro de rede | 25% | vídeo |
+| Persistência local | 10% | vídeo |
+| Testes (interface e ViewModel) | 15% | vídeo |
 | App e documentação | 10% | — |
 
 ---
@@ -498,7 +498,7 @@ class RepositorioEmMemoria(
 ```
 
 - `delay` suspende; `Thread.sleep` bloquearia a thread da interface
-- É a porta que a próxima aula vai implementar com a rede (Passo 14) e com cache (Passo 15)
+- É a porta que o vídeo vai implementar com a rede (Passo 14) e com cache (Passo 15)
 
 ---
 
@@ -593,7 +593,7 @@ class TarefasViewModelTest {
 
 - O `viewModelScope` usa `Dispatchers.Main`, que não existe no teste: `setMain` põe um despachante de teste no lugar
 - O repositório recebe `Duration.ZERO`: o teste não espera os 800 ms
-- O teste só vê o estado final. Para conferir a sequência (carregando → sucesso), a próxima aula traz o Turbine
+- O teste só vê o estado final. Para conferir a sequência (carregando → sucesso), o vídeo traz o Turbine
 
 ---
 
@@ -607,7 +607,7 @@ class TarefasViewModelTest {
 
 ---
 
-# Na segunda, 26/10
+# No vídeo (até 30/10)
 
 | Passo | Assunto |
 |---|---|
