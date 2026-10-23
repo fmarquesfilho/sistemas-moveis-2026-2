@@ -1,6 +1,6 @@
 # Guia da Sprint 2 — DIM0524
 
-Prazo em [CRONOGRAMA.md](CRONOGRAMA.md#visão-geral): entrega final em **30/11 (segunda), 23:59**. Conteúdo em vídeo, publicado no SIGAA até 23/10, e na aula presencial de 26/10 (as aulas de 19 e 21/10 foram canceladas); acompanhamento online em 09/11 e 16/11; *daily meetings* online em 23 e 25/11 (presencial em 18/11, para quem avisar antes). O que entregar e como é avaliado: [RUBRICAS.md](RUBRICAS.md#sprint-2). Os enunciados, prontos para virar cartões no quadro, estão em [SPRINT-2-TAREFAS.md](SPRINT-2-TAREFAS.md).
+Prazo em [CRONOGRAMA.md](CRONOGRAMA.md#visão-geral): entrega final em **30/11 (segunda), 23:59**. Conteúdo na aula presencial de 26/10 e em vídeo, publicado no SIGAA até 30/10 (as aulas de 19 e 21/10 foram canceladas); acompanhamento online em 09/11 e 16/11; *daily meetings* online em 23 e 25/11 (presencial em 18/11, para quem avisar antes). O que entregar e como é avaliado: [RUBRICAS.md](RUBRICAS.md#sprint-2). Os enunciados, prontos para virar cartões no quadro, estão em [SPRINT-2-TAREFAS.md](SPRINT-2-TAREFAS.md).
 
 A Sprint 2 é a última do semestre: o que for entregue em 30/11 é o produto final. O app passa a ter o **estado num ViewModel**, as **camadas separadas**, **dados reais** vindos do backend escolhido na Sprint 0, uma **cópia local** para abrir sem rede, e os **testes** (de interface, que saíram da Sprint 1, e de ViewModel).
 
@@ -23,8 +23,8 @@ Além da entrega técnica, a nota da sprint tem a atividade no repositório (30%
 
 ## Material de apoio
 
-- Leitura da sprint: [`leituras/moveis-s2.md`](../leituras/moveis-s2.md) — corrotinas, Flow e ViewModel (em vídeo); camadas, Koin, Ktor Client, cache e testes (26/10).
-- Slides: `slides/sistemas-moveis-slides-06.md` (vídeo) e `slides/sistemas-moveis-slides-07.md` (26/10).
+- Leitura da sprint: [`leituras/moveis-s2.md`](../leituras/moveis-s2.md) — corrotinas, Flow e ViewModel (26/10); camadas, Koin, Ktor Client, cache e testes (vídeo).
+- Slides: `slides/sistemas-moveis-slides-06.md` (26/10) e `slides/sistemas-moveis-slides-07.md` (vídeo).
 - Exemplo: `exemplos/tarefas-compose/`, passos 11 a 16 do `PASSOS.md`. No branch `aula`, as tags `passo-11` a `passo-16` guardam cada passo. O exemplo consome a API de Tarefas de Web II (`web2-2026-2/exemplos`, `docker compose up --build`); sem ela, roda com `TAREFAS_API=memoria`.
 - Os testes de interface da Sprint 1 (agora avaliados aqui): capítulos 5 e 6 da leitura `moveis-s1-pte2.md` e Passo 9 do exemplo.
 - Kotlin: a leitura `moveis-s1-kotlin.md`, sobre lambdas, extensões e lambdas com receptor.
