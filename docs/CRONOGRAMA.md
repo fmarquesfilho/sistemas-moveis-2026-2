@@ -40,7 +40,7 @@ Todos os grupos participam da *daily meeting* em todas as sprints, exceto na Spr
 |-------|---------|------|---------------|---------|
 | Sprint 0 | 17/08 a 14/09 | Kotlin, Compose e a primeira tela | — | 16/09 |
 | Sprint 1 | 14/09 a 16/10 | Interface e navegação | 28 e 30/09, online | 16/10 |
-| Sprint 2 (final) | 01/11 a 30/11, com o conteúdo em vídeo (até 23/10) e em 26/10 | Estado, dados e rede | 23 e 25/11, online | 30/11 |
+| Sprint 2 (final) | 01/11 a 30/11, com o conteúdo em 26/10 e em vídeo (até 30/10) | Estado, dados e rede | 23 e 25/11, online | 30/11 |
 | Prova escrita | 11/11 | Sprints 0 e 1 e o conteúdo da Sprint 2 | — | — |
 | Prova de reposição | 02/12 | Sprints 0 a 2, cumulativa e opcional | — | — |
 
@@ -137,7 +137,7 @@ Esta é a última sprint: o que for entregue em 30/11 é o produto final do seme
 |------|-----|------|-----------|
 | 19/10 | Seg | 🔴 | Aula cancelada |
 | 21/10 | Qua | 🔴 | Aula cancelada |
-| 26/10 | Seg | 🟢 | **Coroutines, Flow e ViewModel (vídeo); camadas, injeção de dependências, rede e testes**. Em vídeo, publicado no SIGAA até 23/10: Kotlin assíncrono: `suspend`, coroutines e concorrência estruturada. `Flow` e `StateFlow`. ViewModel multiplataforma. Estado de tela com classes seladas. Em sala: Camadas de apresentação, domínio e dados; injeção de dependências com Koin; testes de interface e testes de ViewModel com Turbine. Ktor Client e kotlinx.serialization: DTOs e tratamento de erro. Persistência local com Room, SQLDelight ou DataStore |
+| 26/10 | Seg | 🟢 | **Coroutines, Flow e ViewModel; camadas, injeção de dependências, rede e testes (vídeo)**. Em sala: Kotlin assíncrono: `suspend`, coroutines e concorrência estruturada. `Flow` e `StateFlow`. ViewModel multiplataforma. Estado de tela com classes seladas. Em vídeo, publicado no SIGAA até 30/10: Camadas de apresentação, domínio e dados; injeção de dependências com Koin; testes de interface e testes de ViewModel com Turbine. Ktor Client e kotlinx.serialization: DTOs e tratamento de erro. Persistência local com Room, SQLDelight ou DataStore |
 | 28/10 | Qua | 🔴 | Dia do Servidor Público |
 | 02/11 | Seg | 🔴 | Finados |
 | 04/11 | Qua | 🔵 | Encontro online: revisão para a prova e dúvidas |
