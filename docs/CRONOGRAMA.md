@@ -78,7 +78,7 @@ No fim de cada sprint, o professor conversa com cada grupo no formato de uma *da
 | 12 e 14/10 | 🔴 feriado | 🔵 online |
 | 19 e 21/10 | 🔴 cancelada | 🔴 cancelada |
 | 26 e 28/10 | 🟢 presencial | 🔴 feriado |
-| 02 e 04/11 | 🔴 feriado | 🔵 online |
+| 02 e 04/11 | 🔴 feriado | 🟢 presencial |
 | 09 e 11/11 | 🔵 online | 🟢 presencial (prova) |
 | 16 e 18/11 | 🔵 online | 🟢 presencial |
 | 23 e 25/11 | 🔵 online (*daily meetings*) | 🔵 online (*daily meetings*) |
@@ -140,8 +140,8 @@ Esta é a última sprint: o que for entregue em 30/11 é o produto final do seme
 | 26/10 | Seg | 🟢 | **Coroutines, Flow e ViewModel; camadas, injeção de dependências, rede e testes (vídeo)**. Em sala: Kotlin assíncrono: `suspend`, coroutines e concorrência estruturada. `Flow` e `StateFlow`. ViewModel multiplataforma. Estado de tela com classes seladas. Em vídeo, publicado no SIGAA até 30/10: Camadas de apresentação, domínio e dados; injeção de dependências com Koin; testes de interface e testes de ViewModel com Turbine. Ktor Client e kotlinx.serialization: DTOs e tratamento de erro. Persistência local com Room, SQLDelight ou DataStore |
 | 28/10 | Qua | 🔴 | Dia do Servidor Público |
 | 02/11 | Seg | 🔴 | Finados |
-| 04/11 | Qua | 🔵 | Encontro online: revisão para a prova e dúvidas |
-| 09/11 | Seg | 🔵 | Encontro online de acompanhamento de projetos |
+| 04/11 | Qua | 🟢 | Revisão para a prova e dúvidas, em sala |
+| 09/11 | Seg | 🔵 | Revisão para a prova e dúvidas, online |
 | 11/11 | Qua | 📚 | **Prova escrita** — presencial, em laboratório. Sprints 0 e 1 e o conteúdo da Sprint 2 |
 | 16/11 | Seg | 🔵 | Encontro online de acompanhamento de projetos |
 | 18/11 | Qua | 🟢 | Oficina de projeto em sala. *Daily meeting* dos grupos que preferirem o presencial |

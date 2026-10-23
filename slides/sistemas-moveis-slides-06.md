@@ -101,7 +101,8 @@ Prof. Fernando · UFRN · 2026.2
 | | Data |
 |---|---|
 | Conteúdo | hoje (passos 11 e 12) e em vídeo, até 30/10 (passos 13 a 16) |
-| Acompanhamento online | 09/11 e 16/11 |
+| Revisão para a prova | 04/11 (presencial) e 09/11 (online) |
+| Acompanhamento online | 16/11 |
 | Prova escrita | **11/11 (quarta)**, em laboratório |
 | *Daily meetings* online | 23 e 25/11 (presencial, se preferirem, em 18/11) |
 | **Entrega final** | **30/11, 23:59** |

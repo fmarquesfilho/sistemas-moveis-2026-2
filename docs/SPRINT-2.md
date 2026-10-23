@@ -1,6 +1,6 @@
 # Guia da Sprint 2 — DIM0524
 
-Prazo em [CRONOGRAMA.md](CRONOGRAMA.md#visão-geral): entrega final em **30/11 (segunda), 23:59**. Conteúdo na aula presencial de 26/10 e em vídeo, publicado no SIGAA até 30/10 (as aulas de 19 e 21/10 foram canceladas); acompanhamento online em 09/11 e 16/11; *daily meetings* online em 23 e 25/11 (presencial em 18/11, para quem avisar antes). O que entregar e como é avaliado: [RUBRICAS.md](RUBRICAS.md#sprint-2). Os enunciados, prontos para virar cartões no quadro, estão em [SPRINT-2-TAREFAS.md](SPRINT-2-TAREFAS.md).
+Prazo em [CRONOGRAMA.md](CRONOGRAMA.md#visão-geral): entrega final em **30/11 (segunda), 23:59**. Conteúdo na aula presencial de 26/10 e em vídeo, publicado no SIGAA até 30/10 (as aulas de 19 e 21/10 foram canceladas); revisão para a prova em 04/11 (presencial) e 09/11 (online); acompanhamento online em 16/11; *daily meetings* online em 23 e 25/11 (presencial em 18/11, para quem avisar antes). O que entregar e como é avaliado: [RUBRICAS.md](RUBRICAS.md#sprint-2). Os enunciados, prontos para virar cartões no quadro, estão em [SPRINT-2-TAREFAS.md](SPRINT-2-TAREFAS.md).
 
 A Sprint 2 é a última do semestre: o que for entregue em 30/11 é o produto final. O app passa a ter o **estado num ViewModel**, as **camadas separadas**, **dados reais** vindos do backend escolhido na Sprint 0, uma **cópia local** para abrir sem rede, e os **testes** (de interface, que saíram da Sprint 1, e de ViewModel).
 
