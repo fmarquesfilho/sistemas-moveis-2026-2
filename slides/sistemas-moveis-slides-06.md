@@ -175,6 +175,22 @@ viewModelScope.launch {
 
 ---
 
+# O que é (e o que não é) uma corrotina
+
+- **Não é** uma thread: milhares de corrotinas cabem numa thread só.
+- **É** uma computação que pode **suspender** e **retomar**, sem prender a thread.
+- `suspend` marca o ponto em que a função pode ceder a thread; nada roda "em paralelo" só por ser `suspend`.
+
+| | Thread | Corrotina |
+|---|---|---|
+| custo de criar | alto (pilha do SO) | baixo (um objeto) |
+| quem agenda | o sistema operacional | o despachante da linguagem |
+| troca de contexto | o SO | pontos de suspensão, cooperativo |
+
+📖 **Ref.** [Kotlin — coroutines](https://kotlinlang.org/docs/coroutines-overview.html)
+
+---
+
 # Por que a tela não pode esperar
 
 ```
@@ -221,6 +237,22 @@ catch (e: Exception) { /* erro de verdade */ }
 - Cancelar não é erro: a `CancellationException` é o sinal de "pare", e deve **propagar**, não ser engolida.
 
 > Um `catch (e: Exception)` genérico que engole a `CancellationException` quebra o cancelamento — e o próximo bloco mostra o jeito certo.
+
+---
+
+# Cancelamento é cooperativo
+
+- Cancelar **não mata** a corrotina: pede para ela parar no próximo ponto de suspensão.
+- Uma corrotina que faz trabalho pesado sem `suspend` não vê o cancelamento.
+- Por isso toda função `suspend` deve ser "cancelável": consultar ou propagar o cancelamento, nunca engolir.
+
+```kotlin
+try { repositorio.listar() }
+catch (e: CancellationException) { throw e }   // deixa o cancelamento seguir
+catch (e: Exception) { /* erro de verdade */ }
+```
+
+📖 **Ref.** [Kotlin — cancellation and timeouts](https://kotlinlang.org/docs/cancellation-and-timeouts.html)
 
 ---
 
@@ -285,6 +317,21 @@ contagem.map { it * 10 }.collect { println(it) }  // 10, 20, 30, um por segundo
 
 - Operadores (`map`, `filter`, `combine`) montam um `Flow` novo sem executar nada: a execução começa no `collect`
 - Na Sprint 2, os `Flow` aparecem no DataStore (`data`) e nos testes com Turbine
+
+---
+
+# `StateFlow`: um valor + as mudanças
+
+- `StateFlow` é um `Flow` **com estado**: sempre tem um `.value` e emite só quando o valor **muda**.
+- É o encaixe certo para o estado da tela: a tela quer o valor **atual** e as **mudanças**.
+- `MutableStateFlow` é privado; `asStateFlow()` expõe só leitura.
+
+```kotlin
+private val _estado = MutableStateFlow(EstadoLista())
+val estado = _estado.asStateFlow()   // StateFlow<EstadoLista>: só leitura
+```
+
+📖 **Ref.** [Android — StateFlow and SharedFlow](https://developer.android.com/kotlin/flow/stateflow-and-sharedflow)
 
 ---
 
@@ -456,6 +503,16 @@ class TarefasViewModelTest {
 | mudar uma `MutableList` dentro do estado | o objeto é o mesmo, e o `StateFlow` não emite | lista imutável e `copy` |
 | lifecycle numa versão e Navigation em outra | "State must be at least CREATED" ao voltar de uma tela | versões da mesma família (2.9.x) |
 | ler com `.value` dentro do `@Composable` | a tela não recompõe quando o estado muda | `collectAsStateWithLifecycle()` |
+
+---
+
+# O ViewModel sobrevive à recomposição
+
+- A tela é recriada a cada rotação; o `ViewModel` **não** — ele fica ligado ao escopo da tela, não à composição.
+- Por isso o estado no `ViewModel` **sobrevive** onde o `remember` se perderia.
+- No exemplo, `selecionada` (estado só da interface) continua no `rememberSaveable`: cada coisa no seu lugar.
+
+📖 **Ref.** [Compose Multiplatform — ViewModel](https://kotlinlang.org/docs/multiplatform/compose-viewmodel.html)
 
 ---
 
