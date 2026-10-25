@@ -58,6 +58,18 @@ No desktop, o `Dispatchers.Main` vem da biblioteca `kotlinx-coroutines-swing`, a
 
 📖 Ref. Android — Kotlin coroutines on Android: <https://developer.android.com/kotlin/coroutines>
 
+Uma corrotina não é uma thread: é um objeto leve, agendado sobre poucas threads reais. Criar milhares de corrotinas é barato; criar milhares de threads, não.
+
+| | Thread | Corrotina |
+|---|---|---|
+| custo de criar | alto (pilha do SO) | baixo (um objeto) |
+| quem agenda | o sistema operacional | o despachante da linguagem |
+| troca de contexto | o SO | pontos de suspensão, cooperativo |
+
+O cancelamento também é **cooperativo**: a corrotina só para nos pontos de suspensão — uma função `suspend` que não suspende nunca percebe o cancelamento. Por isso toda função `suspend` deve ser "cancelável": propagar a `CancellationException`, nunca engolir.
+
+📖 Ref. Kotlin — coroutines: <https://kotlinlang.org/docs/coroutines-overview.html>
+
 ## 3. `StateFlow` e o ViewModel
 
 ### 3.1 Flow e StateFlow
