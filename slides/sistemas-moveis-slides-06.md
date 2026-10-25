@@ -137,6 +137,19 @@ Prof. Fernando · UFRN · 2026.2
 
 ---
 
+# Como acompanhar: as tags
+
+## Cada conceito tem uma tag no branch `aula`
+
+| Conceito | Tag |
+|---|---|
+| ViewModel com `StateFlow` (Passo 11) | `passo-11` |
+| Corrotinas e estados selados (Passo 12) | `passo-12` |
+
+No Codespace: `./passo.sh 11` ou `./passo.sh 12`; `mise run app` abre o app e `mise run test` roda os testes.
+
+---
+
 # Corrotinas em uma página
 
 Já vistas na aula de Kotlin (`suspend`). O essencial para hoje:
@@ -198,6 +211,16 @@ catch (e: Exception) { /* erro de verdade */ }
 ```
 
 > `GlobalScope.launch` não tem dono: ninguém cancela. No app, as corrotinas nascem no `viewModelScope`.
+
+---
+
+# O dono cancela a corrotina
+
+- Toda corrotina tem um **dono** (um escopo): no app, é o `viewModelScope`.
+- Quando o dono morre (o usuário fecha a tela), as corrotinas dele são **canceladas**.
+- Cancelar não é erro: a `CancellationException` é o sinal de "pare", e deve **propagar**, não ser engolida.
+
+> Um `catch (e: Exception)` genérico que engole a `CancellationException` quebra o cancelamento — e o próximo bloco mostra o jeito certo.
 
 ---
 
@@ -278,6 +301,16 @@ contagem.map { it * 10 }.collect { println(it) }  // 10, 20, 30, um por segundo
 - É a elevação de estado da Sprint 1, um nível acima: quem guarda o estado agora é o ViewModel, e não uma função `@Composable`
 - Para saber por que a tela está assim, basta olhar uma fonte: o `StateFlow`
 - As telas (`TelaLista`, `TelaDetalhe`) não mudam: continuam recebendo valores e funções
+
+---
+
+# Estado desce, evento sobe
+
+- A tela **lê** o estado (`collectAsStateWithLifecycle`) e **emite eventos** (`viewModel.adicionar()`).
+- A tela nunca altera o estado direto.
+- Quem decide o que muda é o **ViewModel**, que concentra as regras.
+
+> O `MutableStateFlow` fica **privado**; para fora, só o `StateFlow` (somente leitura). Confiram na tag `passo-11`.
 
 ---
 
@@ -454,6 +487,15 @@ when (val tela = estado.tela) {                  // sem else: o compilador confe
 - Classe selada: todos os casos são conhecidos na compilação. Um quinto estado faz o `when` deixar de compilar até alguém decidir como mostrá-lo
 - Dentro do ramo `is EstadoTela.Erro`, `tela` já é um `Erro` (*smart cast*): `tela.mensagem` existe
 - É o critério "Estados da interface" da rubrica: carregando, erro, vazio e sucesso
+
+---
+
+# A classe selada força a decisão
+
+- `EstadoTela` é uma classe selada: `Carregando`, `Vazio`, `Sucesso` e `Erro`.
+- O `when` sobre ela **não tem `else`**: um estado novo faz o código **deixar de compilar** até alguém decidir como mostrá-lo.
+
+> O compilador vira a memória de que "falta tratar aquele estado". Confiram na tag `passo-12`.
 
 ---
 
