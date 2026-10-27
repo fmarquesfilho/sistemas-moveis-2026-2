@@ -297,6 +297,8 @@ class RepositorioRemoto(private val cliente: HttpClient, private val enderecoDaA
 
 São as rotas `GET` e `POST /tarefas` da API de tarefas.
 
+`HttpClient` sem motor deixa cada plataforma escolher o seu: OkHttp no Android, CIO no desktop. `expectSuccess = true` transforma respostas 4xx e 5xx em exceção, e `ContentNegotiation` com `json(Json { ignoreUnknownKeys = true })` converte o JSON em DTOs, ignorando campos que a API acrescentar.
+
 ---
 
 # Erros de rede com nome
@@ -361,6 +363,8 @@ actual val enderecoDaApi: String? = when (val valor = System.getenv("TAREFAS_API
 }
 actual val enderecoDaApi: String? = "http://10.0.2.2:8080"   // Android (emulador)
 ```
+
+`expect` declara, no `commonMain`, um valor que cada plataforma define; `actual` é a definição de cada alvo, aqui o desktop e o Android.
 
 | Onde o app roda | Endereço da API |
 |---|---|

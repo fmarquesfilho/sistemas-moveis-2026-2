@@ -280,6 +280,8 @@ actual val enderecoDaApi: String? = when (val valor = System.getenv("TAREFAS_API
 actual val enderecoDaApi: String? = "http://10.0.2.2:8080"
 ```
 
+`expect` declara, no `commonMain`, um valor que cada plataforma define; `actual` é a definição de cada alvo, aqui o desktop e o Android.
+
 Sem a API (no Codespace, no laboratório, ou só para mexer na interface), o app roda com o repositório em memória: `TAREFAS_API=memoria ./gradlew :composeApp:run`, ou `mise run app:sem-api`. O Codespace do repositório já vem com `TAREFAS_API=memoria`. No Android, troca-se o endereço por `null`.
 
 No emulador Android, `10.0.2.2` é o computador que roda o emulador. Num celular de verdade, é o IP do computador na mesma rede Wi-Fi. O Android precisa da permissão `INTERNET` e, para `http://` sem TLS, de `android:usesCleartextTraffic="true"`; num app publicado, a API usa `https`, e essa linha sai.

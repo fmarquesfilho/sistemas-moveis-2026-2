@@ -487,6 +487,8 @@ class TarefasViewModelTest {
 }
 ```
 
+O teste monta o ViewModel sem tela e lê `estado.value`, o valor atual do `StateFlow`, sem precisar coletar. Como `mudarTexto`, `adicionar` e `alternar` atualizam o estado na hora, o valor reflete cada evento imediatamente.
+
 ```bash
 ./passo.sh 11
 ./gradlew :composeApp:desktopTest     # 11 testes: regras, telas e o ViewModel
