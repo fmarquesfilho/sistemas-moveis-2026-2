@@ -88,7 +88,7 @@ style: |
 
 # Desenvolvimento de Sistemas para Dispositivos Móveis
 
-## Camadas, Koin, dados reais, cache e testes de ViewModel
+## Camadas, injeção de dependência, rede e persistência local
 
 DIM0524 — Turma 01 · Sprint 2 · aula em vídeo
 
