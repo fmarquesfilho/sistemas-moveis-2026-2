@@ -124,6 +124,17 @@ Prof. Fernando · UFRN · 2026.2
 
 ---
 
+# O que entregar na Sprint 2
+
+- **ViewModel** com `StateFlow`; camadas `data`/`domain`/`presentation` em `commonMain`; domínio sem Compose; repositórios por interface.
+- **Quatro estados** (carregando, erro, vazio, sucesso) por interface selada, refletidos na tela.
+- **Dados reais** com Ktor Client e kotlinx.serialization, DTO separado do domínio; erro de rede e resposta inválida, cada um com estado próprio.
+- **Persistência local** (Room, SQLDelight ou DataStore): o app abre sem rede mostrando o último conteúdo.
+- **≥ 5 testes de interface** e **≥ 5 de ViewModel** (Turbine e dublês), verdes no CI.
+- **App sem crash**; `docs/arquitetura.md`; README (roda em menos de 15 min); APK numa release.
+
+---
+
 # Onde vamos chegar
 
 ```
