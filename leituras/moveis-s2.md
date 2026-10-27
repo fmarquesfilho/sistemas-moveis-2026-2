@@ -1,8 +1,8 @@
 # Leitura — Estado, dados reais e testes: ViewModel, Flow, camadas, Koin, Ktor Client e DataStore (Sprint 2)
 
-Guia de apoio para as duas aulas da Sprint 2: corrotinas, Flow e ViewModel (28/10, passos 11 e 12) e camadas, Koin, Ktor Client, cache local e testes de ViewModel (em vídeo, passos 13 a 16). Na Sprint 1, o app de Tarefas ganhou telas, navegação, layout adaptativo e acessibilidade, com o estado guardado na própria tela. Nesta, o estado vai para um ViewModel, as tarefas passam a vir da API de Tarefas de Web II, e o app abre mesmo sem rede.
+Guia de apoio para as duas aulas da Sprint 2: corrotinas, Flow e ViewModel (28/10, passos 11 e 12) e camadas, Koin, Ktor Client, cache local e testes de ViewModel (em vídeo, passos 13 a 16). Na Sprint 1, o app de Tarefas ganhou telas, navegação, layout adaptativo e acessibilidade, com o estado guardado na própria tela. Nesta, o estado vai para um ViewModel, as tarefas passam a vir da API de tarefas, e o app abre mesmo sem rede.
 
-Exemplo de referência: `exemplos/tarefas-compose/`, passos 11 a 16 do `PASSOS.md`. Os slides são `slides/sistemas-moveis-slides-06.md` e `slides/sistemas-moveis-slides-07.md`. No branch `aula`, as tags `passo-11` a `passo-16` guardam o estado de cada passo. A API usada é a do repositório de Web II (`web2-2026-2/exemplos`), que sobe com `docker compose up --build`.
+Exemplo de referência: `exemplos/tarefas-compose/`, passos 11 a 16 do `PASSOS.md`. Os slides são `slides/sistemas-moveis-slides-06.md` e `slides/sistemas-moveis-slides-07.md`. No branch `aula`, as tags `passo-11` a `passo-16` guardam o estado de cada passo. A API usada é uma API de tarefas já existente, que sobe com `docker compose up --build`.
 
 Versões novas: Lifecycle ViewModel 2.9.6, Koin 4.2.2, Ktor Client 3.5.2, DataStore 1.2.1, kotlinx-coroutines 1.11.0 e Turbine 1.2.1. Tudo o que está descrito foi executado: os 25 testes no alvo desktop, o APK de debug, e o app no desktop contra a API no ar e, depois, com a API parada.
 
@@ -32,7 +32,7 @@ Capítulos:
 O app ao fim da sprint:
 
 ```
-  Telas (@Composable)  ◄── estado ──  ViewModel  ──►  Repositório com cache  ──►  API de Tarefas (Web II)
+  Telas (@Composable)  ◄── estado ──  ViewModel  ──►  Repositório com cache  ──►  a API de tarefas
            └─────── eventos ──────────────┘                     │
                                                                  ▼
                                                      DataStore, no aparelho
@@ -190,7 +190,7 @@ br.ufrn.exemplo.tarefas
 | dados | domínio; bibliotecas de rede e de disco | apresentação |
 | apresentação | domínio; Compose; ViewModel | detalhes de dados |
 
-É a mesma regra de dependência da API de Web II, aplicada ao app: as setas apontam para o domínio. O ViewModel conhece a interface `RepositorioDeTarefas`, e não quem a implementa.
+É a mesma regra de dependência da API de tarefas, aplicada ao app: as setas apontam para o domínio. O ViewModel conhece a interface `RepositorioDeTarefas`, e não quem a implementa.
 
 ### 5.2 Koin
 
@@ -212,7 +212,7 @@ fun moduloTarefas(diretorioDeDados: String) = module {
 - `single` cria uma instância e a reaproveita; `get()` pede ao Koin uma dependência já declarada.
 - `viewModelOf(::TarefasViewModel)` cria o ViewModel passando ao construtor o que ele pede.
 - Em `App()`, `KoinApplication(application = { modules(...) }) { ... }` disponibiliza o Koin para a interface; em `Conteudo`, `koinViewModel()` pede o ViewModel.
-- A escolha da implementação fica num lugar só. Sem endereço de API, o módulo entrega o `RepositorioEmMemoria`: é assim que o app roda sem a API de Web II (capítulo 6.4).
+- A escolha da implementação fica num lugar só. Sem endereço de API, o módulo entrega o `RepositorioEmMemoria`: é assim que o app roda sem a API de tarefas (capítulo 6.4).
 
 Nos testes, o Koin não aparece: o ViewModel é criado diretamente, com o dublê que o teste quiser. Um teste separado (`ModulosTest`) confere que o módulo consegue montar o ViewModel.
 
@@ -389,13 +389,13 @@ Os testes de interface, que rodam o Compose, também precisam de um `Dispatchers
 1. No projeto do grupo, leve o estado de uma tela para um ViewModel com `StateFlow`.
 2. Modele os estados dessa tela como classe selada. Acrescente um quinto estado de propósito e veja o `when` deixar de compilar.
 3. No exemplo, troque no `Modulos.kt` o repositório pelo `RepositorioEmMemoria` e rode o app sem a API. O que mudou na tela? E no ViewModel?
-4. Com a API de Web II no ar, rode o app; depois pare a API e toque em **Tentar de novo**. Feche e abra o app. Qual mensagem aparece em cada momento, e por quê?
+4. Com a API de tarefas no ar, rode o app; depois pare a API e toque em **Tentar de novo**. Feche e abra o app. Qual mensagem aparece em cada momento, e por quê?
 5. Escreva um teste com Turbine para "adicionar sem conexão mostra um aviso e mantém a lista".
 6. Faça a API devolver um campo a mais (por exemplo, `"prioridade": 1`) e confira que o app continua funcionando. Que configuração garante isso?
 
 ### Dúvidas frequentes
 
-**Preciso usar a API de Web II?** Não. A rubrica pede dados do backend escolhido pelo grupo na Sprint 0. O exemplo usa a API de Tarefas porque ela já existe e é conhecida.
+**Preciso usar a API de tarefas?** Não. A rubrica pede dados do backend escolhido pelo grupo na Sprint 0. O exemplo usa a API de Tarefas porque ela já existe e é conhecida.
 
 **Koin ou injeção manual?** As duas resolvem. O que a rubrica cobra é o efeito: o ViewModel recebe o repositório pelo construtor, por interface, e não o cria.
 

@@ -122,7 +122,7 @@ Prof. Fernando · UFRN · 2026.2
 
 ```
   ┌─────────────── apresentação ───────────────┐   ┌──── dados ────┐
-  │  Telas (@Composable)  ◄── estado ──  ViewModel  ──► Repositório ──► API de Tarefas (Web II)
+  │  Telas (@Composable)  ◄── estado ──  ViewModel  ──► Repositório ──► a API de tarefas
   │        │                                ▲     │   │   + cache   │      GET / POST /tarefas
   │        └──────── eventos ───────────────┘     │   └──────┬──────┘
   └────────────────────────────────────────────────┘          ▼
@@ -130,7 +130,7 @@ Prof. Fernando · UFRN · 2026.2
 ```
 
 - O estado e as decisões saem da tela e vão para um ViewModel, que se testa sem abrir a tela
-- As tarefas vêm da API de Web II, pela rede; sem rede, da última lista guardada
+- As tarefas vêm da API de tarefas, pela rede; sem rede, da última lista guardada
 - Cada estado da tela (carregando, vazio, erro, sucesso) é um caso de uma classe selada
 
 **Branch `aula`:** `./passo.sh 10` é onde a Sprint 1 terminou; hoje vamos até o 12.
@@ -712,7 +712,7 @@ class TarefasViewModelTest {
 | Passo | Assunto |
 |---|---|
 | 13 | Camadas (domínio, dados, apresentação) e injeção de dependência com Koin |
-| 14 | Dados reais: Ktor Client, DTO e erros de rede com nome, chamando a API de Web II |
+| 14 | Dados reais: Ktor Client, DTO e erros de rede com nome, chamando a API de tarefas |
 | 15 | Abrir sem rede: a última lista guardada com DataStore |
 | 16 | Testes de ViewModel com Turbine e dublês |
 

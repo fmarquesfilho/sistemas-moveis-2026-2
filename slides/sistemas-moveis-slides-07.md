@@ -106,14 +106,14 @@ Prof. Fernando · UFRN · 2026.2
 | Passo | Hoje |
 |---|---|
 | 13 | Camadas (domínio, dados, apresentação) e injeção de dependência com Koin |
-| 14 | Dados reais: o app chama a API de Tarefas de Web II com o Ktor Client |
+| 14 | Dados reais: o app chama a API de tarefas com o Ktor Client |
 | 15 | Abrir sem rede: a última lista guardada no aparelho, com DataStore |
 | 16 | Testes de ViewModel com Turbine e dublês |
 
-**Branch `aula`:** `./passo.sh 12`. Para os passos 14 e 15, a API de Web II precisa estar no ar:
+**Branch `aula`:** `./passo.sh 12`. Para os passos 14 e 15, a API de tarefas precisa estar no ar:
 
 ```bash
-cd web2-2026-2/exemplos && docker compose up --build    # API, banco e serviço Go
+docker compose up --build    # sobe a API de tarefas, o banco e o serviço Go
 ```
 
 ---
@@ -295,7 +295,7 @@ class RepositorioRemoto(private val cliente: HttpClient, private val enderecoDaA
 }
 ```
 
-São as rotas `GET` e `POST /tarefas` da API de Tarefas de Web II.
+São as rotas `GET` e `POST /tarefas` da API de tarefas.
 
 ---
 
@@ -371,7 +371,7 @@ actual val enderecoDaApi: String? = "http://10.0.2.2:8080"   // Android (emulado
 
 No Android: permissão `INTERNET` e, para `http://` local, `usesCleartextTraffic="true"` (num app publicado, a API usa `https` e essa linha sai).
 
-**Demonstração:** a API de Web II no ar, `./passo.sh 14`, `mise run app`: as tarefas vêm do banco. Pare a API e toque em **Tentar de novo**.
+**Demonstração:** a API de tarefas no ar, `./passo.sh 14`, `mise run app`: as tarefas vêm do banco. Pare a API e toque em **Tentar de novo**.
 
 ---
 
@@ -398,7 +398,7 @@ fun servidorForaViraSemConexao() = runTest {
 ```
 
 - O `MockEngine` responde o que o teste mandar: JSON certo, status 500, JSON fora do formato, conexão recusada
-- São os 4 testes de `RepositorioRemotoTest`, e rodam sem a API de Web II
+- São os 4 testes de `RepositorioRemotoTest`, e rodam sem a API de tarefas
 
 ---
 
