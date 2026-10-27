@@ -1,6 +1,6 @@
 # Leitura — Estado, dados reais e testes: ViewModel, Flow, camadas, Koin, Ktor Client e DataStore (Sprint 2)
 
-Guia de apoio para as duas aulas da Sprint 2: corrotinas, Flow e ViewModel (26/10, passos 11 e 12) e camadas, Koin, Ktor Client, cache local e testes de ViewModel (em vídeo, passos 13 a 16). Na Sprint 1, o app de Tarefas ganhou telas, navegação, layout adaptativo e acessibilidade, com o estado guardado na própria tela. Nesta, o estado vai para um ViewModel, as tarefas passam a vir da API de Tarefas de Web II, e o app abre mesmo sem rede.
+Guia de apoio para as duas aulas da Sprint 2: corrotinas, Flow e ViewModel (28/10, passos 11 e 12) e camadas, Koin, Ktor Client, cache local e testes de ViewModel (em vídeo, passos 13 a 16). Na Sprint 1, o app de Tarefas ganhou telas, navegação, layout adaptativo e acessibilidade, com o estado guardado na própria tela. Nesta, o estado vai para um ViewModel, as tarefas passam a vir da API de Tarefas de Web II, e o app abre mesmo sem rede.
 
 Exemplo de referência: `exemplos/tarefas-compose/`, passos 11 a 16 do `PASSOS.md`. Os slides são `slides/sistemas-moveis-slides-06.md` e `slides/sistemas-moveis-slides-07.md`. No branch `aula`, as tags `passo-11` a `passo-16` guardam o estado de cada passo. A API usada é a do repositório de Web II (`web2-2026-2/exemplos`), que sobe com `docker compose up --build`.
 

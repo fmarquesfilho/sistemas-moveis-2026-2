@@ -90,7 +90,7 @@ style: |
 
 ## Corrotinas, Flow e ViewModel
 
-DIM0524 — Turma 01 · Sprint 2 · aula de 26/10
+DIM0524 — Turma 01 · Sprint 2 · aula de 28/10
 
 Prof. Fernando · UFRN · 2026.2
 
