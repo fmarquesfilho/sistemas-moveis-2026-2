@@ -86,7 +86,7 @@ Valores e condições em [AVALIACAO.md](AVALIACAO.md#5-bônus). O que se exige c
 | Critério | Peso | Excelente (10) | Suficiente (6) | Insuficiente (0–4) |
 |----------|------|----------------|----------------|--------------------|
 | **Clareza e objetividade** | 25% | Mensagem direta, dentro do tempo | Compreensível, tempo mal usado | Confusa ou muito fora do tempo |
-| **Demonstração do app** | 35% | Captura real do app rodando em dispositivo ou emulador, exercitando os fluxos entregues | Demonstração parcial ou muito editada | Só slides ou capturas estáticas |
+| **Demonstração do app** | 35% | Captura real do app rodando em dispositivo, emulador ou no alvo desktop (janela de celular), exercitando os fluxos entregues | Demonstração parcial ou muito editada | Só slides ou capturas estáticas |
 | **Justificativa técnica** | 25% | Explica **por que** cada decisão foi tomada — estado, arquitetura, plataforma, offline —, com alternativa descartada | Descreve o que foi feito, sem justificar | Sem justificativa |
 | **Participação da equipe** | 15% | Todos falam sobre o que fizeram | Maioria participa | Um só fala pelo grupo |
 
